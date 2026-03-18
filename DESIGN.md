@@ -5,7 +5,7 @@
 
 ## 1. Overview
 
-**Name:** `thingsYifuMake` — camelCase, direct. Domain: `thingsyifumake.com`
+**Name:** `thingsYifuMake` — camelCase, direct. Domain: `thingsyifumake.uk`
 **Owner:** Yifu — final-year PhD at UCL (UCLIC), product design background, maker, podcast host.
 **Audience:** Future employers / fellowships + curious people.
 **First impression goal:** Playful, surprising, alive. Not a CV.
@@ -52,18 +52,100 @@
 
 The site should feel like arriving in a space, not loading a page. Music sets the tone immediately. Information is earned through exploration.
 
-### Progression
+### Progression (Desktop)
 
-1. **Land** — Dark canvas. Blob breathes. Dots orbit silently. Ambient music fades in. Only wordmark visible. Let people *watch*.
-2. **Hover dot** — Dot blooms (elastic overshoot). Thin dotted leader line extends outward. Title fades in at end of line. ElevenLabs audio whisper speaks the title. That's it — no card.
-3. **Click dot** — Preview expands. B&W / pixelated / halftone image treatment. Minimal info: image + title + mode color accent. Still light.
-4. **Enter project** — Full page. Color returns. Detail lives here.
+1. **Land** — Dark canvas. Blob breathes. Dots orbit silently. Ambient music fades in. Only wordmark visible. Cursor is a large circle (~80-100px) with `mix-blend-mode: difference` — acts as an invert-lens, making you want to sweep across the canvas.
+2. **Hover dot** — Dot blooms (elastic overshoot). The cursor-lens fills with a B&W halftone preview image of the project (image lives *inside* the cursor, moves with it). Thin dotted leader line extends outward. Title fades in at end of line. ElevenLabs audio whisper plays — a short evocative sentence, not just the title.
+3. **Click dot** — Preview expands from cursor position. Minimal info: image + title + mode color accent. Still light.
+4. **Enter project** — Full page (Marco Da Re-style layout). Color returns. Detail lives here.
+
+### Progression (Mobile — Gyroscope Exploration)
+
+Phone tilt/orientation pans the viewport across the constellation. The orbital system renders larger than the screen — tilting explores it like looking through a window into a room. Tilting toward a dot cluster brings them closer/larger. Tapping a dot triggers: circle expands from tap point revealing B&W image + title + whisper audio, then contracts. Tap again to enter project page.
+
+Uses `DeviceOrientationEvent` API. Needs permission prompt on iOS ("Allow motion access?"). Fallback: touch-drag panning if gyroscope unavailable or denied.
+
+### Cursor-Lens (Desktop)
+
+- **Default state:** ~80-100px circle, no fill, `mix-blend-mode: difference`. Inverts whatever it passes over — bright on dark bg, dark on light text.
+- **Hover project dot:** Circle fills with the project's preview image (B&W halftone treatment). Image is clipped to the circle shape. Smooth fade-in (~300ms). Image moves with cursor.
+- **Leave dot:** Image fades out, circle returns to invert-lens.
+- **Hover blob:** TBD — could distort the lens shape itself.
+- **Implementation:** A div following cursor position via `mousemove`, with CSS `clip-path: circle()` and `mix-blend-mode`. Image swapped via JS on dot mouseenter/mouseleave. Use `will-change: transform` for performance.
+
+Inspired by: Formafantasma (image-in-cursor preview), Shinoda/Leon Brown (mix-blend-mode invert lens).
 
 ### Sound design
 
-- **Music:** Ambient layer, starts on entry (with autoplay gate). Barely-there volume — you notice when it stops. Single continuous tone or generative texture, not a track.
-- **Whispers:** ElevenLabs-generated voice speaking each project title. Quiet, like overhearing. Potentially spatial (pan based on dot position: left dot = left ear).
+- **Music:** Ambient layer inspired by Nine Inch Nails — Ghosts V: Together (warm drones, evolving pads, no melody). Starts on entry with autoplay gate. Barely-there volume — you notice when it stops. 60-120s seamless loop.
+- **Whispers:** ElevenLabs-generated voice speaking a short evocative sentence per project (not just the title). One sentence, diary-entry tone. E.g. "What if the chatbot could feel what your hands feel?" not "RepairBot Framework." Five different voices, one per mode — each mode has its own vocal character. Spatial panning based on dot position (left dot = left ear).
 - **Interaction sounds:** Optional subtle tones on hover/click. Very restrained.
+
+#### Music generation prompt (for Suno / Udio / similar)
+
+```
+Ambient drone, 90 seconds, seamless loop. Warm analog synthesizer pads 
+that evolve very slowly. Gentle buzzing and humming undertones. Occasional 
+soft piano note, single keys, widely spaced. No melody, no beat, no rhythm. 
+Breathy exhaling textures. Slight dissonance that resolves into consonance. 
+Spacious and meditative, like an empty room with good acoustics. Inspired 
+by Brian Eno, Trent Reznor film scores, Angelo Badalamenti. Low energy, 
+intimate, barely there. Should feel like air in a room — you notice it 
+when it stops.
+```
+
+---
+
+## 3.5. List View (Backup — Desktop + Mobile)
+
+A flat, text-first project list accessible as an alternative view. References Formafantasma `/works` directly — same information architecture, adapted to thingsYifuMake's five modes.
+
+### Why
+
+The constellation is the *experience*. The list is the *reference*. Some visitors (employers, academics, people on slow connections) want to scan all 23 projects quickly. The list view gives them that without losing the site's identity. It also solves mobile accessibility — the gyroscope is the wow, the list is the safety net.
+
+### Typography (list view only)
+
+System fonts, following Formafantasma's approach — zero HTTP requests, instant load.
+
+```
+Titles:       Times New Roman, serif — 16px
+UI / labels:  Arial, sans-serif — 11px, uppercase, letter-spacing .12em
+Body / desc:  Times New Roman, serif — 14px, line-height 1.7
+Year / tags:  Arial, sans-serif — 10px
+```
+
+The constellation view keeps Cormorant Garamond + DM Mono. The list view switches to system fonts. This creates a deliberate contrast: the constellation is rich and atmospheric; the list is lean and functional.
+
+### Layout
+
+Each project is a single row:
+
+```
+[index]  [title]                              [mode tag]  [year]
+         Short description visible on expand / hover
+```
+
+- **Index:** Sequential number in DM Mono or Arial, dimmed
+- **Title:** Times New Roman, left-aligned, full width
+- **Mode tag:** Colored pill or text in mode color (Designed, Researched, etc.)
+- **Year:** Right-aligned, dimmed
+- **Description:** Appears below the row on click/hover, in dimmed serif
+- **Explore link:** Below description, minimal ("→ open project")
+
+### Mode filter
+
+Same five filters as constellation view (All / Designed / Researched / Built / Taught / Talked), displayed as text toggles at the top. Active filter underlined or colored.
+
+### Switching between views
+
+A small toggle in the top-right corner: `constellation` / `list`. Clicking switches without page reload. The URL could reflect the view: `thingsyifumake.uk/#list` vs `thingsyifumake.uk/#constellation` (or default).
+
+### Mobile behavior
+
+On mobile, the list view is always available via a toggle or swipe. The gyroscope constellation is the default landing, but the list is one tap away. This means mobile has two modes:
+1. **Gyroscope constellation** — tilt to explore, tap to reveal (the wow)
+2. **List view** — vertical scroll, Formafantasma-style (the safety net)
 
 ---
 
@@ -104,15 +186,15 @@ The site should feel like arriving in a space, not loading a page. Music sets th
 | Click behavior | TBD — could be an easter egg, or do nothing |
 | Size | ~15–20% of viewport width |
 
-### Preview (second level — on click)
+### Preview (hover — lives inside cursor-lens)
 
 | Decision | Direction |
 |---|---|
-| Image treatment | B&W, or pixelated / halftone / dot-matrix |
-| Image reveal | Progressive — starts degraded, sharpens |
-| Card style | Minimal — no heavy border, floating, dark bg |
-| Information shown | Image + title + mode color accent only |
-| Card animation | TBD — scale from dot center vs materialize |
+| Image treatment | B&W halftone — clipped to cursor circle |
+| Image reveal | Fade in (~300ms) when cursor enters dot zone |
+| Container | The cursor itself — no separate card |
+| Information shown | Image only in cursor; title on leader line outside |
+| On mobile | Circle expands from tap point, B&W image fills it |
 
 ### Background
 
@@ -199,6 +281,7 @@ thingsYifuMake/
   "tags": ["Making", "Engineering"],
   "year": 2024,
   "link": null,
+  "whisper": "The motor spun the wrong way for three days before I noticed.",
   "previewImage": null,
   "coverImage": null,
   "previewVideo": null
@@ -218,24 +301,46 @@ Set image/video paths to enable real assets. `null` = generated gradient fallbac
 - [ ] Dot bloom animation (elastic overshoot)
 - [ ] Leader line hover (dotted, extends outward, title at end)
 
-### Phase 2 — Sound + vibe
-- [ ] Ambient music layer with autoplay gate ("click to enter" or first interaction unlocks)
-- [ ] ElevenLabs whisper generation for all 23 project titles
-- [ ] Whisper playback on hover with spatial panning
-- [ ] Interaction sound design (optional subtle tones)
+### Phase 2 — Cursor-lens + sound
+- [ ] Large invert-lens cursor (`mix-blend-mode: difference`, ~80-100px)
+- [ ] Image-in-cursor on dot hover (B&W halftone, clipped to circle, moves with mouse)
+- [ ] Smooth image swap between dots (fade out → fade in)
+- [ ] Ambient music layer with autoplay gate (NIN Ghosts V: Together vibe)
+- [ ] ElevenLabs whisper sentences — 23 clips, 5 voices (one per mode)
+- [ ] Whisper playback on hover with spatial panning (Web Audio API panNode)
 
 ### Phase 3 — Preview + project pages
-- [ ] B&W / halftone image treatment for preview cards
-- [ ] Progressive image reveal (degraded → sharp)
+- [ ] Project page layout (Marco Da Re-style: text, pic, video structure)
+- [ ] B&W / halftone image treatment for hover previews
+- [ ] Progressive image reveal on project page (degraded → sharp)
 - [ ] Project page ambient background (not static void)
 - [ ] Year + link display on project pages
 - [ ] Related projects section
 
-### Phase 4 — Polish + deploy
+### Phase 4 — Mobile (gyroscope exploration)
+- [ ] `DeviceOrientationEvent` API integration + iOS permission prompt
+- [ ] Constellation renders larger than viewport, tilt pans the view
+- [ ] Dot proximity scaling (closer to center = larger)
+- [ ] Tap-to-reveal: circle expands from tap, shows B&W image + title + whisper
+- [ ] Tap-to-enter: second tap opens project page
+- [ ] Fallback: touch-drag panning if gyroscope unavailable
+- [ ] Mobile project page layout (responsive typography + image sizing)
+
+### Phase 5 — List view (backup)
+- [ ] Flat text list, Formafantasma `/works` style
+- [ ] System fonts: Times New Roman (titles/body) + Arial (UI/labels)
+- [ ] Row per project: index, title, mode tag (colored), year
+- [ ] Click/hover expands description + "→ open project" link
+- [ ] Mode filter (same five toggles, text-only)
+- [ ] View toggle: constellation ↔ list (top-right, no page reload)
+- [ ] URL hash: `#constellation` (default) vs `#list`
+- [ ] Mobile: list always one tap away from gyroscope view
+
+### Phase 6 — Polish
 - [ ] Mode filter transition (dots re-orbit)
-- [ ] Mobile layout (vertical list + decorative header)
+- [ ] Entrance choreography (Shinoda-style pacing: dots appear one-by-one, wordmark types itself)
 - [ ] Real photography session (minimum 5 images, one per mode)
-- [ ] Deploy to Netlify + connect domain
+- [ ] ~~Deploy to Netlify + connect domain~~ ✅ DONE (thingsyifumake.uk)
 - [ ] Making Log as live chronological section
 
 ---
@@ -244,14 +349,18 @@ Set image/video paths to enable real assets. `null` = generated gradient fallbac
 
 | Reference | Lesson |
 |---|---|
-| Pentagram satellite orbital | Dots on rings, constant motion, legible |
-| Yugo Nakamura / tha.jp | Typography as personality |
-| Robin Mastromarino | Cursor-reactive physics, cinematic transitions |
-| Neal.fun | Lightness, one sentence per project |
-| David Whyte / beesandbombs | One obsession deeply expressed |
-| Bruno Simon | The site IS the work |
-| Lusion | R&D/lab section = Making Log |
-| harm.work | Flat archive, URL as design decision |
+| **Pentagram satellite orbital** | Dots on rings, constant motion, legible |
+| **Shinoda / Leon Brown** | mix-blend-mode invert cursor as exploration lens; word-by-word entrance pacing |
+| **Formafantasma** | Image preview in cursor; list view layout + system font typography; energy-conscious design |
+| **Marco Da Re** | Project page layout — text, pic, video structure; honest research writing |
+| **NIN Ghosts V: Together** | Music reference — warm drones, evolving pads, spacious, barely-there |
+| **Yugo Nakamura / tha.jp** | Typography as personality |
+| **Robin Mastromarino** | Cursor-reactive physics, cinematic transitions |
+| **Neal.fun** | Lightness, one sentence per project |
+| **David Whyte / beesandbombs** | One obsession deeply expressed |
+| **Bruno Simon** | The site IS the work |
+| **Lusion** | R&D/lab section = Making Log |
+| **harm.work** | Flat archive, URL as design decision |
 
 ---
 

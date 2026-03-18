@@ -53,14 +53,20 @@ What's next: Rebuild to v4 orbital model (see DESIGN.md Phase 1). The v3 code is
 **Phase 1 — Orbital prototype:**
 Elliptical ring paths (2–3 rings, different speeds/tilts), dots riding rings, center blob with perlin-noise displacement + cursor reactivity, elastic dot bloom on hover, dotted leader line extending to whispered title.
 
-**Phase 2 — Sound + vibe:**
-Ambient music with autoplay gate, ElevenLabs whisper audio per project title, spatial audio panning.
+**Phase 2 — Cursor-lens + sound:**
+Large (~80-100px) `mix-blend-mode: difference` invert-lens cursor. On dot hover, the cursor fills with B&W halftone preview image (clipped to circle, moves with mouse). Ambient music with autoplay gate (NIN Ghosts V: Together vibe — warm drones). ElevenLabs whisper audio — one evocative sentence per project, 5 voices (one per mode), spatial panning via Web Audio API.
 
 **Phase 3 — Preview + pages:**
-B&W / halftone image treatment, progressive reveal, project page enhancements.
+Project page layout inspired by Marco Da Re (text/pic/video structure). B&W halftone image treatment. Progressive reveal. Project page ambient background.
 
-**Phase 4 — Polish + deploy:**
-Filter transitions, mobile layout, real photos, Netlify deployment.
+**Phase 4 — Mobile (gyroscope exploration):**
+`DeviceOrientationEvent` to pan across constellation by tilting phone. Constellation renders larger than viewport. Tap-to-reveal circle animation with image + title + whisper. Fallback: touch-drag panning. iOS permission prompt for motion access.
+
+**Phase 5 — List view (backup):**
+Flat text list referencing Formafantasma `/works`. System fonts only (Times New Roman + Arial). Row per project: index, title, mode color tag, year. Click expands description. View toggle (constellation ↔ list) in top-right, no page reload, URL hash (`#list` / `#constellation`). On mobile, list is always one tap from gyroscope view.
+
+**Phase 6 — Polish:**
+Entrance choreography (Shinoda-style word-by-word pacing), filter transitions, Making Log section. ~~Deploy~~ ✅ Live at thingsyifumake.uk.
 
 ## Commands
 
@@ -70,13 +76,15 @@ python3 -m http.server 8000
 # or
 npx serve .
 
-# Deploy (after git + Netlify setup)
+# Deploy (git + Netlify already connected)
 git add . && git commit -m "description" && git push
+# Netlify auto-deploys in ~15 seconds
 ```
 
 ## Style Notes
 
-- Cursor: custom (hidden native, CSS circle follows mouse, `mix-blend-mode: difference`)
+- **Cursor-lens (desktop):** Hidden native cursor. A ~80-100px div follows mouse with `mix-blend-mode: difference` — acts as invert-lens. On project dot hover, lens fills with B&W halftone image clipped to circle. Inspired by Formafantasma (image-in-cursor) + Shinoda (invert blend mode).
+- **Mobile:** Gyroscope-driven panning via `DeviceOrientationEvent`. Constellation is larger than viewport, phone tilt explores it. Tap to reveal, tap to enter. Fallback: touch-drag.
 - Grain: SVG noise filter as `body::after` pseudo-element at 2.5% opacity
 - Motion: all animations via `requestAnimationFrame`, CSS transitions for UI state changes
 - Typography: Cormorant Garamond for display/body, DM Mono for UI/labels

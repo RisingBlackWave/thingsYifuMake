@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>thingsYifuMake</title>
 <meta name="description" content="Things Yifu makes — designed, researched, built, taught, talked. PhD researcher, designer, maker, London.">
-<link rel="canonical" href="https://thingsyifumake.com">
+<link rel="canonical" href="https://thingsyifumake.uk">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -22,16 +22,47 @@
 }
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;cursor:none}
 
-/* ── CURSOR ── */
+/* ── CURSOR-LENS ── */
 #cursor{
-  position:fixed;width:10px;height:10px;
-  border:1px solid rgba(237,233,226,.6);border-radius:50%;
+  position:fixed;
+  width:90px;height:90px;
+  border:1px solid rgba(237,233,226,.5);
+  border-radius:50%;
   pointer-events:none;z-index:9999;
   transform:translate(-50%,-50%);
-  transition:width .18s,height .18s,border-color .18s,background .18s;
-  mix-blend-mode:difference
+  mix-blend-mode:difference;
+  transition:width .35s cubic-bezier(.22,1,.36,1),height .35s cubic-bezier(.22,1,.36,1),border-color .3s,background .3s;
+  will-change:transform;
+  overflow:hidden;
+  background:transparent
 }
-#cursor.hovering{width:4px;height:4px;background:white;border-color:white}
+#cursor.hovering{
+  width:100px;height:100px;
+  border-color:rgba(237,233,226,.7);
+  background:white
+}
+#cursor-img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  opacity:0;
+  transition:opacity .3s ease;
+  filter:grayscale(1) contrast(1.4);
+  mix-blend-mode:normal
+}
+#cursor-img.visible{opacity:1}
+/* Halftone overlay inside cursor */
+#cursor-halftone{
+  position:absolute;inset:0;
+  border-radius:50%;
+  background-image:radial-gradient(circle, rgba(0,0,0,.3) 1px, transparent 1px);
+  background-size:3px 3px;
+  opacity:0;
+  transition:opacity .3s ease;
+  pointer-events:none
+}
+#cursor-img.visible ~ #cursor-halftone{opacity:.6}
 
 /* ── CANVAS ── */
 #canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
@@ -53,6 +84,23 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   font-size:9px;letter-spacing:.13em;color:var(--dim);
   opacity:0;animation:fadeUp .9s ease .4s forwards
 }
+
+/* ── VIEW TOGGLE ── */
+.view-toggle{
+  position:fixed;top:62px;right:48px;z-index:150;
+  font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);
+  opacity:0;animation:fadeUp .9s ease .5s forwards;
+  display:flex;gap:4px;align-items:center
+}
+.view-toggle span{
+  cursor:none;padding:3px 0;
+  transition:color .2s,opacity .2s;opacity:.4
+}
+.view-toggle span:hover{opacity:.7}
+.view-toggle span.active{opacity:1;color:var(--text)}
+.view-toggle .sep{opacity:.2;cursor:default}
+
 .hint{
   position:fixed;bottom:44px;right:48px;z-index:10;
   font-size:8.5px;letter-spacing:.09em;color:var(--dimmer);
@@ -111,7 +159,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 }
 .dot-wrap.hovered .whisper-title{opacity:1}
 
-/* ── PREVIEW CARD (now triggered on click) ── */
+/* ── PREVIEW CARD (triggered on click) ── */
 .preview{
   position:absolute;
   left:50%;bottom:calc(100% + 18px);
@@ -192,6 +240,98 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   animation:pulse-out .8s ease forwards
 }
 
+/* ── LIST VIEW ── */
+#list-view{
+  position:fixed;inset:0;z-index:100;
+  background:var(--bg);
+  overflow-y:auto;
+  opacity:0;pointer-events:none;
+  transition:opacity .4s ease
+}
+#list-view.open{opacity:1;pointer-events:auto}
+
+.list-inner{
+  max-width:820px;
+  margin:0 auto;
+  padding:120px 48px 140px
+}
+
+.list-filters{
+  display:flex;gap:16px;margin-bottom:48px;
+  flex-wrap:wrap
+}
+.list-filter{
+  font-family:Arial,sans-serif;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);cursor:none;
+  padding-bottom:2px;border-bottom:1px solid transparent;
+  transition:color .2s,border-color .2s
+}
+.list-filter:hover{color:var(--text)}
+.list-filter.active{color:var(--text);border-color:var(--text)}
+
+.list-row{
+  display:grid;
+  grid-template-columns:32px 1fr auto auto;
+  gap:16px;
+  align-items:baseline;
+  padding:14px 0;
+  border-bottom:1px solid rgba(237,233,226,.06);
+  cursor:none;
+  transition:background .2s
+}
+.list-row:hover{background:rgba(237,233,226,.02)}
+
+.list-idx{
+  font-family:Arial,sans-serif;
+  font-size:10px;color:rgba(237,233,226,.2);
+  text-align:right
+}
+.list-title{
+  font-family:'Times New Roman',Times,serif;
+  font-size:16px;font-weight:400;
+  color:var(--text);
+  line-height:1.4
+}
+.list-mode{
+  font-family:Arial,sans-serif;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:2px 8px;
+  border:1px solid;
+  opacity:.6
+}
+.list-year{
+  font-family:Arial,sans-serif;
+  font-size:10px;color:rgba(237,233,226,.25);
+  min-width:32px;text-align:right
+}
+
+/* Expandable description */
+.list-expand{
+  grid-column:2 / -1;
+  max-height:0;overflow:hidden;
+  transition:max-height .35s ease,opacity .3s ease;
+  opacity:0
+}
+.list-row.expanded .list-expand{
+  max-height:200px;opacity:1
+}
+.list-desc{
+  font-family:'Times New Roman',Times,serif;
+  font-size:14px;line-height:1.7;
+  color:rgba(237,233,226,.4);
+  padding:8px 0 4px
+}
+.list-enter{
+  font-family:Arial,sans-serif;
+  font-size:10px;letter-spacing:.1em;
+  color:var(--dim);
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 0;cursor:none;
+  transition:color .2s
+}
+.list-enter:hover{color:var(--text)}
+
 /* ── PROJECT PAGE ── */
 #project-page{
   position:fixed;inset:0;z-index:200;
@@ -268,15 +408,34 @@ body::after{
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity:.025
 }
+
+/* Hide constellation chrome when list is active — but keep view toggle + count visible */
+body.list-active .wordmark,
+body.list-active .sub,
+body.list-active .hint,
+body.list-active .filters,
+body.list-active #dots-layer,
+body.list-active #canvas{opacity:0;pointer-events:none;transition:opacity .3s}
+body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
 </style>
 </head>
 <body>
-<div id="cursor"></div>
+<div id="cursor">
+  <img id="cursor-img" src="" alt="">
+  <div id="cursor-halftone"></div>
+</div>
 <canvas id="canvas"></canvas>
 
 <div class="wordmark">things<em>Yifu</em>Make</div>
 <div class="sub">PhD · Designer · Maker · London</div>
 <div class="count" id="count"></div>
+
+<!-- VIEW TOGGLE -->
+<div class="view-toggle" id="view-toggle">
+  <span class="active" data-view="constellation">constellation</span>
+  <span class="sep">/</span>
+  <span data-view="list">list</span>
+</div>
 
 <div class="filters" id="filters">
   <div class="filter active" data-m="all">All</div>
@@ -287,14 +446,22 @@ body::after{
   <div class="filter" data-m="Talked">Talked</div>
 </div>
 
-<div class="hint">hover to whisper · click to enter<br>or just watch</div>
+<div class="hint" id="hint">hover to whisper · click to enter<br>or just watch</div>
 
 <div id="dots-layer"></div>
+
+<!-- LIST VIEW -->
+<div id="list-view">
+  <div class="list-inner">
+    <div class="list-filters" id="list-filters"></div>
+    <div id="list-rows"></div>
+  </div>
+</div>
 
 <!-- PROJECT PAGE -->
 <div id="project-page">
   <div class="pp-inner">
-    <div class="pp-back" id="pp-back">← constellation</div>
+    <div class="pp-back" id="pp-back">← back</div>
     <div class="pp-mode" id="pp-mode"></div>
     <div class="pp-year" id="pp-year"></div>
     <div class="pp-title" id="pp-title"></div>
@@ -308,7 +475,7 @@ body::after{
 
 <script>
 // ═══════════════════════════════════════════════════════════
-// v4 — ORBITAL CONSTELLATION ENGINE
+// v4.1 — ORBITAL CONSTELLATION + CURSOR-LENS + LIST VIEW
 // ═══════════════════════════════════════════════════════════
 
 const COLORS = {
@@ -317,7 +484,7 @@ const COLORS = {
 };
 
 // ═══════════════════════════════════════════════════════════
-// PERLIN NOISE (simplex-like 2D)
+// PERLIN NOISE
 // ═══════════════════════════════════════════════════════════
 const PERLIN = (() => {
   const perm = new Uint8Array(512);
@@ -328,11 +495,9 @@ const PERLIN = (() => {
     [perm[i], perm[j]] = [perm[j], perm[i]];
   }
   for (let i = 0; i < 256; i++) perm[256 + i] = perm[i];
-
   function fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
   function lerp(a, b, t) { return a + t * (b - a); }
   function dot2(g, x, y) { return g[0] * x + g[1] * y; }
-
   return function noise2D(x, y) {
     const X = Math.floor(x) & 255, Y = Math.floor(y) & 255;
     const xf = x - Math.floor(x), yf = y - Math.floor(y);
@@ -341,14 +506,13 @@ const PERLIN = (() => {
     const ba = perm[perm[X + 1] + Y], bb = perm[perm[X + 1] + Y + 1];
     return lerp(
       lerp(dot2(grad[aa % 8], xf, yf), dot2(grad[ba % 8], xf - 1, yf), u),
-      lerp(dot2(grad[ab % 8], xf, yf - 1), dot2(grad[bb % 8], xf - 1, yf - 1), u),
-      v
+      lerp(dot2(grad[ab % 8], xf, yf - 1), dot2(grad[bb % 8], xf - 1, yf - 1), u), v
     );
   };
 })();
 
 // ═══════════════════════════════════════════════════════════
-// GRADIENT GENERATOR (preserved from v3)
+// GRADIENT GENERATOR
 // ═══════════════════════════════════════════════════════════
 function mkGrad(mode, i) {
   const P = {
@@ -378,16 +542,13 @@ let W, H, CX, CY;
 function resize() {
   W = canvas.width = window.innerWidth;
   H = canvas.height = window.innerHeight;
-  CX = W / 2;
-  CY = H / 2;
+  CX = W / 2; CY = H / 2;
 }
 resize();
 
 // ═══════════════════════════════════════════════════════════
-// ORBITAL RING DEFINITIONS
+// ORBITAL RINGS
 // ═══════════════════════════════════════════════════════════
-// 3 rings: inner (fast), middle (medium), outer (slow)
-// Each ring is an ellipse with semi-major (a), semi-minor (b), tilt, speed
 function getRings() {
   const scale = Math.min(W, H);
   return [
@@ -396,27 +557,15 @@ function getRings() {
     { a: scale * 0.40, b: scale * 0.27, tilt: -0.06, speed: 0.00015, dash: [2, 12] },
   ];
 }
-
 let RINGS = getRings();
 
-// Assign projects to rings: distribute by mode grouping
-// Inner ring: Built + Talked (7 + 4 = 11? we'll balance)
-// We'll distribute evenly across 3 rings
 function assignRings(projects) {
-  const ringAssign = [];
   const perRing = [[], [], []];
-
-  // Distribute by mode for visual grouping
   const modeToRing = { Designed: 1, Researched: 2, Built: 0, Taught: 2, Talked: 0 };
-
   projects.forEach((p, i) => {
-    const preferredRing = modeToRing[p.mode] ?? (i % 3);
-    perRing[preferredRing].push(i);
+    perRing[modeToRing[p.mode] ?? (i % 3)].push(i);
   });
-
-  // Balance: if any ring has too many, redistribute
-  const total = projects.length;
-  const maxPerRing = Math.ceil(total / 2.2);
+  const maxPerRing = Math.ceil(projects.length / 2.2);
   for (let r = 0; r < 3; r++) {
     while (perRing[r].length > maxPerRing) {
       const overflow = perRing[r].pop();
@@ -424,14 +573,11 @@ function assignRings(projects) {
       perRing[smallest].push(overflow);
     }
   }
-
-  // Build assignment array
   const result = new Array(projects.length);
   perRing.forEach((indices, ringIdx) => {
     const count = indices.length;
     indices.forEach((projIdx, slot) => {
-      const angleOffset = (slot / count) * Math.PI * 2 + ringIdx * 0.7;
-      result[projIdx] = { ring: ringIdx, angleOffset };
+      result[projIdx] = { ring: ringIdx, angleOffset: (slot / count) * Math.PI * 2 + ringIdx * 0.7 };
     });
   });
   return result;
@@ -443,15 +589,12 @@ function assignRings(projects) {
 let mouseX = CX, mouseY = CY;
 let smoothMouseX = CX, smoothMouseY = CY;
 const BLOB_POINTS = 80;
-const BLOB_BASE_RADIUS_FRAC = 0.085; // fraction of min(W,H)
+const BLOB_BASE_RADIUS_FRAC = 0.085;
 
 function drawBlob(t) {
   const baseR = Math.min(W, H) * BLOB_BASE_RADIUS_FRAC;
   const breathe = 1 + 0.025 * Math.sin(t * 0.6) + 0.015 * Math.sin(t * 1.1);
-
-  // Cursor attraction vector
-  const dx = smoothMouseX - CX;
-  const dy = smoothMouseY - CY;
+  const dx = smoothMouseX - CX, dy = smoothMouseY - CY;
   const dist = Math.hypot(dx, dy);
   const maxAttract = baseR * 0.35;
   const attractStrength = Math.min(dist / (W * 0.4), 1) * maxAttract;
@@ -461,136 +604,104 @@ function drawBlob(t) {
   ctx.beginPath();
   for (let i = 0; i <= BLOB_POINTS; i++) {
     const angle = (i / BLOB_POINTS) * Math.PI * 2;
-    const cosA = Math.cos(angle);
-    const sinA = Math.sin(angle);
-
-    // Perlin displacement
-    const nx = cosA * 1.5 + t * 0.3;
-    const ny = sinA * 1.5 + t * 0.25;
-    const noise = PERLIN(nx, ny);
-    const displacement = noise * baseR * 0.18;
-
-    // Cursor-facing bulge
+    const cosA = Math.cos(angle), sinA = Math.sin(angle);
+    const noise = PERLIN(cosA * 1.5 + t * 0.3, sinA * 1.5 + t * 0.25);
     const cursorAngle = Math.atan2(dy, dx);
-    const angleDiff = Math.cos(angle - cursorAngle);
-    const bulge = Math.max(0, angleDiff) * attractStrength * 0.5;
-
-    const r = (baseR + displacement + bulge) * breathe;
+    const bulge = Math.max(0, Math.cos(angle - cursorAngle)) * attractStrength * 0.5;
+    const r = (baseR + noise * baseR * 0.18 + bulge) * breathe;
     const px = CX + attractX * 0.3 + cosA * r;
     const py = CY + attractY * 0.3 + sinA * r;
-
-    if (i === 0) ctx.moveTo(px, py);
-    else ctx.lineTo(px, py);
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
   }
   ctx.closePath();
-
-  // Blob fill: soft radial gradient, warm monochrome
-  const grad = ctx.createRadialGradient(
-    CX + attractX * 0.2, CY + attractY * 0.2, 0,
-    CX, CY, baseR * 1.5
-  );
+  const grad = ctx.createRadialGradient(CX + attractX * 0.2, CY + attractY * 0.2, 0, CX, CY, baseR * 1.5);
   grad.addColorStop(0, 'rgba(237,233,226,0.06)');
   grad.addColorStop(0.4, 'rgba(237,233,226,0.03)');
   grad.addColorStop(0.7, 'rgba(237,233,226,0.012)');
   grad.addColorStop(1, 'rgba(237,233,226,0)');
-  ctx.fillStyle = grad;
-  ctx.fill();
-
-  // Blob edge glow
+  ctx.fillStyle = grad; ctx.fill();
   ctx.strokeStyle = `rgba(237,233,226,${0.06 + 0.02 * Math.sin(t * 0.8)})`;
-  ctx.lineWidth = 1;
-  ctx.stroke();
+  ctx.lineWidth = 1; ctx.stroke();
 }
 
-// ═══════════════════════════════════════════════════════════
-// ORBITAL RING DRAWING
-// ═══════════════════════════════════════════════════════════
 function drawOrbitalRings(t) {
   RINGS.forEach((ring, ri) => {
     const opacity = 0.06 + 0.02 * Math.sin(t * 0.3 + ri * 1.5);
-    ctx.save();
-    ctx.translate(CX, CY);
-    ctx.rotate(ring.tilt);
+    ctx.save(); ctx.translate(CX, CY); ctx.rotate(ring.tilt);
     ctx.setLineDash(ring.dash);
-    ctx.beginPath();
-    ctx.ellipse(0, 0, ring.a, ring.b, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(237,233,226,${opacity})`;
-    ctx.lineWidth = 0.6;
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.restore();
+    ctx.beginPath(); ctx.ellipse(0, 0, ring.a, ring.b, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(237,233,226,${opacity})`; ctx.lineWidth = 0.6; ctx.stroke();
+    ctx.setLineDash([]); ctx.restore();
   });
 }
 
-// ═══════════════════════════════════════════════════════════
-// STAR FIELD (reduced density from v3)
-// ═══════════════════════════════════════════════════════════
 const bgStars = Array.from({length: 110}, () => ({
-  x: Math.random(), y: Math.random(),
-  r: .25 + Math.random() * .75,
-  a: .025 + Math.random() * .07,
-  twinkleSpeed: .4 + Math.random() * 1,
+  x: Math.random(), y: Math.random(), r: .25 + Math.random() * .75,
+  a: .025 + Math.random() * .07, twinkleSpeed: .4 + Math.random() * 1,
   twinklePhase: Math.random() * Math.PI * 2,
 }));
 
 function drawStars(t) {
   bgStars.forEach(s => {
     const a = s.a * (.7 + .3 * Math.sin(t * s.twinkleSpeed + s.twinklePhase));
-    ctx.beginPath();
-    ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(237,233,226,${a})`;
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(237,233,226,${a})`; ctx.fill();
   });
 }
 
 // ═══════════════════════════════════════════════════════════
-// LEADER LINES (drawn on canvas for hovered dot)
+// LEADER LINES
 // ═══════════════════════════════════════════════════════════
 let hoveredNode = null;
-let leaderProgress = 0; // 0 to 1
+let leaderProgress = 0;
 const LEADER_LENGTH = 70;
 
 function drawLeaderLine(t) {
   if (!hoveredNode || leaderProgress <= 0) return;
-
   const n = hoveredNode;
   const color = COLORS[n.proj.mode];
-
-  // Direction: outward from center
-  const dx = n.x - CX;
-  const dy = n.y - CY;
+  const dx = n.x - CX, dy = n.y - CY;
   const dist = Math.hypot(dx, dy);
   if (dist < 1) return;
-
-  const dirX = dx / dist;
-  const dirY = dy / dist;
-
-  const startX = n.x + dirX * 8;
-  const startY = n.y + dirY * 8;
+  const dirX = dx / dist, dirY = dy / dist;
+  const startX = n.x + dirX * 8, startY = n.y + dirY * 8;
   const endX = startX + dirX * LEADER_LENGTH * leaderProgress;
   const endY = startY + dirY * LEADER_LENGTH * leaderProgress;
-
   ctx.save();
-  ctx.setLineDash([1.5, 4]);
-  ctx.lineDashOffset = -t * 12;
-  ctx.beginPath();
-  ctx.moveTo(startX, startY);
-  ctx.lineTo(endX, endY);
-  ctx.strokeStyle = color + '60';
-  ctx.lineWidth = 0.8;
-  ctx.stroke();
+  ctx.setLineDash([1.5, 4]); ctx.lineDashOffset = -t * 12;
+  ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(endX, endY);
+  ctx.strokeStyle = color + '60'; ctx.lineWidth = 0.8; ctx.stroke();
   ctx.setLineDash([]);
-
-  // Small terminus dot
   if (leaderProgress > 0.5) {
     const dotOpacity = (leaderProgress - 0.5) * 2;
-    ctx.beginPath();
-    ctx.arc(endX, endY, 1.5, 0, Math.PI * 2);
-    ctx.fillStyle = color + Math.floor(dotOpacity * 100).toString(16).padStart(2, '0');
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(endX, endY, 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = color + Math.floor(dotOpacity * 100).toString(16).padStart(2, '0'); ctx.fill();
   }
-
   ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════
+// CURSOR-LENS
+// ═══════════════════════════════════════════════════════════
+const cursorEl = document.getElementById('cursor');
+const cursorImg = document.getElementById('cursor-img');
+
+function setCursorImage(proj) {
+  if (proj && proj.previewImage) {
+    cursorImg.src = proj.previewImage;
+    cursorImg.classList.add('visible');
+  } else if (proj && proj.grad) {
+    // Use gradient as fallback visual in cursor
+    cursorImg.classList.remove('visible');
+    cursorEl.style.background = 'white';
+  } else {
+    cursorImg.classList.remove('visible');
+  }
+}
+
+function clearCursorImage() {
+  cursorImg.classList.remove('visible');
+  cursorEl.style.background = 'transparent';
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -605,6 +716,7 @@ let userHovering = false;
 let autoTimer = null;
 let autoIndex = -1;
 let currentAutoWrap = null;
+let currentView = 'constellation';
 
 fetch('projects.json')
   .then(r => r.json())
@@ -616,7 +728,14 @@ fetch('projects.json')
     });
     document.getElementById('count').textContent = `${PROJECTS.length} things`;
     ringAssignments = assignRings(PROJECTS);
+
+    // Check URL hash
+    if (window.location.hash === '#list') {
+      switchView('list');
+    }
+
     setTimeout(() => { rebuildLayout(); animLoop(); }, 200);
+    buildListView();
   })
   .catch(err => {
     console.error('Failed to load projects.json:', err);
@@ -624,33 +743,23 @@ fetch('projects.json')
   });
 
 window.addEventListener('resize', () => {
-  resize();
-  RINGS = getRings();
+  resize(); RINGS = getRings();
   if (PROJECTS.length) rebuildLayout(true);
 });
 
 // ═══════════════════════════════════════════════════════════
-// ORBITAL POSITION CALCULATOR
+// ORBITAL POSITION
 // ═══════════════════════════════════════════════════════════
 function getOrbitalPos(ringIdx, angle) {
   const ring = RINGS[ringIdx];
   if (!ring) return { x: CX, y: CY };
-
-  // Position on untilted ellipse
-  const ex = ring.a * Math.cos(angle);
-  const ey = ring.b * Math.sin(angle);
-
-  // Apply tilt rotation
-  const cosT = Math.cos(ring.tilt);
-  const sinT = Math.sin(ring.tilt);
-  const rx = ex * cosT - ey * sinT;
-  const ry = ex * sinT + ey * cosT;
-
-  return { x: CX + rx, y: CY + ry };
+  const ex = ring.a * Math.cos(angle), ey = ring.b * Math.sin(angle);
+  const cosT = Math.cos(ring.tilt), sinT = Math.sin(ring.tilt);
+  return { x: CX + ex * cosT - ey * sinT, y: CY + ex * sinT + ey * cosT };
 }
 
 // ═══════════════════════════════════════════════════════════
-// BUILD LAYOUT
+// BUILD CONSTELLATION LAYOUT
 // ═══════════════════════════════════════════════════════════
 function rebuildLayout(instant = false) {
   const layer = document.getElementById('dots-layer');
@@ -660,52 +769,35 @@ function rebuildLayout(instant = false) {
   leaderProgress = 0;
   clearAutoTimer();
 
-  const visible = activeFilter === 'all'
-    ? PROJECTS
-    : PROJECTS.filter(p => p.mode === activeFilter);
-
-  // Re-assign rings if filtered
-  const assignments = activeFilter === 'all'
-    ? ringAssignments
-    : assignRings(visible);
+  const visible = activeFilter === 'all' ? PROJECTS : PROJECTS.filter(p => p.mode === activeFilter);
+  const assignments = activeFilter === 'all' ? ringAssignments : assignRings(visible);
 
   visible.forEach((proj, i) => {
     const projIdx = activeFilter === 'all' ? proj._id : i;
     const assign = assignments[projIdx] || { ring: i % 3, angleOffset: (i / visible.length) * Math.PI * 2 };
-
     const color = COLORS[proj.mode];
 
     const wrap = document.createElement('div');
-    wrap.className = 'dot-wrap';
-    wrap.style.opacity = '0';
+    wrap.className = 'dot-wrap'; wrap.style.opacity = '0';
 
-    // Pulse ring
     const ring = document.createElement('div');
-    ring.className = 'pulse-ring';
-    ring.style.background = color;
+    ring.className = 'pulse-ring'; ring.style.background = color;
 
-    // Dot
     const dot = document.createElement('div');
-    dot.className = 'dot';
-    dot.style.background = color;
+    dot.className = 'dot'; dot.style.background = color;
     dot.style.boxShadow = `0 0 6px ${color}50, 0 0 14px ${color}20`;
 
-    // Whisper title element
     const whisper = document.createElement('div');
     whisper.className = 'whisper-title';
     whisper.textContent = proj.title;
     whisper.style.color = color;
 
-    // Preview card (for click)
     const preview = buildPreviewCard(proj, color);
 
-    wrap.appendChild(ring);
-    wrap.appendChild(dot);
-    wrap.appendChild(whisper);
-    wrap.appendChild(preview);
+    wrap.appendChild(ring); wrap.appendChild(dot);
+    wrap.appendChild(whisper); wrap.appendChild(preview);
     layer.appendChild(wrap);
 
-    // Stagger entrance
     setTimeout(() => {
       wrap.style.transition = 'opacity .6s ease';
       wrap.style.opacity = '1';
@@ -716,20 +808,18 @@ function rebuildLayout(instant = false) {
       x: CX, y: CY,
       ringIdx: assign.ring,
       angle: assign.angleOffset,
-      hoverScale: 1,
-      hoverTarget: 1,
+      hoverScale: 1, hoverTarget: 1,
     };
 
-    // Hover: whisper + leader line
     wrap.addEventListener('mouseenter', () => {
       userHovering = true;
-      clearAutoTimer();
-      closeAutoCard();
+      clearAutoTimer(); closeAutoCard();
       hoveredNode = node;
       node.hoverTarget = 2.4;
       wrap.classList.add('hovered');
       dot.style.boxShadow = `0 0 14px ${color}90, 0 0 32px ${color}50`;
-      document.getElementById('cursor').classList.add('hovering');
+      cursorEl.classList.add('hovering');
+      setCursorImage(proj);
     });
     wrap.addEventListener('mouseleave', () => {
       userHovering = false;
@@ -737,7 +827,8 @@ function rebuildLayout(instant = false) {
       node.hoverTarget = 1;
       wrap.classList.remove('hovered');
       dot.style.boxShadow = `0 0 6px ${color}50, 0 0 14px ${color}20`;
-      document.getElementById('cursor').classList.remove('hovering');
+      cursorEl.classList.remove('hovering');
+      clearCursorImage();
       scheduleAuto();
     });
     wrap.addEventListener('click', () => openProject(proj));
@@ -748,48 +839,33 @@ function rebuildLayout(instant = false) {
   setTimeout(() => scheduleAuto(), 2500);
 }
 
-// ═══════════════════════════════════════════════════════════
-// BUILD PREVIEW CARD (preserved from v3)
-// ═══════════════════════════════════════════════════════════
 function buildPreviewCard(proj, color) {
   const preview = document.createElement('div');
   preview.className = 'preview';
-
   const visual = document.createElement('div');
   visual.className = 'preview-visual';
-
   if (proj.previewVideo) {
     const vid = document.createElement('video');
-    vid.src = proj.previewVideo;
-    vid.autoplay = true; vid.muted = true; vid.loop = true; vid.playsInline = true;
+    vid.src = proj.previewVideo; vid.autoplay = true; vid.muted = true; vid.loop = true; vid.playsInline = true;
     visual.appendChild(vid);
   } else if (proj.previewImage) {
     const img = document.createElement('img');
-    img.src = proj.previewImage;
-    img.alt = proj.title;
+    img.src = proj.previewImage; img.alt = proj.title;
     img.onload = () => img.classList.add('loaded');
     const bg = document.createElement('div');
-    bg.className = 'preview-visual-bg';
-    bg.style.background = proj.grad;
-    visual.appendChild(bg);
-    visual.appendChild(img);
+    bg.className = 'preview-visual-bg'; bg.style.background = proj.grad;
+    visual.appendChild(bg); visual.appendChild(img);
   } else {
     const bg = document.createElement('div');
-    bg.className = 'preview-visual-bg';
-    bg.style.background = proj.grad;
+    bg.className = 'preview-visual-bg'; bg.style.background = proj.grad;
     visual.appendChild(bg);
   }
-
   const body = document.createElement('div');
   body.className = 'preview-body';
-  body.innerHTML = `
-    <div class="preview-mode" style="color:${color}">${proj.mode}</div>
+  body.innerHTML = `<div class="preview-mode" style="color:${color}">${proj.mode}</div>
     <div class="preview-title">${proj.title}</div>
-    <div class="preview-cta">open project</div>
-  `;
-
-  preview.appendChild(visual);
-  preview.appendChild(body);
+    <div class="preview-cta">open project</div>`;
+  preview.appendChild(visual); preview.appendChild(body);
   return preview;
 }
 
@@ -805,28 +881,25 @@ function closePreview(wrap) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// AUTO-SURFACE (whisper random dots periodically)
+// AUTO-SURFACE
 // ═══════════════════════════════════════════════════════════
 function scheduleAuto() {
   clearAutoTimer();
-  if (!isAutoPlaying || userHovering) return;
+  if (!isAutoPlaying || userHovering || currentView !== 'constellation') return;
   autoTimer = setTimeout(() => {
     if (userHovering) { scheduleAuto(); return; }
     surfaceRandom();
   }, 3500 + Math.random() * 1500);
 }
 
-function clearAutoTimer() {
-  if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
-}
+function clearAutoTimer() { if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; } }
 
 function closeAutoCard() {
   if (currentAutoWrap) {
     currentAutoWrap.classList.remove('hovered');
     currentAutoWrap.classList.remove('auto-active');
     if (hoveredNode && hoveredNode.wrap === currentAutoWrap) {
-      hoveredNode.hoverTarget = 1;
-      hoveredNode = null;
+      hoveredNode.hoverTarget = 1; hoveredNode = null;
     }
     currentAutoWrap = null;
   }
@@ -835,28 +908,19 @@ function closeAutoCard() {
 function surfaceRandom() {
   closeAutoCard();
   if (dotNodes.length === 0) return;
-
   let next;
   do { next = Math.floor(Math.random() * dotNodes.length); }
   while (next === autoIndex && dotNodes.length > 1);
   autoIndex = next;
-
   const node = dotNodes[next];
   currentAutoWrap = node.wrap;
   hoveredNode = node;
   node.hoverTarget = 2.0;
   node.wrap.classList.add('auto-active');
   node.wrap.classList.add('hovered');
-
-  setTimeout(() => {
-    node.wrap.classList.remove('auto-active');
-  }, 900);
-
+  setTimeout(() => { node.wrap.classList.remove('auto-active'); }, 900);
   autoTimer = setTimeout(() => {
-    if (!userHovering) {
-      closeAutoCard();
-      scheduleAuto();
-    }
+    if (!userHovering) { closeAutoCard(); scheduleAuto(); }
   }, 3200);
 }
 
@@ -864,89 +928,53 @@ function surfaceRandom() {
 // MAIN ANIMATION LOOP
 // ═══════════════════════════════════════════════════════════
 let animT = 0;
-
 function animLoop() {
   animT += 0.008;
-
-  // Smooth mouse tracking
   smoothMouseX += (mouseX - smoothMouseX) * 0.06;
   smoothMouseY += (mouseY - smoothMouseY) * 0.06;
 
-  // Leader line animation
-  if (hoveredNode) {
-    leaderProgress = Math.min(1, leaderProgress + 0.06);
-  } else {
-    leaderProgress = Math.max(0, leaderProgress - 0.08);
-  }
+  if (hoveredNode) leaderProgress = Math.min(1, leaderProgress + 0.06);
+  else leaderProgress = Math.max(0, leaderProgress - 0.08);
 
-  // Update dot orbital positions
   dotNodes.forEach(n => {
-    // Advance angle
     const ring = RINGS[n.ringIdx];
-    if (ring) {
-      n.angle += ring.speed;
-    }
-
-    // Calculate orbital position
+    if (ring) n.angle += ring.speed;
     const pos = getOrbitalPos(n.ringIdx, n.angle);
-    n.x = pos.x;
-    n.y = pos.y;
-
-    // Position DOM element
-    n.wrap.style.left = n.x + 'px';
-    n.wrap.style.top = n.y + 'px';
-
-    // Elastic hover scale
+    n.x = pos.x; n.y = pos.y;
+    n.wrap.style.left = n.x + 'px'; n.wrap.style.top = n.y + 'px';
     n.hoverScale += (n.hoverTarget - n.hoverScale) * 0.12;
     n.dot.style.transform = `scale(${n.hoverScale})`;
-
-    // Breathing glow
     const color = COLORS[n.proj.mode];
     const glow = 0.3 + 0.12 * Math.sin(animT * 1.1 + n.angle);
     const glowHex = Math.floor(glow * 255).toString(16).padStart(2, '0');
     if (n.hoverTarget <= 1) {
       n.dot.style.boxShadow = `0 0 ${5 + n.hoverScale * 2}px ${color}${glowHex}, 0 0 ${12 + n.hoverScale * 4}px ${color}18`;
     }
-
-    // Position whisper title along leader line direction
     if (n.whisper) {
-      const dx = n.x - CX;
-      const dy = n.y - CY;
+      const dx = n.x - CX, dy = n.y - CY;
       const dist = Math.hypot(dx, dy);
       if (dist > 1) {
-        const dirX = dx / dist;
-        const dirY = dy / dist;
+        const dirX = dx / dist, dirY = dy / dist;
         const offsetDist = LEADER_LENGTH + 14;
-        const wx = dirX * offsetDist;
-        const wy = dirY * offsetDist;
-
-        // Determine alignment based on direction
         if (dirX >= 0) {
-          n.whisper.style.left = (wx + 4) + 'px';
-          n.whisper.style.right = 'auto';
-          n.whisper.style.textAlign = 'left';
+          n.whisper.style.left = (dirX * offsetDist + 4) + 'px';
+          n.whisper.style.right = 'auto'; n.whisper.style.textAlign = 'left';
         } else {
-          n.whisper.style.right = (-wx + 4) + 'px';
-          n.whisper.style.left = 'auto';
-          n.whisper.style.textAlign = 'right';
+          n.whisper.style.right = (-dirX * offsetDist + 4) + 'px';
+          n.whisper.style.left = 'auto'; n.whisper.style.textAlign = 'right';
         }
-        n.whisper.style.top = (wy - 5) + 'px';
+        n.whisper.style.top = (dirY * offsetDist - 5) + 'px';
       }
     }
   });
 
-  // Redraw canvas
   ctx.clearRect(0, 0, W, H);
-  drawStars(animT);
-  drawOrbitalRings(animT);
-  drawBlob(animT);
-  drawLeaderLine(animT);
-
+  drawStars(animT); drawOrbitalRings(animT); drawBlob(animT); drawLeaderLine(animT);
   requestAnimationFrame(animLoop);
 }
 
 // ═══════════════════════════════════════════════════════════
-// PROJECT PAGE (preserved from v3)
+// PROJECT PAGE
 // ═══════════════════════════════════════════════════════════
 const projectPage = document.getElementById('project-page');
 
@@ -976,23 +1004,18 @@ function openProject(proj) {
   linkWrap.innerHTML = '';
   if (proj.link) {
     const a = document.createElement('a');
-    a.className = 'pp-link';
-    a.href = proj.link;
-    a.target = '_blank';
-    a.rel = 'noopener';
+    a.className = 'pp-link'; a.href = proj.link; a.target = '_blank'; a.rel = 'noopener';
     a.innerHTML = `View externally <span class="pp-link-arrow">↗</span>`;
     linkWrap.appendChild(a);
   }
 
   document.getElementById('pp-tags').innerHTML = proj.tags
-    .map(t => `<div class="pp-tag" style="border-color:${color}25;color:${color}80">${t}</div>`)
-    .join('');
+    .map(t => `<div class="pp-tag" style="border-color:${color}25;color:${color}80">${t}</div>`).join('');
 
   projectPage.classList.add('open');
   projectPage.scrollTop = 0;
   isAutoPlaying = false;
-  clearAutoTimer();
-  closeAutoCard();
+  clearAutoTimer(); closeAutoCard();
 }
 
 document.getElementById('pp-back').addEventListener('click', () => {
@@ -1002,7 +1025,7 @@ document.getElementById('pp-back').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════════════════════
-// FILTERS
+// FILTERS (constellation view)
 // ═══════════════════════════════════════════════════════════
 document.querySelectorAll('.filter').forEach(f => {
   f.addEventListener('click', () => {
@@ -1014,14 +1037,104 @@ document.querySelectorAll('.filter').forEach(f => {
 });
 
 // ═══════════════════════════════════════════════════════════
+// LIST VIEW
+// ═══════════════════════════════════════════════════════════
+let listFilter = 'all';
+
+function buildListView() {
+  // Build filter bar
+  const filterBar = document.getElementById('list-filters');
+  filterBar.innerHTML = '';
+  const modes = ['all', 'Designed', 'Researched', 'Built', 'Taught', 'Talked'];
+  modes.forEach(m => {
+    const el = document.createElement('span');
+    el.className = 'list-filter' + (m === listFilter ? ' active' : '');
+    el.textContent = m === 'all' ? 'All' : m;
+    el.style.color = m !== 'all' ? COLORS[m] : '';
+    el.addEventListener('click', () => {
+      listFilter = m;
+      buildListView();
+    });
+    filterBar.appendChild(el);
+  });
+
+  // Build rows
+  const container = document.getElementById('list-rows');
+  container.innerHTML = '';
+  const visible = listFilter === 'all' ? PROJECTS : PROJECTS.filter(p => p.mode === listFilter);
+
+  visible.forEach((proj, i) => {
+    const color = COLORS[proj.mode];
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    row.innerHTML = `
+      <div class="list-idx">${String(i + 1).padStart(2, '0')}</div>
+      <div class="list-title">${proj.title}</div>
+      <div class="list-mode" style="color:${color};border-color:${color}40">${proj.mode}</div>
+      <div class="list-year">${proj.year || ''}</div>
+      <div class="list-expand">
+        <div class="list-desc">${proj.desc}</div>
+        <div class="list-enter" data-idx="${proj._id}">→ open project</div>
+      </div>
+    `;
+
+    // Toggle expand on row click
+    row.addEventListener('click', (e) => {
+      if (e.target.classList.contains('list-enter')) {
+        openProject(proj);
+        return;
+      }
+      const wasExpanded = row.classList.contains('expanded');
+      container.querySelectorAll('.list-row.expanded').forEach(r => r.classList.remove('expanded'));
+      if (!wasExpanded) row.classList.add('expanded');
+    });
+
+    container.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// VIEW SWITCHING
+// ═══════════════════════════════════════════════════════════
+function switchView(view) {
+  currentView = view;
+  const listEl = document.getElementById('list-view');
+  const toggleSpans = document.querySelectorAll('.view-toggle span[data-view]');
+
+  toggleSpans.forEach(s => s.classList.toggle('active', s.dataset.view === view));
+
+  if (view === 'list') {
+    document.body.classList.add('list-active');
+    listEl.classList.add('open');
+    isAutoPlaying = false;
+    clearAutoTimer(); closeAutoCard();
+    history.replaceState(null, '', '#list');
+  } else {
+    document.body.classList.remove('list-active');
+    listEl.classList.remove('open');
+    isAutoPlaying = true;
+    scheduleAuto();
+    history.replaceState(null, '', window.location.pathname);
+  }
+}
+
+document.querySelectorAll('.view-toggle span[data-view]').forEach(s => {
+  s.addEventListener('click', () => switchView(s.dataset.view));
+});
+
+// Listen for hash changes
+window.addEventListener('hashchange', () => {
+  if (window.location.hash === '#list' && currentView !== 'list') switchView('list');
+  else if (window.location.hash !== '#list' && currentView !== 'constellation') switchView('constellation');
+});
+
+// ═══════════════════════════════════════════════════════════
 // CURSOR + MOUSE TRACKING
 // ═══════════════════════════════════════════════════════════
-const cursorEl = document.getElementById('cursor');
 document.addEventListener('mousemove', e => {
   cursorEl.style.left = e.clientX + 'px';
   cursorEl.style.top = e.clientY + 'px';
-  mouseX = e.clientX;
-  mouseY = e.clientY;
+  mouseX = e.clientX; mouseY = e.clientY;
 });
 document.addEventListener('mouseleave', () => cursorEl.style.opacity = '0');
 document.addEventListener('mouseenter', () => cursorEl.style.opacity = '1');
