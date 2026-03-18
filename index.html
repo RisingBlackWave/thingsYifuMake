@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>thingsYifuMake</title>
+<meta name="description" content="Things Yifu makes — designed, researched, built, taught, talked. PhD researcher, designer, maker, London.">
+<link rel="canonical" href="https://thingsyifumake.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07070A;
+  --text:#EDE9E2;
+  --dim:rgba(237,233,226,0.32);
+  --dimmer:rgba(237,233,226,0.1);
+  --designed:#E8C17A;
+  --researched:#7AB8E8;
+  --built:#7AE8C1;
+  --taught:#E87A7A;
+  --talked:#C17AE8;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;cursor:none}
+
+/* ── CURSOR ── */
+#cursor{
+  position:fixed;width:10px;height:10px;
+  border:1px solid rgba(237,233,226,.6);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .18s,height .18s,border-color .18s,background .18s;
+  mix-blend-mode:difference
+}
+#cursor.hovering{width:4px;height:4px;background:white;border-color:white}
+
+/* ── CANVAS ── */
+#canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+
+/* ── UI CHROME ── */
+.wordmark{
+  position:fixed;top:40px;left:48px;z-index:10;
+  font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;
+  letter-spacing:.01em;opacity:0;animation:fadeUp .9s ease .1s forwards
+}
+.wordmark em{font-style:italic;opacity:.4}
+.sub{
+  position:fixed;top:66px;left:48px;z-index:10;
+  font-size:8.5px;letter-spacing:.17em;color:var(--dim);text-transform:uppercase;
+  opacity:0;animation:fadeUp .9s ease .25s forwards
+}
+.count{
+  position:fixed;top:40px;right:48px;z-index:10;
+  font-size:9px;letter-spacing:.13em;color:var(--dim);
+  opacity:0;animation:fadeUp .9s ease .4s forwards
+}
+.hint{
+  position:fixed;bottom:44px;right:48px;z-index:10;
+  font-size:8.5px;letter-spacing:.09em;color:var(--dimmer);
+  line-height:2.1;text-align:right;
+  opacity:0;animation:fadeUp .9s ease 1.2s forwards
+}
+
+/* ── FILTERS ── */
+.filters{
+  position:fixed;bottom:44px;left:48px;z-index:10;
+  display:flex;gap:7px;align-items:center;
+  opacity:0;animation:fadeUp .9s ease .7s forwards
+}
+.filter{
+  font-size:8px;letter-spacing:.16em;text-transform:uppercase;
+  padding:5px 12px;border:1px solid transparent;
+  cursor:none;transition:opacity .2s,border-color .2s;opacity:.3
+}
+.filter:hover{opacity:.65}
+.filter.active{opacity:1;border-color:currentColor}
+.filter[data-m="all"]{color:var(--text)}
+.filter[data-m="Designed"]{color:var(--designed)}
+.filter[data-m="Researched"]{color:var(--researched)}
+.filter[data-m="Built"]{color:var(--built)}
+.filter[data-m="Taught"]{color:var(--taught)}
+.filter[data-m="Talked"]{color:var(--talked)}
+
+/* ── DOTS LAYER ── */
+#dots-layer{position:fixed;inset:0;pointer-events:none}
+
+/* ── DOT WRAPPER ── */
+.dot-wrap{
+  position:absolute;transform:translate(-50%,-50%);
+  pointer-events:auto;cursor:none;z-index:20;
+  transition:opacity .6s ease
+}
+
+/* ── DOT CORE ── */
+.dot{
+  width:6px;height:6px;border-radius:50%;
+  position:relative;z-index:2;
+  transition:transform .45s cubic-bezier(.34,2.2,.64,1),box-shadow .3s
+}
+
+/* ── WHISPER TITLE (leader line endpoint) ── */
+.whisper-title{
+  position:absolute;
+  white-space:nowrap;
+  font-family:'DM Mono',monospace;
+  font-size:9px;
+  letter-spacing:.08em;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .4s ease .08s;
+  z-index:25
+}
+.dot-wrap.hovered .whisper-title{opacity:1}
+
+/* ── PREVIEW CARD (now triggered on click) ── */
+.preview{
+  position:absolute;
+  left:50%;bottom:calc(100% + 18px);
+  transform:translateX(-50%) translateY(14px) scale(.92);
+  width:260px;
+  background:rgba(7,7,10,.97);
+  border:1px solid rgba(237,233,226,.08);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .35s cubic-bezier(.22,1,.36,1),
+             transform .35s cubic-bezier(.22,1,.36,1);
+  transform-origin:bottom center;
+  will-change:transform,opacity
+}
+.preview.open{
+  opacity:1;
+  transform:translateX(-50%) translateY(0) scale(1);
+  pointer-events:auto
+}
+.dot-wrap.flip-below .preview{
+  bottom:auto;top:calc(100% + 18px);
+  transform-origin:top center;
+  transform:translateX(-50%) translateY(-14px) scale(.92)
+}
+.dot-wrap.flip-below .preview.open{
+  transform:translateX(-50%) translateY(0) scale(1)
+}
+
+.preview-visual{
+  width:100%;height:130px;overflow:hidden;position:relative
+}
+.preview-visual img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  opacity:0;transition:opacity .4s ease
+}
+.preview-visual img.loaded{opacity:1}
+.preview-visual video{
+  width:100%;height:100%;object-fit:cover;display:block
+}
+.preview-visual-bg{
+  position:absolute;inset:0;
+  transition:opacity .3s
+}
+.preview-body{padding:13px 16px 15px}
+.preview-mode{
+  font-size:7.5px;letter-spacing:.19em;text-transform:uppercase;margin-bottom:8px
+}
+.preview-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:17px;font-weight:300;line-height:1.3;color:var(--text);
+  margin-bottom:10px
+}
+.preview-cta{
+  font-size:7.5px;letter-spacing:.14em;color:var(--dimmer);
+  display:flex;align-items:center;gap:6px
+}
+.preview-cta::before{
+  content:'';width:18px;height:1px;background:currentColor;
+  display:inline-block;flex-shrink:0
+}
+
+/* ── AUTO-SURFACE PULSE RING ── */
+.pulse-ring{
+  position:absolute;
+  top:50%;left:50%;
+  width:6px;height:6px;
+  border-radius:50%;
+  transform:translate(-50%,-50%) scale(1);
+  opacity:0;
+  pointer-events:none;
+  z-index:1
+}
+@keyframes pulse-out{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:.6}
+  100%{transform:translate(-50%,-50%) scale(5);opacity:0}
+}
+.dot-wrap.auto-active .pulse-ring{
+  animation:pulse-out .8s ease forwards
+}
+
+/* ── PROJECT PAGE ── */
+#project-page{
+  position:fixed;inset:0;z-index:200;
+  background:var(--bg);
+  opacity:0;pointer-events:none;
+  transition:opacity .45s ease;
+  overflow-y:auto
+}
+#project-page.open{opacity:1;pointer-events:auto}
+
+.pp-inner{max-width:700px;margin:0 auto;padding:72px 48px 140px}
+
+.pp-back{
+  font-size:8px;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--dim);cursor:none;
+  display:inline-flex;align-items:center;gap:12px;
+  margin-bottom:72px;
+  padding-bottom:1px;border-bottom:1px solid transparent;
+  transition:color .2s,border-color .2s
+}
+.pp-back:hover{color:var(--text);border-color:var(--dim)}
+
+.pp-mode{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px}
+.pp-year{font-size:8.5px;letter-spacing:.13em;color:var(--dim);margin-bottom:24px}
+
+.pp-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(38px,6vw,62px);font-weight:300;
+  line-height:1.08;letter-spacing:-.01em;margin-bottom:48px
+}
+
+.pp-visual{
+  width:100%;height:300px;
+  margin-bottom:48px;overflow:hidden;position:relative
+}
+.pp-visual img,.pp-visual video{
+  width:100%;height:100%;object-fit:cover;display:block
+}
+.pp-visual-bg{position:absolute;inset:0}
+
+.pp-rule{width:36px;height:1px;background:rgba(237,233,226,.18);margin-bottom:36px}
+
+.pp-desc{
+  font-size:13.5px;line-height:2.05;letter-spacing:.02em;
+  color:rgba(237,233,226,.6);margin-bottom:52px;
+  font-family:'Cormorant Garamond',serif;font-weight:300
+}
+
+.pp-link{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);text-decoration:none;
+  padding-bottom:1px;border-bottom:1px solid rgba(237,233,226,.12);
+  margin-bottom:40px;transition:color .2s,border-color .2s
+}
+.pp-link:hover{color:var(--text);border-color:var(--dim)}
+.pp-link-arrow{font-size:11px}
+
+.pp-tags{display:flex;gap:7px;flex-wrap:wrap}
+.pp-tag{
+  font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;
+  padding:4px 10px;border:1px solid rgba(237,233,226,.1);
+  color:rgba(237,233,226,.4)
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* GRAIN */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:.025
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div>
+<canvas id="canvas"></canvas>
+
+<div class="wordmark">things<em>Yifu</em>Make</div>
+<div class="sub">PhD · Designer · Maker · London</div>
+<div class="count" id="count"></div>
+
+<div class="filters" id="filters">
+  <div class="filter active" data-m="all">All</div>
+  <div class="filter" data-m="Designed">Designed</div>
+  <div class="filter" data-m="Researched">Researched</div>
+  <div class="filter" data-m="Built">Built</div>
+  <div class="filter" data-m="Taught">Taught</div>
+  <div class="filter" data-m="Talked">Talked</div>
+</div>
+
+<div class="hint">hover to whisper · click to enter<br>or just watch</div>
+
+<div id="dots-layer"></div>
+
+<!-- PROJECT PAGE -->
+<div id="project-page">
+  <div class="pp-inner">
+    <div class="pp-back" id="pp-back">← constellation</div>
+    <div class="pp-mode" id="pp-mode"></div>
+    <div class="pp-year" id="pp-year"></div>
+    <div class="pp-title" id="pp-title"></div>
+    <div class="pp-visual" id="pp-visual"></div>
+    <div class="pp-rule"></div>
+    <div class="pp-desc" id="pp-desc"></div>
+    <div class="pp-link-wrap" id="pp-link-wrap"></div>
+    <div class="pp-tags" id="pp-tags"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// v4 — ORBITAL CONSTELLATION ENGINE
+// ═══════════════════════════════════════════════════════════
+
+const COLORS = {
+  Designed:'#E8C17A', Researched:'#7AB8E8',
+  Built:'#7AE8C1', Taught:'#E87A7A', Talked:'#C17AE8'
+};
+
+// ═══════════════════════════════════════════════════════════
+// PERLIN NOISE (simplex-like 2D)
+// ═══════════════════════════════════════════════════════════
+const PERLIN = (() => {
+  const perm = new Uint8Array(512);
+  const grad = [[1,1],[-1,1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]];
+  for (let i = 0; i < 256; i++) perm[i] = i;
+  for (let i = 255; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [perm[i], perm[j]] = [perm[j], perm[i]];
+  }
+  for (let i = 0; i < 256; i++) perm[256 + i] = perm[i];
+
+  function fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
+  function lerp(a, b, t) { return a + t * (b - a); }
+  function dot2(g, x, y) { return g[0] * x + g[1] * y; }
+
+  return function noise2D(x, y) {
+    const X = Math.floor(x) & 255, Y = Math.floor(y) & 255;
+    const xf = x - Math.floor(x), yf = y - Math.floor(y);
+    const u = fade(xf), v = fade(yf);
+    const aa = perm[perm[X] + Y], ab = perm[perm[X] + Y + 1];
+    const ba = perm[perm[X + 1] + Y], bb = perm[perm[X + 1] + Y + 1];
+    return lerp(
+      lerp(dot2(grad[aa % 8], xf, yf), dot2(grad[ba % 8], xf - 1, yf), u),
+      lerp(dot2(grad[ab % 8], xf, yf - 1), dot2(grad[bb % 8], xf - 1, yf - 1), u),
+      v
+    );
+  };
+})();
+
+// ═══════════════════════════════════════════════════════════
+// GRADIENT GENERATOR (preserved from v3)
+// ═══════════════════════════════════════════════════════════
+function mkGrad(mode, i) {
+  const P = {
+    Designed:   [['#E8C17A','#8B5E00','#0e0900'],['#F0D090','#C17A20','#120a00'],['#D4A830','#7A4800','#100800'],['#F0C060','#A06020','#0e0800'],['#C89840','#6B4010','#0c0700']],
+    Researched: [['#7AB8E8','#1A5898','#040d18'],['#90C8F8','#2060B0','#050f1a'],['#50A0D8','#104880','#030c16'],['#A0D0F8','#3070C0','#060e1a'],['#6AB0E0','#1050A0','#040c18']],
+    Built:      [['#7AE8C1','#0A8058','#030f0b'],['#90F0D0','#1A9060','#04120d'],['#50D8A8','#087050','#030e0a'],['#A0F0D8','#2A9868','#040f0c']],
+    Taught:     [['#E87A7A','#980000','#0f0000'],['#F09090','#B02020','#120000'],['#D86060','#880808','#0c0000'],['#F08080','#A01010','#110000'],['#E87080','#901820','#0e0002']],
+    Talked:     [['#C17AE8','#600098','#0a0012'],['#D090F8','#7820B0','#0c0018'],['#A850D8','#500080','#080010'],['#D880F0','#6810A8','#0b0015']],
+  };
+  const p = P[mode][i % P[mode].length];
+  const g = [
+    `radial-gradient(ellipse at 30% 40%, ${p[0]}55 0%, ${p[1]}30 45%, ${p[2]} 100%)`,
+    `linear-gradient(135deg, ${p[0]}40 0%, ${p[2]} 55%, ${p[1]}30 100%)`,
+    `radial-gradient(circle at 65% 55%, ${p[1]}55 0%, ${p[2]} 65%), linear-gradient(60deg, ${p[0]}25, transparent)`,
+    `conic-gradient(from 60deg at 42% 48%, ${p[0]}35, ${p[2]}, ${p[1]}35, ${p[2]})`,
+    `radial-gradient(ellipse at 58% 32%, ${p[0]}50 0%, transparent 52%), radial-gradient(ellipse at 28% 68%, ${p[1]}40 0%, ${p[2]} 72%)`,
+  ];
+  return g[i % g.length];
+}
+
+// ═══════════════════════════════════════════════════════════
+// CANVAS SETUP
+// ═══════════════════════════════════════════════════════════
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W, H, CX, CY;
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  CX = W / 2;
+  CY = H / 2;
+}
+resize();
+
+// ═══════════════════════════════════════════════════════════
+// ORBITAL RING DEFINITIONS
+// ═══════════════════════════════════════════════════════════
+// 3 rings: inner (fast), middle (medium), outer (slow)
+// Each ring is an ellipse with semi-major (a), semi-minor (b), tilt, speed
+function getRings() {
+  const scale = Math.min(W, H);
+  return [
+    { a: scale * 0.17, b: scale * 0.12, tilt: -0.18, speed: 0.00038, dash: [2, 8] },
+    { a: scale * 0.28, b: scale * 0.19, tilt: 0.12,  speed: 0.00024, dash: [3, 10] },
+    { a: scale * 0.40, b: scale * 0.27, tilt: -0.06, speed: 0.00015, dash: [2, 12] },
+  ];
+}
+
+let RINGS = getRings();
+
+// Assign projects to rings: distribute by mode grouping
+// Inner ring: Built + Talked (7 + 4 = 11? we'll balance)
+// We'll distribute evenly across 3 rings
+function assignRings(projects) {
+  const ringAssign = [];
+  const perRing = [[], [], []];
+
+  // Distribute by mode for visual grouping
+  const modeToRing = { Designed: 1, Researched: 2, Built: 0, Taught: 2, Talked: 0 };
+
+  projects.forEach((p, i) => {
+    const preferredRing = modeToRing[p.mode] ?? (i % 3);
+    perRing[preferredRing].push(i);
+  });
+
+  // Balance: if any ring has too many, redistribute
+  const total = projects.length;
+  const maxPerRing = Math.ceil(total / 2.2);
+  for (let r = 0; r < 3; r++) {
+    while (perRing[r].length > maxPerRing) {
+      const overflow = perRing[r].pop();
+      const smallest = perRing.reduce((min, arr, idx) => arr.length < perRing[min].length ? idx : min, 0);
+      perRing[smallest].push(overflow);
+    }
+  }
+
+  // Build assignment array
+  const result = new Array(projects.length);
+  perRing.forEach((indices, ringIdx) => {
+    const count = indices.length;
+    indices.forEach((projIdx, slot) => {
+      const angleOffset = (slot / count) * Math.PI * 2 + ringIdx * 0.7;
+      result[projIdx] = { ring: ringIdx, angleOffset };
+    });
+  });
+  return result;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CENTER BLOB
+// ═══════════════════════════════════════════════════════════
+let mouseX = CX, mouseY = CY;
+let smoothMouseX = CX, smoothMouseY = CY;
+const BLOB_POINTS = 80;
+const BLOB_BASE_RADIUS_FRAC = 0.085; // fraction of min(W,H)
+
+function drawBlob(t) {
+  const baseR = Math.min(W, H) * BLOB_BASE_RADIUS_FRAC;
+  const breathe = 1 + 0.025 * Math.sin(t * 0.6) + 0.015 * Math.sin(t * 1.1);
+
+  // Cursor attraction vector
+  const dx = smoothMouseX - CX;
+  const dy = smoothMouseY - CY;
+  const dist = Math.hypot(dx, dy);
+  const maxAttract = baseR * 0.35;
+  const attractStrength = Math.min(dist / (W * 0.4), 1) * maxAttract;
+  const attractX = dist > 0 ? (dx / dist) * attractStrength : 0;
+  const attractY = dist > 0 ? (dy / dist) * attractStrength : 0;
+
+  ctx.beginPath();
+  for (let i = 0; i <= BLOB_POINTS; i++) {
+    const angle = (i / BLOB_POINTS) * Math.PI * 2;
+    const cosA = Math.cos(angle);
+    const sinA = Math.sin(angle);
+
+    // Perlin displacement
+    const nx = cosA * 1.5 + t * 0.3;
+    const ny = sinA * 1.5 + t * 0.25;
+    const noise = PERLIN(nx, ny);
+    const displacement = noise * baseR * 0.18;
+
+    // Cursor-facing bulge
+    const cursorAngle = Math.atan2(dy, dx);
+    const angleDiff = Math.cos(angle - cursorAngle);
+    const bulge = Math.max(0, angleDiff) * attractStrength * 0.5;
+
+    const r = (baseR + displacement + bulge) * breathe;
+    const px = CX + attractX * 0.3 + cosA * r;
+    const py = CY + attractY * 0.3 + sinA * r;
+
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+
+  // Blob fill: soft radial gradient, warm monochrome
+  const grad = ctx.createRadialGradient(
+    CX + attractX * 0.2, CY + attractY * 0.2, 0,
+    CX, CY, baseR * 1.5
+  );
+  grad.addColorStop(0, 'rgba(237,233,226,0.06)');
+  grad.addColorStop(0.4, 'rgba(237,233,226,0.03)');
+  grad.addColorStop(0.7, 'rgba(237,233,226,0.012)');
+  grad.addColorStop(1, 'rgba(237,233,226,0)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Blob edge glow
+  ctx.strokeStyle = `rgba(237,233,226,${0.06 + 0.02 * Math.sin(t * 0.8)})`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ORBITAL RING DRAWING
+// ═══════════════════════════════════════════════════════════
+function drawOrbitalRings(t) {
+  RINGS.forEach((ring, ri) => {
+    const opacity = 0.06 + 0.02 * Math.sin(t * 0.3 + ri * 1.5);
+    ctx.save();
+    ctx.translate(CX, CY);
+    ctx.rotate(ring.tilt);
+    ctx.setLineDash(ring.dash);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, ring.a, ring.b, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(237,233,226,${opacity})`;
+    ctx.lineWidth = 0.6;
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// STAR FIELD (reduced density from v3)
+// ═══════════════════════════════════════════════════════════
+const bgStars = Array.from({length: 110}, () => ({
+  x: Math.random(), y: Math.random(),
+  r: .25 + Math.random() * .75,
+  a: .025 + Math.random() * .07,
+  twinkleSpeed: .4 + Math.random() * 1,
+  twinklePhase: Math.random() * Math.PI * 2,
+}));
+
+function drawStars(t) {
+  bgStars.forEach(s => {
+    const a = s.a * (.7 + .3 * Math.sin(t * s.twinkleSpeed + s.twinklePhase));
+    ctx.beginPath();
+    ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(237,233,226,${a})`;
+    ctx.fill();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// LEADER LINES (drawn on canvas for hovered dot)
+// ═══════════════════════════════════════════════════════════
+let hoveredNode = null;
+let leaderProgress = 0; // 0 to 1
+const LEADER_LENGTH = 70;
+
+function drawLeaderLine(t) {
+  if (!hoveredNode || leaderProgress <= 0) return;
+
+  const n = hoveredNode;
+  const color = COLORS[n.proj.mode];
+
+  // Direction: outward from center
+  const dx = n.x - CX;
+  const dy = n.y - CY;
+  const dist = Math.hypot(dx, dy);
+  if (dist < 1) return;
+
+  const dirX = dx / dist;
+  const dirY = dy / dist;
+
+  const startX = n.x + dirX * 8;
+  const startY = n.y + dirY * 8;
+  const endX = startX + dirX * LEADER_LENGTH * leaderProgress;
+  const endY = startY + dirY * LEADER_LENGTH * leaderProgress;
+
+  ctx.save();
+  ctx.setLineDash([1.5, 4]);
+  ctx.lineDashOffset = -t * 12;
+  ctx.beginPath();
+  ctx.moveTo(startX, startY);
+  ctx.lineTo(endX, endY);
+  ctx.strokeStyle = color + '60';
+  ctx.lineWidth = 0.8;
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Small terminus dot
+  if (leaderProgress > 0.5) {
+    const dotOpacity = (leaderProgress - 0.5) * 2;
+    ctx.beginPath();
+    ctx.arc(endX, endY, 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = color + Math.floor(dotOpacity * 100).toString(16).padStart(2, '0');
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════
+// DATA + INIT
+// ═══════════════════════════════════════════════════════════
+let PROJECTS = [];
+let dotNodes = [];
+let ringAssignments = [];
+let activeFilter = 'all';
+let isAutoPlaying = true;
+let userHovering = false;
+let autoTimer = null;
+let autoIndex = -1;
+let currentAutoWrap = null;
+
+fetch('projects.json')
+  .then(r => r.json())
+  .then(data => {
+    const modeCount = {};
+    PROJECTS = data.map((p, i) => {
+      if (!modeCount[p.mode]) modeCount[p.mode] = 0;
+      return { ...p, grad: mkGrad(p.mode, modeCount[p.mode]++), _id: i };
+    });
+    document.getElementById('count').textContent = `${PROJECTS.length} things`;
+    ringAssignments = assignRings(PROJECTS);
+    setTimeout(() => { rebuildLayout(); animLoop(); }, 200);
+  })
+  .catch(err => {
+    console.error('Failed to load projects.json:', err);
+    document.getElementById('count').textContent = 'data error';
+  });
+
+window.addEventListener('resize', () => {
+  resize();
+  RINGS = getRings();
+  if (PROJECTS.length) rebuildLayout(true);
+});
+
+// ═══════════════════════════════════════════════════════════
+// ORBITAL POSITION CALCULATOR
+// ═══════════════════════════════════════════════════════════
+function getOrbitalPos(ringIdx, angle) {
+  const ring = RINGS[ringIdx];
+  if (!ring) return { x: CX, y: CY };
+
+  // Position on untilted ellipse
+  const ex = ring.a * Math.cos(angle);
+  const ey = ring.b * Math.sin(angle);
+
+  // Apply tilt rotation
+  const cosT = Math.cos(ring.tilt);
+  const sinT = Math.sin(ring.tilt);
+  const rx = ex * cosT - ey * sinT;
+  const ry = ex * sinT + ey * cosT;
+
+  return { x: CX + rx, y: CY + ry };
+}
+
+// ═══════════════════════════════════════════════════════════
+// BUILD LAYOUT
+// ═══════════════════════════════════════════════════════════
+function rebuildLayout(instant = false) {
+  const layer = document.getElementById('dots-layer');
+  layer.innerHTML = '';
+  dotNodes = [];
+  hoveredNode = null;
+  leaderProgress = 0;
+  clearAutoTimer();
+
+  const visible = activeFilter === 'all'
+    ? PROJECTS
+    : PROJECTS.filter(p => p.mode === activeFilter);
+
+  // Re-assign rings if filtered
+  const assignments = activeFilter === 'all'
+    ? ringAssignments
+    : assignRings(visible);
+
+  visible.forEach((proj, i) => {
+    const projIdx = activeFilter === 'all' ? proj._id : i;
+    const assign = assignments[projIdx] || { ring: i % 3, angleOffset: (i / visible.length) * Math.PI * 2 };
+
+    const color = COLORS[proj.mode];
+
+    const wrap = document.createElement('div');
+    wrap.className = 'dot-wrap';
+    wrap.style.opacity = '0';
+
+    // Pulse ring
+    const ring = document.createElement('div');
+    ring.className = 'pulse-ring';
+    ring.style.background = color;
+
+    // Dot
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.style.background = color;
+    dot.style.boxShadow = `0 0 6px ${color}50, 0 0 14px ${color}20`;
+
+    // Whisper title element
+    const whisper = document.createElement('div');
+    whisper.className = 'whisper-title';
+    whisper.textContent = proj.title;
+    whisper.style.color = color;
+
+    // Preview card (for click)
+    const preview = buildPreviewCard(proj, color);
+
+    wrap.appendChild(ring);
+    wrap.appendChild(dot);
+    wrap.appendChild(whisper);
+    wrap.appendChild(preview);
+    layer.appendChild(wrap);
+
+    // Stagger entrance
+    setTimeout(() => {
+      wrap.style.transition = 'opacity .6s ease';
+      wrap.style.opacity = '1';
+    }, instant ? 0 : 80 + i * 45);
+
+    const node = {
+      wrap, dot, whisper, proj,
+      x: CX, y: CY,
+      ringIdx: assign.ring,
+      angle: assign.angleOffset,
+      hoverScale: 1,
+      hoverTarget: 1,
+    };
+
+    // Hover: whisper + leader line
+    wrap.addEventListener('mouseenter', () => {
+      userHovering = true;
+      clearAutoTimer();
+      closeAutoCard();
+      hoveredNode = node;
+      node.hoverTarget = 2.4;
+      wrap.classList.add('hovered');
+      dot.style.boxShadow = `0 0 14px ${color}90, 0 0 32px ${color}50`;
+      document.getElementById('cursor').classList.add('hovering');
+    });
+    wrap.addEventListener('mouseleave', () => {
+      userHovering = false;
+      if (hoveredNode === node) hoveredNode = null;
+      node.hoverTarget = 1;
+      wrap.classList.remove('hovered');
+      dot.style.boxShadow = `0 0 6px ${color}50, 0 0 14px ${color}20`;
+      document.getElementById('cursor').classList.remove('hovering');
+      scheduleAuto();
+    });
+    wrap.addEventListener('click', () => openProject(proj));
+
+    dotNodes.push(node);
+  });
+
+  setTimeout(() => scheduleAuto(), 2500);
+}
+
+// ═══════════════════════════════════════════════════════════
+// BUILD PREVIEW CARD (preserved from v3)
+// ═══════════════════════════════════════════════════════════
+function buildPreviewCard(proj, color) {
+  const preview = document.createElement('div');
+  preview.className = 'preview';
+
+  const visual = document.createElement('div');
+  visual.className = 'preview-visual';
+
+  if (proj.previewVideo) {
+    const vid = document.createElement('video');
+    vid.src = proj.previewVideo;
+    vid.autoplay = true; vid.muted = true; vid.loop = true; vid.playsInline = true;
+    visual.appendChild(vid);
+  } else if (proj.previewImage) {
+    const img = document.createElement('img');
+    img.src = proj.previewImage;
+    img.alt = proj.title;
+    img.onload = () => img.classList.add('loaded');
+    const bg = document.createElement('div');
+    bg.className = 'preview-visual-bg';
+    bg.style.background = proj.grad;
+    visual.appendChild(bg);
+    visual.appendChild(img);
+  } else {
+    const bg = document.createElement('div');
+    bg.className = 'preview-visual-bg';
+    bg.style.background = proj.grad;
+    visual.appendChild(bg);
+  }
+
+  const body = document.createElement('div');
+  body.className = 'preview-body';
+  body.innerHTML = `
+    <div class="preview-mode" style="color:${color}">${proj.mode}</div>
+    <div class="preview-title">${proj.title}</div>
+    <div class="preview-cta">open project</div>
+  `;
+
+  preview.appendChild(visual);
+  preview.appendChild(body);
+  return preview;
+}
+
+function openPreview(wrap) {
+  const preview = wrap.querySelector('.preview');
+  const { top } = wrap.getBoundingClientRect();
+  if (top < H * .28) wrap.classList.add('flip-below');
+  else wrap.classList.remove('flip-below');
+  preview.classList.add('open');
+}
+function closePreview(wrap) {
+  wrap.querySelector('.preview').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUTO-SURFACE (whisper random dots periodically)
+// ═══════════════════════════════════════════════════════════
+function scheduleAuto() {
+  clearAutoTimer();
+  if (!isAutoPlaying || userHovering) return;
+  autoTimer = setTimeout(() => {
+    if (userHovering) { scheduleAuto(); return; }
+    surfaceRandom();
+  }, 3500 + Math.random() * 1500);
+}
+
+function clearAutoTimer() {
+  if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+}
+
+function closeAutoCard() {
+  if (currentAutoWrap) {
+    currentAutoWrap.classList.remove('hovered');
+    currentAutoWrap.classList.remove('auto-active');
+    if (hoveredNode && hoveredNode.wrap === currentAutoWrap) {
+      hoveredNode.hoverTarget = 1;
+      hoveredNode = null;
+    }
+    currentAutoWrap = null;
+  }
+}
+
+function surfaceRandom() {
+  closeAutoCard();
+  if (dotNodes.length === 0) return;
+
+  let next;
+  do { next = Math.floor(Math.random() * dotNodes.length); }
+  while (next === autoIndex && dotNodes.length > 1);
+  autoIndex = next;
+
+  const node = dotNodes[next];
+  currentAutoWrap = node.wrap;
+  hoveredNode = node;
+  node.hoverTarget = 2.0;
+  node.wrap.classList.add('auto-active');
+  node.wrap.classList.add('hovered');
+
+  setTimeout(() => {
+    node.wrap.classList.remove('auto-active');
+  }, 900);
+
+  autoTimer = setTimeout(() => {
+    if (!userHovering) {
+      closeAutoCard();
+      scheduleAuto();
+    }
+  }, 3200);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAIN ANIMATION LOOP
+// ═══════════════════════════════════════════════════════════
+let animT = 0;
+
+function animLoop() {
+  animT += 0.008;
+
+  // Smooth mouse tracking
+  smoothMouseX += (mouseX - smoothMouseX) * 0.06;
+  smoothMouseY += (mouseY - smoothMouseY) * 0.06;
+
+  // Leader line animation
+  if (hoveredNode) {
+    leaderProgress = Math.min(1, leaderProgress + 0.06);
+  } else {
+    leaderProgress = Math.max(0, leaderProgress - 0.08);
+  }
+
+  // Update dot orbital positions
+  dotNodes.forEach(n => {
+    // Advance angle
+    const ring = RINGS[n.ringIdx];
+    if (ring) {
+      n.angle += ring.speed;
+    }
+
+    // Calculate orbital position
+    const pos = getOrbitalPos(n.ringIdx, n.angle);
+    n.x = pos.x;
+    n.y = pos.y;
+
+    // Position DOM element
+    n.wrap.style.left = n.x + 'px';
+    n.wrap.style.top = n.y + 'px';
+
+    // Elastic hover scale
+    n.hoverScale += (n.hoverTarget - n.hoverScale) * 0.12;
+    n.dot.style.transform = `scale(${n.hoverScale})`;
+
+    // Breathing glow
+    const color = COLORS[n.proj.mode];
+    const glow = 0.3 + 0.12 * Math.sin(animT * 1.1 + n.angle);
+    const glowHex = Math.floor(glow * 255).toString(16).padStart(2, '0');
+    if (n.hoverTarget <= 1) {
+      n.dot.style.boxShadow = `0 0 ${5 + n.hoverScale * 2}px ${color}${glowHex}, 0 0 ${12 + n.hoverScale * 4}px ${color}18`;
+    }
+
+    // Position whisper title along leader line direction
+    if (n.whisper) {
+      const dx = n.x - CX;
+      const dy = n.y - CY;
+      const dist = Math.hypot(dx, dy);
+      if (dist > 1) {
+        const dirX = dx / dist;
+        const dirY = dy / dist;
+        const offsetDist = LEADER_LENGTH + 14;
+        const wx = dirX * offsetDist;
+        const wy = dirY * offsetDist;
+
+        // Determine alignment based on direction
+        if (dirX >= 0) {
+          n.whisper.style.left = (wx + 4) + 'px';
+          n.whisper.style.right = 'auto';
+          n.whisper.style.textAlign = 'left';
+        } else {
+          n.whisper.style.right = (-wx + 4) + 'px';
+          n.whisper.style.left = 'auto';
+          n.whisper.style.textAlign = 'right';
+        }
+        n.whisper.style.top = (wy - 5) + 'px';
+      }
+    }
+  });
+
+  // Redraw canvas
+  ctx.clearRect(0, 0, W, H);
+  drawStars(animT);
+  drawOrbitalRings(animT);
+  drawBlob(animT);
+  drawLeaderLine(animT);
+
+  requestAnimationFrame(animLoop);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROJECT PAGE (preserved from v3)
+// ═══════════════════════════════════════════════════════════
+const projectPage = document.getElementById('project-page');
+
+function openProject(proj) {
+  const color = COLORS[proj.mode];
+  document.getElementById('pp-mode').textContent = proj.mode;
+  document.getElementById('pp-mode').style.color = color;
+  document.getElementById('pp-year').textContent = proj.year ? `${proj.year}` : '';
+  document.getElementById('pp-title').textContent = proj.title;
+  document.getElementById('pp-desc').textContent = proj.desc;
+
+  const vis = document.getElementById('pp-visual');
+  vis.innerHTML = '';
+  if (proj.coverImage) {
+    vis.style.background = proj.grad;
+    const img = document.createElement('img');
+    img.src = proj.coverImage;
+    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s';
+    img.onload = () => { img.style.opacity = '1'; };
+    vis.appendChild(img);
+  } else {
+    vis.style.background = proj.grad;
+    vis.style.border = `1px solid ${color}18`;
+  }
+
+  const linkWrap = document.getElementById('pp-link-wrap');
+  linkWrap.innerHTML = '';
+  if (proj.link) {
+    const a = document.createElement('a');
+    a.className = 'pp-link';
+    a.href = proj.link;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.innerHTML = `View externally <span class="pp-link-arrow">↗</span>`;
+    linkWrap.appendChild(a);
+  }
+
+  document.getElementById('pp-tags').innerHTML = proj.tags
+    .map(t => `<div class="pp-tag" style="border-color:${color}25;color:${color}80">${t}</div>`)
+    .join('');
+
+  projectPage.classList.add('open');
+  projectPage.scrollTop = 0;
+  isAutoPlaying = false;
+  clearAutoTimer();
+  closeAutoCard();
+}
+
+document.getElementById('pp-back').addEventListener('click', () => {
+  projectPage.classList.remove('open');
+  isAutoPlaying = true;
+  scheduleAuto();
+});
+
+// ═══════════════════════════════════════════════════════════
+// FILTERS
+// ═══════════════════════════════════════════════════════════
+document.querySelectorAll('.filter').forEach(f => {
+  f.addEventListener('click', () => {
+    document.querySelectorAll('.filter').forEach(x => x.classList.remove('active'));
+    f.classList.add('active');
+    activeFilter = f.dataset.m;
+    rebuildLayout();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
+// CURSOR + MOUSE TRACKING
+// ═══════════════════════════════════════════════════════════
+const cursorEl = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursorEl.style.left = e.clientX + 'px';
+  cursorEl.style.top = e.clientY + 'px';
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+document.addEventListener('mouseleave', () => cursorEl.style.opacity = '0');
+document.addEventListener('mouseenter', () => cursorEl.style.opacity = '1');
+</script>
+</body>
+</html>
