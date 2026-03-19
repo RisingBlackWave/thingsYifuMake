@@ -465,6 +465,7 @@ body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
     <div class="pp-mode" id="pp-mode"></div>
     <div class="pp-year" id="pp-year"></div>
     <div class="pp-title" id="pp-title"></div>
+    <div class="pp-subtitle" id="pp-subtitle" style="font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:var(--dim);margin-bottom:36px;display:none"></div>
     <div class="pp-visual" id="pp-visual"></div>
     <div class="pp-rule"></div>
     <div class="pp-desc" id="pp-desc"></div>
@@ -786,6 +787,7 @@ function rebuildLayout(instant = false) {
     const dot = document.createElement('div');
     dot.className = 'dot'; dot.style.background = color;
     dot.style.boxShadow = `0 0 6px ${color}50, 0 0 14px ${color}20`;
+    if (proj.wip) dot.style.opacity = '0.5';
 
     const whisper = document.createElement('div');
     whisper.className = 'whisper-title';
@@ -862,8 +864,9 @@ function buildPreviewCard(proj, color) {
   }
   const body = document.createElement('div');
   body.className = 'preview-body';
-  body.innerHTML = `<div class="preview-mode" style="color:${color}">${proj.mode}</div>
+  body.innerHTML = `<div class="preview-mode" style="color:${color}">${proj.mode}${proj.wip ? ' · wip' : ''}</div>
     <div class="preview-title">${proj.title}</div>
+    ${proj.subtitle ? `<div style="font-size:11px;color:var(--dim);font-family:'Cormorant Garamond',serif;font-style:italic;margin-bottom:8px">${proj.subtitle}</div>` : ''}
     <div class="preview-cta">open project</div>`;
   preview.appendChild(visual); preview.appendChild(body);
   return preview;
@@ -984,7 +987,13 @@ function openProject(proj) {
   document.getElementById('pp-mode').style.color = color;
   document.getElementById('pp-year').textContent = proj.year ? `${proj.year}` : '';
   document.getElementById('pp-title').textContent = proj.title;
-  document.getElementById('pp-desc').textContent = proj.desc;
+  // Subtitle
+  const subtitleEl = document.getElementById('pp-subtitle');
+  if (subtitleEl) {
+    subtitleEl.textContent = proj.subtitle || '';
+    subtitleEl.style.display = proj.subtitle ? 'block' : 'none';
+  }
+  document.getElementById('pp-desc').textContent = proj.desc || '';
 
   const vis = document.getElementById('pp-visual');
   vis.innerHTML = '';
@@ -1069,11 +1078,12 @@ function buildListView() {
     row.className = 'list-row';
     row.innerHTML = `
       <div class="list-idx">${String(i + 1).padStart(2, '0')}</div>
-      <div class="list-title">${proj.title}</div>
+      <div class="list-title">${proj.title}${proj.wip ? ' <span style="font-family:Arial,sans-serif;font-size:9px;opacity:.3;margin-left:8px">WIP</span>' : ''}</div>
       <div class="list-mode" style="color:${color};border-color:${color}40">${proj.mode}</div>
       <div class="list-year">${proj.year || ''}</div>
       <div class="list-expand">
-        <div class="list-desc">${proj.desc}</div>
+        ${proj.subtitle ? `<div style="font-family:'Times New Roman',serif;font-size:14px;font-style:italic;color:rgba(237,233,226,.3);padding:4px 0">${proj.subtitle}</div>` : ''}
+        ${proj.desc ? `<div class="list-desc">${proj.desc}</div>` : ''}
         <div class="list-enter" data-idx="${proj._id}">→ open project</div>
       </div>
     `;
