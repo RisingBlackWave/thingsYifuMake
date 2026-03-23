@@ -463,17 +463,17 @@ body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
 .stone-glow{
   position:absolute;
   top:50%;left:50%;
-  width:200px;height:200px;
+  width:320px;height:320px;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  background:radial-gradient(ellipse at center, rgba(237,233,226,.03) 0%, transparent 65%);
+  background:radial-gradient(ellipse at center, rgba(237,233,226,.08) 0%, rgba(237,233,226,.03) 35%, transparent 65%);
   pointer-events:none;
   z-index:-1;
   animation:glow-pulse 4s ease-in-out infinite alternate
 }
 @keyframes glow-pulse{
-  from{opacity:.6;transform:translate(-50%,-50%) scale(.95)}
-  to{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
+  from{opacity:.7;transform:translate(-50%,-50%) scale(.95)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
 }
 .stone-label{
   font-family:'DM Mono',monospace;
@@ -747,35 +747,33 @@ function spawnSignal() {
   const ai = Math.floor(Math.random() * visible.length);
   let bi = Math.floor(Math.random() * (visible.length - 1));
   if (bi >= ai) bi++;
-  const a = visible[ai], b = visible[bi];
+  // Store references to live nodes so we track their moving positions
   signals.push({
-    ax: a.x, ay: a.y, bx: b.x, by: b.y,
+    srcNode: visible[ai], dstNode: visible[bi],
     progress: 0, speed: 0.002 + Math.random() * 0.002
   });
 }
 
-// Get curved position — signal bends TOWARD black hole center, wrapping around it
+// Get curved position — reads LIVE positions, bends toward black hole
 function getSignalPos(s, t) {
-  const lx = s.ax + (s.bx - s.ax) * t;
-  const ly = s.ay + (s.by - s.ay) * t;
+  // Live positions from orbiting nodes
+  const ax = s.srcNode.x, ay = s.srcNode.y;
+  const bx = s.dstNode.x, by = s.dstNode.y;
+  const lx = ax + (bx - ax) * t;
+  const ly = ay + (by - ay) * t;
 
-  // For each point along the path, calculate gravitational pull toward center
-  const dxToCenter = CX - lx, dyToCenter = CY - ly;
-  const distToCenter = Math.hypot(dxToCenter, dyToCenter) || 1;
+  // Gravitational pull toward center
+  const dxC = CX - lx, dyC = CY - ly;
+  const distC = Math.hypot(dxC, dyC) || 1;
+  const nx = dxC / distC, ny = dyC / distC;
 
-  // Inverse-square-ish gravity: stronger when closer to center
-  // Normalize direction toward center
-  const nx = dxToCenter / distToCenter, ny = dyToCenter / distToCenter;
-
-  // Gravity strength: peaks when close to center, falls off with distance
+  // Gravity: inverse distance, stronger when closer
   const gravRadius = Math.min(W, H) * 0.25;
-  const gravity = Math.max(0, (gravRadius / Math.max(distToCenter, 30)) - 0.3) * 60;
+  const gravity = Math.max(0, (gravRadius / Math.max(distC, 40)) - 0.25) * 55;
 
-  // Apply bend (peaks in middle of journey)
+  // Bend peaks at middle, zero at start and end (so signal arrives exactly at target)
   const bendFactor = Math.sin(t * Math.PI);
-  const px = lx + nx * gravity * bendFactor;
-  const py = ly + ny * gravity * bendFactor;
-  return { x: px, y: py };
+  return { x: lx + nx * gravity * bendFactor, y: ly + ny * gravity * bendFactor };
 }
 
 function drawConstellationLines(t) {
@@ -1097,10 +1095,18 @@ function animLoop() {
     n.hoverScale += (n.hoverTarget - n.hoverScale) * 0.12;
     n.dot.style.transform = `scale(${n.hoverScale})`;
     const color = COLORS[n.proj.mode];
-    const glow = 0.3 + 0.12 * Math.sin(animT * 1.1 + n.angle);
+    // Distance-based brightness: closer to center = brighter
+    const distFromCenter = Math.hypot(n.x - CX, n.y - CY);
+    const maxDist = Math.min(W, H) * 0.45;
+    const proximity = 1 - Math.min(distFromCenter / maxDist, 1); // 1 = at center, 0 = far edge
+    const brightnessMul = 0.4 + proximity * 0.6; // range 0.4 (far) to 1.0 (near)
+    const glow = (0.3 + 0.12 * Math.sin(animT * 1.1 + n.angle)) * brightnessMul;
     const glowHex = Math.floor(glow * 255).toString(16).padStart(2, '0');
+    n.dot.style.opacity = 0.45 + proximity * 0.55; // dim outer dots
     if (n.hoverTarget <= 1) {
-      n.dot.style.boxShadow = `0 0 ${5 + n.hoverScale * 2}px ${color}${glowHex}, 0 0 ${12 + n.hoverScale * 4}px ${color}18`;
+      const glowSize = (5 + n.hoverScale * 2) * brightnessMul;
+      const glowSize2 = (12 + n.hoverScale * 4) * brightnessMul;
+      n.dot.style.boxShadow = `0 0 ${glowSize}px ${color}${glowHex}, 0 0 ${glowSize2}px ${color}18`;
     }
     if (n.whisper) {
       const dx = n.x - CX, dy = n.y - CY;
