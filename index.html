@@ -456,8 +456,8 @@ body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
   display:flex;flex-direction:column;align-items:center;gap:10px
 }
 #stone-canvas{
-  width:120px;height:120px;
-  filter:blur(1.5px)
+  width:150px;height:150px;
+  filter:blur(2px)
 }
 
 .stone-glow{
@@ -512,7 +512,7 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 <!-- CENTER STONE — 3D rotating xeno-stone (clickable → RepairBot paper) -->
 <div id="center-stone" title="RepairBot Framework — CHI 2026">
   <div class="stone-glow"></div>
-  <canvas id="stone-canvas" width="160" height="160"></canvas>
+  <canvas id="stone-canvas" width="200" height="200"></canvas>
   <div class="stone-label">RepairBot Paper<br><span style="font-size:7px;opacity:.5">CHI 2026 · click to read</span></div>
 </div>
 
@@ -525,7 +525,6 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   <div class="filter" data-m="Talked">Talked</div>
 </div>
 
-<div class="hint" id="hint">hover to whisper · click to enter<br>or just watch</div>
 
 <div id="dots-layer"></div>
 
@@ -736,9 +735,9 @@ let hoveredNode = null;
 let leaderProgress = 0;
 const LEADER_LENGTH = 70;
 
-// TRAVELING SIGNALS — white dots fly between stars, bending near the black hole (center)
+// TRAVELING SIGNALS — single white dots fly between stars, curving around the black hole
 const signals = [];
-const MAX_SIGNALS = 5;
+const MAX_SIGNALS = 2;
 let signalTimer = 0;
 
 function spawnSignal() {
@@ -751,29 +750,31 @@ function spawnSignal() {
   const a = visible[ai], b = visible[bi];
   signals.push({
     ax: a.x, ay: a.y, bx: b.x, by: b.y,
-    progress: 0, speed: 0.005 + Math.random() * 0.006
+    progress: 0, speed: 0.002 + Math.random() * 0.002
   });
 }
 
-// Get curved position along path, bending near center (gravitational lensing)
+// Get curved position — signal bends TOWARD black hole center, wrapping around it
 function getSignalPos(s, t) {
-  // Linear interpolation
   const lx = s.ax + (s.bx - s.ax) * t;
   const ly = s.ay + (s.by - s.ay) * t;
-  // Midpoint of the line
-  const mx = (s.ax + s.bx) / 2, my = (s.ay + s.by) / 2;
-  // Distance from midpoint to center (black hole)
-  const distToCenter = Math.hypot(mx - CX, my - CY);
-  // Gravitational bend strength — stronger when path passes closer to center
-  const bendStrength = Math.max(0, 1 - distToCenter / (Math.min(W, H) * 0.4));
-  const bendAmount = bendStrength * 40;
-  // Perpendicular force toward center at the midpoint of the path
-  const dx = CX - mx, dy = CY - my;
-  const dLen = Math.hypot(dx, dy) || 1;
-  // Bend peaks at t=0.5 (middle of path)
+
+  // For each point along the path, calculate gravitational pull toward center
+  const dxToCenter = CX - lx, dyToCenter = CY - ly;
+  const distToCenter = Math.hypot(dxToCenter, dyToCenter) || 1;
+
+  // Inverse-square-ish gravity: stronger when closer to center
+  // Normalize direction toward center
+  const nx = dxToCenter / distToCenter, ny = dyToCenter / distToCenter;
+
+  // Gravity strength: peaks when close to center, falls off with distance
+  const gravRadius = Math.min(W, H) * 0.25;
+  const gravity = Math.max(0, (gravRadius / Math.max(distToCenter, 30)) - 0.3) * 60;
+
+  // Apply bend (peaks in middle of journey)
   const bendFactor = Math.sin(t * Math.PI);
-  const px = lx + (dx / dLen) * bendAmount * bendFactor;
-  const py = ly + (dy / dLen) * bendAmount * bendFactor;
+  const px = lx + nx * gravity * bendFactor;
+  const py = ly + ny * gravity * bendFactor;
   return { x: px, y: py };
 }
 
@@ -781,44 +782,26 @@ function drawConstellationLines(t) {
   if (!dotNodes.length) return;
   ctx.save();
 
-  // No visible lines — only traveling signals
-
-  // Spawn new signals periodically
+  // Spawn signals infrequently
   signalTimer += 0.008;
-  if (signalTimer > 0.8 + Math.random() * 1.5 && signals.length < MAX_SIGNALS) {
+  if (signalTimer > 3.5 + Math.random() * 4 && signals.length < MAX_SIGNALS) {
     spawnSignal();
     signalTimer = 0;
   }
 
-  // Draw & update traveling light signals (curved near black hole)
+  // Draw single white dots (no trail, no glow)
   for (let i = signals.length - 1; i >= 0; i--) {
     const s = signals[i];
-    // Update source/target positions from live dot positions
     s.progress += s.speed;
     if (s.progress > 1) { signals.splice(i, 1); continue; }
     const pos = getSignalPos(s, s.progress);
-    const headAlpha = 0.8 * Math.sin(s.progress * Math.PI);
-    // Tail: draw previous positions
-    for (let k = 0; k < 5; k++) {
-      const tp = Math.max(0, s.progress - k * 0.03);
-      const tpos = getSignalPos(s, tp);
-      const ta = headAlpha * (1 - k * 0.2);
-      const tr = 2 - k * 0.35;
-      if (ta > 0.01 && tr > 0.2) {
-        ctx.beginPath();
-        ctx.arc(tpos.x, tpos.y, tr, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${ta})`;
-        ctx.fill();
-      }
+    const alpha = 0.7 * Math.sin(s.progress * Math.PI);
+    if (alpha > 0.01) {
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.fill();
     }
-    // Glow around signal head
-    const glowGrad = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, 10);
-    glowGrad.addColorStop(0, `rgba(237,233,226,${headAlpha * 0.25})`);
-    glowGrad.addColorStop(1, 'transparent');
-    ctx.beginPath();
-    ctx.arc(pos.x, pos.y, 10, 0, Math.PI * 2);
-    ctx.fillStyle = glowGrad;
-    ctx.fill();
   }
   ctx.restore();
 }
@@ -1148,8 +1131,8 @@ function animLoop() {
 (() => {
   const sc = document.getElementById('stone-canvas');
   const sctx = sc.getContext('2d');
-  const S = 160;
-  const R = 50;
+  const S = 200;
+  const R = 62;
   const cx = S / 2, cy = S / 2;
   let stoneAngle = 0;
   let stoneHover = false;
@@ -1158,12 +1141,11 @@ function animLoop() {
   const SHAPE_POINTS = 64;
   const shapeBumps = [];
   for (let i = 0; i < SHAPE_POINTS; i++) {
-    // Multiple frequency noise for natural irregularity
+    // Soft low-frequency bumps only — smooth organic shape
     shapeBumps.push(
-      0.92 + 0.12 * Math.sin(i * 0.8 + 1.3) +
-      0.06 * Math.sin(i * 1.7 + 0.5) +
-      0.04 * Math.sin(i * 3.1 + 2.1) +
-      0.03 * Math.cos(i * 2.3 + 0.9)
+      0.95 + 0.06 * Math.sin(i * 0.4 + 1.3) +
+      0.04 * Math.sin(i * 0.8 + 0.5) +
+      0.02 * Math.sin(i * 1.2 + 2.1)
     );
   }
 
@@ -1174,10 +1156,9 @@ function animLoop() {
     const i1 = (i0 + 1) % SHAPE_POINTS;
     const frac = idx - Math.floor(idx);
     const base = shapeBumps[i0] * (1 - frac) + shapeBumps[i1] * frac;
-    // Animate: slow morphing over time
-    const morph = 0.03 * Math.sin(t * 0.7 + angle * 2.3) +
-                  0.02 * Math.sin(t * 1.1 + angle * 3.7) +
-                  0.015 * Math.cos(t * 0.5 + angle * 1.5);
+    // Animate: slow smooth morphing over time
+    const morph = 0.02 * Math.sin(t * 0.5 + angle * 1.2) +
+                  0.015 * Math.sin(t * 0.3 + angle * 0.8);
     return R * (base + morph);
   }
 
