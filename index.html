@@ -487,6 +487,58 @@ body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
 #center-stone:hover .stone-label{opacity:1}
 
 body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity .3s}
+
+/* ── MOBILE ── */
+@media (max-width:768px) {
+  html,body{cursor:auto}
+  #cursor{display:none!important}
+
+  .wordmark{font-size:16px;top:28px;left:24px}
+  .sub{top:52px;left:24px;font-size:7px;letter-spacing:.14em}
+  .count{top:28px;right:24px;font-size:8px}
+
+  .view-toggle{
+    top:auto;bottom:24px;right:auto;
+    left:50%;transform:translateX(-50%);
+    font-size:7px;gap:6px;
+    background:rgba(7,7,10,.85);
+    padding:8px 16px;border-radius:20px;
+    border:1px solid rgba(237,233,226,.08)
+  }
+
+  .filters{
+    bottom:auto;top:76px;left:24px;right:24px;
+    gap:4px;flex-wrap:wrap;justify-content:center
+  }
+  .filter{font-size:7px;padding:4px 8px;letter-spacing:.12em}
+
+  #center-stone{transform:translate(-50%,-50%) scale(.8)}
+
+  .dot-wrap{cursor:auto}
+  .dot-wrap::before{width:50px;height:50px}
+
+  .preview{width:220px}
+  .preview-body{padding:10px 12px 12px}
+
+  /* List view mobile */
+  .list-inner{padding:100px 24px 100px}
+  .list-row{grid-template-columns:28px 1fr auto;gap:10px;padding:12px 0}
+  .list-year{display:none}
+  .list-title{font-size:14px}
+
+  /* Project page mobile */
+  .pp-inner{padding:52px 24px 100px}
+  .pp-title{font-size:clamp(28px,8vw,42px);margin-bottom:32px}
+  .pp-visual{height:200px;margin-bottom:32px}
+  .pp-back{margin-bottom:48px}
+
+  .linkedin-link{font-size:7px;padding:2px 6px}
+}
+
+@media (max-width:400px) {
+  .sub{display:none}
+  .filters{top:60px}
+}
 </style>
 </head>
 <body>
@@ -744,36 +796,39 @@ function spawnSignal() {
   if (!dotNodes.length || dotNodes.length < 2) return;
   const visible = dotNodes.filter(n => n.wrap.style.opacity !== '0');
   if (visible.length < 2) return;
-  const ai = Math.floor(Math.random() * visible.length);
-  let bi = Math.floor(Math.random() * (visible.length - 1));
-  if (bi >= ai) bi++;
-  // Store references to live nodes so we track their moving positions
-  signals.push({
-    srcNode: visible[ai], dstNode: visible[bi],
-    progress: 0, speed: 0.002 + Math.random() * 0.002
-  });
+
+  // Pick two stars on DIFFERENT rings — inner to outer only
+  // Sort by ring index so signal goes outward from center
+  let attempts = 0;
+  while (attempts < 20) {
+    const ai = Math.floor(Math.random() * visible.length);
+    const bi = Math.floor(Math.random() * visible.length);
+    if (ai === bi) { attempts++; continue; }
+    const a = visible[ai], b = visible[bi];
+    if (a.ringIdx === b.ringIdx) { attempts++; continue; }
+    // Ensure they're on the same side of the black hole (no crossing)
+    const angleA = Math.atan2(a.y - CY, a.x - CX);
+    const angleB = Math.atan2(b.y - CY, b.x - CX);
+    const angleDiff = Math.abs(angleA - angleB);
+    const normalizedDiff = angleDiff > Math.PI ? Math.PI * 2 - angleDiff : angleDiff;
+    // Only connect if they're within ~120° of each other (same side)
+    if (normalizedDiff > Math.PI * 0.67) { attempts++; continue; }
+    // Inner to outer
+    const src = a.ringIdx < b.ringIdx ? a : b;
+    const dst = a.ringIdx < b.ringIdx ? b : a;
+    signals.push({
+      srcNode: src, dstNode: dst,
+      progress: 0, speed: 0.002 + Math.random() * 0.002
+    });
+    return;
+  }
 }
 
-// Get curved position — reads LIVE positions, bends toward black hole
+// Simple straight-line path from inner star to outer star (no black hole crossing)
 function getSignalPos(s, t) {
-  // Live positions from orbiting nodes
   const ax = s.srcNode.x, ay = s.srcNode.y;
   const bx = s.dstNode.x, by = s.dstNode.y;
-  const lx = ax + (bx - ax) * t;
-  const ly = ay + (by - ay) * t;
-
-  // Gravitational pull toward center
-  const dxC = CX - lx, dyC = CY - ly;
-  const distC = Math.hypot(dxC, dyC) || 1;
-  const nx = dxC / distC, ny = dyC / distC;
-
-  // Gravity: inverse distance, stronger when closer
-  const gravRadius = Math.min(W, H) * 0.25;
-  const gravity = Math.max(0, (gravRadius / Math.max(distC, 40)) - 0.25) * 55;
-
-  // Bend peaks at middle, zero at start and end (so signal arrives exactly at target)
-  const bendFactor = Math.sin(t * Math.PI);
-  return { x: lx + nx * gravity * bendFactor, y: ly + ny * gravity * bendFactor };
+  return { x: ax + (bx - ax) * t, y: ay + (by - ay) * t };
 }
 
 function drawConstellationLines(t) {
@@ -1475,6 +1530,13 @@ document.addEventListener('mousemove', e => {
 });
 document.addEventListener('mouseleave', () => cursorEl.style.opacity = '0');
 document.addEventListener('mouseenter', () => cursorEl.style.opacity = '1');
+
+// MOBILE TOUCH — tap dots to open project, tap stone for RepairBot
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+if (isTouchDevice) {
+  cursorEl.style.display = 'none';
+  document.body.style.cursor = 'auto';
+}
 </script>
 </body>
 </html>
