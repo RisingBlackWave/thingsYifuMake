@@ -505,7 +505,7 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   <span class="sep">/</span>
   <span data-view="list">list</span>
   <span class="sep">·</span>
-  <a href="https://www.linkedin.com/in/yifu-zhang-0b8a1b1b8/" target="_blank" rel="noopener" class="linkedin-link">LinkedIn ↗</a>
+  <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" class="linkedin-link">LinkedIn ↗</a>
 </div>
 
 <!-- CENTER STONE — 3D rotating xeno-stone (clickable → RepairBot paper) -->
@@ -735,13 +735,28 @@ let hoveredNode = null;
 let leaderProgress = 0;
 const LEADER_LENGTH = 70;
 
-// CONSTELLATION LINES — connect nearby dots with fading lines
-const CONSTELLATION_MAX_DIST = 220; // px — max connection distance
-const CONSTELLATION_MIN_DIST = 40;  // px — avoid cluttering very close dots
+// CONSTELLATION LINES — connect nearby dots with fading lines + traveling signals
+const CONSTELLATION_MAX_DIST = 220;
+const CONSTELLATION_MIN_DIST = 40;
+
+// Traveling light signals along constellation edges
+const signals = [];
+const MAX_SIGNALS = 4;
+let signalTimer = 0;
+
+function spawnSignal(edges) {
+  if (!edges.length) return;
+  const e = edges[Math.floor(Math.random() * edges.length)];
+  signals.push({
+    ax: e.ax, ay: e.ay, bx: e.bx, by: e.by,
+    progress: 0, speed: 0.008 + Math.random() * 0.008
+  });
+}
 
 function drawConstellationLines(t) {
   if (!dotNodes.length) return;
   const visible = dotNodes.filter(n => n.wrap.style.opacity !== '0');
+  const edges = [];
   ctx.save();
   for (let i = 0; i < visible.length; i++) {
     for (let j = i + 1; j < visible.length; j++) {
@@ -749,10 +764,12 @@ function drawConstellationLines(t) {
       const dx = a.x - b.x, dy = a.y - b.y;
       const dist = Math.hypot(dx, dy);
       if (dist < CONSTELLATION_MIN_DIST || dist > CONSTELLATION_MAX_DIST) continue;
-      // Fade: full opacity at min dist, zero at max dist
       const fade = 1 - (dist - CONSTELLATION_MIN_DIST) / (CONSTELLATION_MAX_DIST - CONSTELLATION_MIN_DIST);
-      const alpha = fade * 0.08 * (0.7 + 0.3 * Math.sin(t * 0.4 + i * 0.5 + j * 0.3));
+      // Brighter base + variation: some lines shimmer brighter
+      const shimmer = 0.6 + 0.4 * Math.sin(t * 0.5 + i * 1.3 + j * 0.7);
+      const alpha = fade * (0.06 + 0.1 * shimmer);
       if (alpha < 0.005) continue;
+      edges.push({ ax: a.x, ay: a.y, bx: b.x, by: b.y });
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
@@ -760,6 +777,46 @@ function drawConstellationLines(t) {
       ctx.lineWidth = 0.5;
       ctx.stroke();
     }
+  }
+
+  // Spawn new signals periodically
+  signalTimer += 0.008;
+  if (signalTimer > 1.2 + Math.random() * 2 && signals.length < MAX_SIGNALS && edges.length) {
+    spawnSignal(edges);
+    signalTimer = 0;
+  }
+
+  // Draw & update traveling light signals
+  for (let i = signals.length - 1; i >= 0; i--) {
+    const s = signals[i];
+    s.progress += s.speed;
+    if (s.progress > 1) { signals.splice(i, 1); continue; }
+    const px = s.ax + (s.bx - s.ax) * s.progress;
+    const py = s.ay + (s.by - s.ay) * s.progress;
+    // Bright dot with tail
+    const headAlpha = 0.7 * Math.sin(s.progress * Math.PI); // fade in/out
+    const tailLen = 0.12;
+    for (let k = 0; k < 4; k++) {
+      const tp = Math.max(0, s.progress - k * tailLen * 0.25);
+      const tx = s.ax + (s.bx - s.ax) * tp;
+      const ty = s.ay + (s.by - s.ay) * tp;
+      const ta = headAlpha * (1 - k * 0.3);
+      const tr = 2 - k * 0.4;
+      if (ta > 0.01) {
+        ctx.beginPath();
+        ctx.arc(tx, ty, tr, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${ta})`;
+        ctx.fill();
+      }
+    }
+    // Glow around signal head
+    const glowGrad = ctx.createRadialGradient(px, py, 0, px, py, 8);
+    glowGrad.addColorStop(0, `rgba(237,233,226,${headAlpha * 0.3})`);
+    glowGrad.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(px, py, 8, 0, Math.PI * 2);
+    ctx.fillStyle = glowGrad;
+    ctx.fill();
   }
   ctx.restore();
 }
@@ -1089,133 +1146,159 @@ function animLoop() {
 (() => {
   const sc = document.getElementById('stone-canvas');
   const sctx = sc.getContext('2d');
-  const S = 160; // canvas pixel size
-  const R = 52;  // sphere radius
+  const S = 160;
+  const R = 50;
   const cx = S / 2, cy = S / 2;
   let stoneAngle = 0;
   let stoneHover = false;
 
-  // Generate fixed pore positions on sphere surface (spherical coords)
+  // Irregular shape distortion — pre-generate bumps for the silhouette
+  const SHAPE_POINTS = 64;
+  const shapeBumps = [];
+  for (let i = 0; i < SHAPE_POINTS; i++) {
+    // Multiple frequency noise for natural irregularity
+    shapeBumps.push(
+      0.92 + 0.12 * Math.sin(i * 0.8 + 1.3) +
+      0.06 * Math.sin(i * 1.7 + 0.5) +
+      0.04 * Math.sin(i * 3.1 + 2.1) +
+      0.03 * Math.cos(i * 2.3 + 0.9)
+    );
+  }
+
+  // Get distorted radius at a given angle
+  function stoneRadius(angle) {
+    const idx = ((angle / (Math.PI * 2)) * SHAPE_POINTS) % SHAPE_POINTS;
+    const i0 = Math.floor(idx) % SHAPE_POINTS;
+    const i1 = (i0 + 1) % SHAPE_POINTS;
+    const frac = idx - Math.floor(idx);
+    return R * (shapeBumps[i0] * (1 - frac) + shapeBumps[i1] * frac);
+  }
+
+  // Draw the irregular stone outline path
+  function stoneOutline() {
+    sctx.beginPath();
+    for (let i = 0; i <= SHAPE_POINTS; i++) {
+      const a = (i / SHAPE_POINTS) * Math.PI * 2;
+      const r = stoneRadius(a);
+      const px = cx + Math.cos(a) * r;
+      const py = cy + Math.sin(a) * r;
+      if (i === 0) sctx.moveTo(px, py); else sctx.lineTo(px, py);
+    }
+    sctx.closePath();
+  }
+
+  // Pores on the sphere surface
   const pores = [];
-  for (let i = 0; i < 180; i++) {
+  for (let i = 0; i < 200; i++) {
     pores.push({
       theta: Math.random() * Math.PI * 2,
       phi: Math.acos(2 * Math.random() - 1),
-      size: 1 + Math.random() * 2.5,
-      depth: 0.15 + Math.random() * 0.25
+      size: 0.8 + Math.random() * 2,
+      depth: 0.12 + Math.random() * 0.2
     });
   }
 
-  // Surface vein lines (great circle arcs)
-  const veins = [];
-  for (let i = 0; i < 8; i++) {
-    const startTheta = Math.random() * Math.PI * 2;
-    const startPhi = 0.3 + Math.random() * 2.2;
-    const dir = Math.random() * Math.PI * 2;
-    const points = [];
-    for (let t = 0; t < 12; t++) {
-      points.push({
-        theta: startTheta + Math.cos(dir) * t * 0.15,
-        phi: startPhi + Math.sin(dir) * t * 0.12
-      });
-    }
-    veins.push({ points, opacity: 0.03 + Math.random() * 0.04 });
-  }
-
   function project3D(theta, phi, angle) {
-    // Rotate around Y axis
     const x0 = Math.sin(phi) * Math.cos(theta);
     const y0 = Math.cos(phi);
     const z0 = Math.sin(phi) * Math.sin(theta);
-    // Apply Y rotation
     const x1 = x0 * Math.cos(angle) - z0 * Math.sin(angle);
     const z1 = x0 * Math.sin(angle) + z0 * Math.cos(angle);
-    // Slight X tilt
-    const tilt = 0.15;
+    const tilt = 0.18;
     const y1 = y0 * Math.cos(tilt) - z1 * Math.sin(tilt);
     const z2 = y0 * Math.sin(tilt) + z1 * Math.cos(tilt);
-    return { x: cx + x1 * R, y: cy + y1 * R, z: z2, visible: z2 > -0.1 };
+    // Distort projection to match irregular shape
+    const projAngle = Math.atan2(y1, x1);
+    const rScale = stoneRadius(projAngle) / R;
+    return { x: cx + x1 * R * rScale, y: cy + y1 * R * rScale, z: z2, visible: z2 > -0.05 };
   }
 
   function drawStone() {
     sctx.clearRect(0, 0, S, S);
     stoneAngle += stoneHover ? 0.012 : 0.004;
 
-    // Base sphere with gradient
-    const lightAngle = stoneAngle * 0.3;
-    const lightX = cx + R * 0.3 * Math.cos(lightAngle);
-    const lightY = cy - R * 0.25;
-    const grad = sctx.createRadialGradient(lightX, lightY, 0, cx, cy, R * 1.15);
-    grad.addColorStop(0, '#5a5650');
-    grad.addColorStop(0.3, '#4a4640');
-    grad.addColorStop(0.6, '#3a3732');
-    grad.addColorStop(0.85, '#2a2825');
-    grad.addColorStop(1, '#1e1d1a');
+    // Clip to irregular stone shape
+    sctx.save();
+    stoneOutline();
+    sctx.clip();
 
-    sctx.beginPath();
-    sctx.arc(cx, cy, R, 0, Math.PI * 2);
+    // Shiny black base — obsidian/xeno feel
+    const lightAngle = stoneAngle * 0.4;
+    const lightX = cx + R * 0.35 * Math.cos(lightAngle);
+    const lightY = cy - R * 0.3 + R * 0.1 * Math.sin(lightAngle * 0.7);
+    const grad = sctx.createRadialGradient(lightX, lightY, 0, cx, cy, R * 1.2);
+    grad.addColorStop(0, '#383838');    // bright specular center
+    grad.addColorStop(0.15, '#252525');
+    grad.addColorStop(0.4, '#151515');
+    grad.addColorStop(0.7, '#0c0c0c');
+    grad.addColorStop(1, '#050505');
+    stoneOutline();
     sctx.fillStyle = grad;
     sctx.fill();
 
-    // Subtle edge highlight
-    const edgeGrad = sctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R);
-    edgeGrad.addColorStop(0, 'transparent');
-    edgeGrad.addColorStop(0.7, 'transparent');
-    edgeGrad.addColorStop(1, 'rgba(237,233,226,0.04)');
-    sctx.beginPath();
-    sctx.arc(cx, cy, R, 0, Math.PI * 2);
-    sctx.fillStyle = edgeGrad;
+    // Moving reflection band (like polished obsidian)
+    const refAngle = stoneAngle * 0.6;
+    const refX = cx + R * 0.5 * Math.cos(refAngle + 1);
+    const refY = cy + R * 0.3 * Math.sin(refAngle * 0.8);
+    const refGrad = sctx.createRadialGradient(refX, refY, 0, refX, refY, R * 0.6);
+    refGrad.addColorStop(0, 'rgba(255,255,255,0.09)');
+    refGrad.addColorStop(0.3, 'rgba(200,200,210,0.04)');
+    refGrad.addColorStop(1, 'transparent');
+    stoneOutline();
+    sctx.fillStyle = refGrad;
     sctx.fill();
 
-    // Draw pores (sponge texture)
+    // Second reflection (opposite side, subtler)
+    const ref2X = cx - R * 0.4 * Math.cos(refAngle * 0.5);
+    const ref2Y = cy - R * 0.35 * Math.sin(refAngle * 0.3 + 2);
+    const ref2Grad = sctx.createRadialGradient(ref2X, ref2Y, 0, ref2X, ref2Y, R * 0.45);
+    ref2Grad.addColorStop(0, 'rgba(220,225,235,0.06)');
+    ref2Grad.addColorStop(0.4, 'rgba(180,185,200,0.02)');
+    ref2Grad.addColorStop(1, 'transparent');
+    stoneOutline();
+    sctx.fillStyle = ref2Grad;
+    sctx.fill();
+
+    // Draw pores (sponge cavities) — darker on black surface
     pores.forEach(p => {
       const proj = project3D(p.theta, p.phi, stoneAngle);
       if (!proj.visible) return;
       const facing = Math.max(0, proj.z);
-      const alpha = facing * p.depth;
+      const alpha = facing * p.depth * 0.6;
       if (alpha < 0.01) return;
       sctx.beginPath();
-      sctx.arc(proj.x, proj.y, p.size * (0.6 + facing * 0.4), 0, Math.PI * 2);
+      sctx.arc(proj.x, proj.y, p.size * (0.5 + facing * 0.5), 0, Math.PI * 2);
       sctx.fillStyle = `rgba(0,0,0,${alpha})`;
       sctx.fill();
-      // Tiny highlight on pore edge (light catch)
-      if (facing > 0.5 && p.size > 1.5) {
+      // Reflection catch on pore rim
+      if (facing > 0.4 && p.size > 1.2) {
         sctx.beginPath();
-        sctx.arc(proj.x - p.size * 0.3, proj.y - p.size * 0.3, p.size * 0.3, 0, Math.PI * 2);
-        sctx.fillStyle = `rgba(237,233,226,${facing * 0.03})`;
+        sctx.arc(proj.x - p.size * 0.3, proj.y - p.size * 0.35, p.size * 0.25, 0, Math.PI * 2);
+        sctx.fillStyle = `rgba(255,255,255,${facing * 0.04})`;
         sctx.fill();
       }
     });
 
-    // Draw vein lines
-    veins.forEach(v => {
-      sctx.beginPath();
-      let started = false;
-      v.points.forEach(pt => {
-        const proj = project3D(pt.theta, pt.phi, stoneAngle);
-        if (!proj.visible || proj.z < 0.1) return;
-        if (!started) { sctx.moveTo(proj.x, proj.y); started = true; }
-        else sctx.lineTo(proj.x, proj.y);
-      });
-      if (started) {
-        sctx.strokeStyle = `rgba(237,233,226,${v.opacity})`;
-        sctx.lineWidth = 0.6;
-        sctx.stroke();
-      }
-    });
-
-    // Specular highlight
-    const specGrad = sctx.createRadialGradient(
-      cx - R * 0.25, cy - R * 0.3, 0,
-      cx - R * 0.25, cy - R * 0.3, R * 0.5
-    );
-    specGrad.addColorStop(0, 'rgba(237,233,226,0.06)');
-    specGrad.addColorStop(0.5, 'rgba(237,233,226,0.02)');
+    // Sharp specular highlight (glossy reflection)
+    const specX = cx - R * 0.22 + Math.cos(stoneAngle * 0.3) * 3;
+    const specY = cy - R * 0.28 + Math.sin(stoneAngle * 0.2) * 2;
+    const specGrad = sctx.createRadialGradient(specX, specY, 0, specX, specY, R * 0.25);
+    specGrad.addColorStop(0, 'rgba(255,255,255,0.18)');
+    specGrad.addColorStop(0.2, 'rgba(255,255,255,0.08)');
+    specGrad.addColorStop(0.5, 'rgba(255,255,255,0.02)');
     specGrad.addColorStop(1, 'transparent');
-    sctx.beginPath();
-    sctx.arc(cx, cy, R, 0, Math.PI * 2);
+    stoneOutline();
     sctx.fillStyle = specGrad;
     sctx.fill();
+
+    // Edge rim light
+    sctx.restore();
+    sctx.save();
+    stoneOutline();
+    sctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    sctx.lineWidth = 1;
+    sctx.stroke();
+    sctx.restore();
 
     requestAnimationFrame(drawStone);
   }
