@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>thingsYifuMake — Editor</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#111;--card:#1a1a1a;--border:#2a2a2a;--text:#e5e5e5;--dim:#888;
+  --accent:#7AB8E8;--danger:#E87A7A;--success:#7AE8C1;
+  --designed:#E8C17A;--researched:#7AB8E8;--built:#7AE8C1;--taught:#E87A7A;--talked:#C17AE8
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+
+/* Layout */
+.header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(17,17,17,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:16px 32px;
+  display:flex;align-items:center;justify-content:space-between
+}
+.header h1{font-size:18px;font-weight:400;letter-spacing:.05em}
+.header h1 em{font-style:italic;color:var(--dim)}
+.header-actions{display:flex;gap:10px}
+.btn{
+  padding:8px 18px;border:1px solid var(--border);border-radius:4px;
+  background:var(--card);color:var(--text);font-size:12px;letter-spacing:.05em;
+  cursor:pointer;transition:all .2s
+}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn-primary{background:var(--accent);color:#111;border-color:var(--accent);font-weight:600}
+.btn-primary:hover{background:#5a9ed5}
+.btn-danger{border-color:var(--danger);color:var(--danger)}
+.btn-danger:hover{background:rgba(232,122,122,.1)}
+
+.main{max-width:900px;margin:0 auto;padding:32px}
+
+/* Status bar */
+.status{
+  padding:12px 20px;margin-bottom:24px;
+  border-radius:6px;font-size:12px;
+  display:none;align-items:center;gap:8px
+}
+.status.info{display:flex;background:rgba(122,184,232,.1);border:1px solid rgba(122,184,232,.2);color:var(--accent)}
+.status.success{display:flex;background:rgba(122,232,193,.1);border:1px solid rgba(122,232,193,.2);color:var(--success)}
+.status.error{display:flex;background:rgba(232,122,122,.1);border:1px solid rgba(232,122,122,.2);color:var(--danger)}
+
+/* Project cards */
+.project-card{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  margin-bottom:16px;overflow:hidden;transition:border-color .2s
+}
+.project-card:hover{border-color:#3a3a3a}
+.project-card.editing{border-color:var(--accent)}
+
+.card-header{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 20px;cursor:pointer;
+  transition:background .2s
+}
+.card-header:hover{background:rgba(255,255,255,.02)}
+
+.card-idx{
+  font-size:10px;color:var(--dim);min-width:24px;
+  font-variant-numeric:tabular-nums
+}
+.card-mode{
+  font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px 8px;border-radius:3px;border:1px solid;
+  flex-shrink:0
+}
+.card-title{flex:1;font-size:15px;font-weight:500}
+.card-wip{
+  font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  padding:2px 8px;border:1px solid rgba(232,122,122,.3);
+  color:var(--danger);border-radius:3px
+}
+.card-toggle{color:var(--dim);font-size:18px;transition:transform .2s}
+.project-card.open .card-toggle{transform:rotate(180deg)}
+
+.card-body{
+  max-height:0;overflow:hidden;transition:max-height .35s ease
+}
+.project-card.open .card-body{max-height:2000px}
+
+.card-inner{padding:0 20px 20px}
+
+.field{margin-bottom:16px}
+.field label{
+  display:block;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:6px
+}
+.field input,.field textarea,.field select{
+  width:100%;padding:10px 14px;
+  background:var(--bg);border:1px solid var(--border);border-radius:4px;
+  color:var(--text);font-size:14px;font-family:inherit;
+  transition:border-color .2s;resize:vertical
+}
+.field input:focus,.field textarea:focus,.field select:focus{
+  outline:none;border-color:var(--accent)
+}
+.field textarea{min-height:80px}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* Tags editor */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.tag-pill{
+  display:flex;align-items:center;gap:4px;
+  font-size:11px;padding:4px 10px;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px
+}
+.tag-pill .remove{
+  cursor:pointer;color:var(--dim);font-size:14px;
+  transition:color .2s
+}
+.tag-pill .remove:hover{color:var(--danger)}
+.tag-input{
+  background:none!important;border:none!important;
+  width:120px;font-size:11px;padding:4px 0!important
+}
+.tag-input:focus{outline:none}
+
+/* Image fields */
+.image-field{
+  display:flex;gap:12px;align-items:flex-start
+}
+.image-preview{
+  width:120px;height:80px;border-radius:4px;
+  background:var(--bg);border:1px solid var(--border);
+  overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--dim);font-size:10px
+}
+.image-preview img{width:100%;height:100%;object-fit:cover}
+.image-controls{flex:1}
+
+/* Add project */
+.add-project{
+  border:2px dashed var(--border);border-radius:8px;
+  padding:24px;text-align:center;color:var(--dim);
+  cursor:pointer;transition:all .2s;margin-bottom:16px
+}
+.add-project:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Checkbox */
+.checkbox-wrap{
+  display:flex;align-items:center;gap:8px;
+  cursor:pointer;font-size:13px
+}
+.checkbox-wrap input[type="checkbox"]{
+  width:16px;height:16px;accent-color:var(--accent)
+}
+
+/* Delete zone */
+.card-actions{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:16px;border-top:1px solid var(--border);margin-top:8px
+}
+
+/* Drag handle */
+.drag-handle{cursor:grab;color:var(--dim);font-size:14px;padding:0 4px}
+.drag-handle:active{cursor:grabbing}
+
+/* Instructions */
+.instructions{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:20px 24px;margin-bottom:32px;font-size:13px;line-height:1.8;color:var(--dim)
+}
+.instructions h2{font-size:14px;color:var(--text);margin-bottom:8px;font-weight:500}
+.instructions code{
+  background:rgba(255,255,255,.05);padding:2px 6px;border-radius:3px;
+  font-family:'SF Mono',Consolas,monospace;font-size:12px;color:var(--accent)
+}
+.instructions ol{padding-left:20px}
+.instructions li{margin-bottom:4px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>things<em>Yifu</em>Make — <em>Editor</em></h1>
+  <div class="header-actions">
+    <button class="btn" onclick="loadFromFile()">Load JSON</button>
+    <button class="btn btn-primary" onclick="downloadJSON()">Download projects.json</button>
+  </div>
+</div>
+
+<div class="main">
+  <div id="status" class="status"></div>
+
+  <div class="instructions">
+    <h2>How to use this editor</h2>
+    <ol>
+      <li>Edit any project — click a card to expand it, change text fields directly.</li>
+      <li>To add images: put your image files in <code>assets/projects/[slug]/</code> then type the path (e.g. <code>assets/projects/tact-monster/preview.jpg</code>).</li>
+      <li>When done, click <strong>Download projects.json</strong> — this saves the file to your Downloads.</li>
+      <li>Replace the old <code>projects.json</code> in your project folder with the downloaded one.</li>
+      <li>Push to GitHub: <code>git add . && git commit -m "update" && git push</code></li>
+    </ol>
+  </div>
+
+  <div id="project-list"></div>
+  <div class="add-project" onclick="addProject()">+ Add new project</div>
+</div>
+
+<input type="file" id="file-input" accept=".json" style="display:none" onchange="handleFileLoad(event)">
+
+<script>
+const MODE_COLORS = {
+  Designed:'#E8C17A', Researched:'#7AB8E8',
+  Built:'#7AE8C1', Taught:'#E87A7A', Talked:'#C17AE8'
+};
+
+let projects = [];
+
+// Load projects.json on start
+fetch('projects.json')
+  .then(r => r.json())
+  .then(data => { projects = data; render(); showStatus('Loaded ' + data.length + ' projects from projects.json', 'success'); })
+  .catch(() => { showStatus('Could not auto-load projects.json — use "Load JSON" button', 'info'); });
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+  if (type === 'success') setTimeout(() => { el.className = 'status'; }, 3000);
+}
+
+function render() {
+  const list = document.getElementById('project-list');
+  list.innerHTML = '';
+  projects.forEach((proj, idx) => {
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    card.dataset.idx = idx;
+    const modeColor = MODE_COLORS[proj.mode] || '#888';
+
+    card.innerHTML = `
+      <div class="card-header" onclick="toggleCard(${idx})">
+        <span class="card-idx">${String(idx + 1).padStart(2, '0')}</span>
+        <span class="card-mode" style="color:${modeColor};border-color:${modeColor}40">${proj.mode || 'Mode?'}</span>
+        <span class="card-title">${esc(proj.title || 'Untitled')}</span>
+        ${proj.wip ? '<span class="card-wip">WIP</span>' : ''}
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="card-inner">
+          <div class="field-row">
+            <div class="field">
+              <label>Title</label>
+              <input type="text" value="${esc(proj.title || '')}" oninput="updateField(${idx},'title',this.value)">
+            </div>
+            <div class="field">
+              <label>Slug</label>
+              <input type="text" value="${esc(proj.slug || '')}" oninput="updateField(${idx},'slug',this.value)" placeholder="auto-from-title">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Subtitle</label>
+            <input type="text" value="${esc(proj.subtitle || '')}" oninput="updateField(${idx},'subtitle',this.value)" placeholder="One-line teaser...">
+          </div>
+
+          <div class="field">
+            <label>Description</label>
+            <textarea rows="4" oninput="updateField(${idx},'desc',this.value)">${esc(proj.desc || '')}</textarea>
+          </div>
+
+          <div class="field-row-3">
+            <div class="field">
+              <label>Mode</label>
+              <select onchange="updateField(${idx},'mode',this.value)">
+                ${['Designed','Researched','Built','Taught','Talked'].map(m =>
+                  `<option value="${m}" ${proj.mode === m ? 'selected' : ''}>${m}</option>`
+                ).join('')}
+              </select>
+            </div>
+            <div class="field">
+              <label>Year</label>
+              <input type="text" value="${esc(String(proj.year || ''))}" oninput="updateField(${idx},'year',this.value)" placeholder="2024">
+            </div>
+            <div class="field">
+              <label style="visibility:hidden">WIP</label>
+              <label class="checkbox-wrap">
+                <input type="checkbox" ${proj.wip ? 'checked' : ''} onchange="updateField(${idx},'wip',this.checked)">
+                Work in Progress
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>External Link</label>
+            <input type="text" value="${esc(proj.link || '')}" oninput="updateField(${idx},'link',this.value)" placeholder="https://...">
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Preview Image</label>
+              <div class="image-field">
+                <div class="image-preview" id="prev-img-${idx}">
+                  ${proj.previewImage ? `<img src="${esc(proj.previewImage)}" onerror="this.replaceWith(document.createTextNode('not found'))">` : 'no image'}
+                </div>
+                <div class="image-controls">
+                  <input type="text" value="${esc(proj.previewImage || '')}" oninput="updateField(${idx},'previewImage',this.value||null);updateImgPreview(${idx},'prev',this.value)" placeholder="assets/projects/slug/preview.jpg">
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Cover Image</label>
+              <div class="image-field">
+                <div class="image-preview" id="cover-img-${idx}">
+                  ${proj.coverImage ? `<img src="${esc(proj.coverImage)}" onerror="this.replaceWith(document.createTextNode('not found'))">` : 'no image'}
+                </div>
+                <div class="image-controls">
+                  <input type="text" value="${esc(proj.coverImage || '')}" oninput="updateField(${idx},'coverImage',this.value||null);updateImgPreview(${idx},'cover',this.value)" placeholder="assets/projects/slug/cover.jpg">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Preview Video</label>
+            <input type="text" value="${esc(proj.previewVideo || '')}" oninput="updateField(${idx},'previewVideo',this.value||null)" placeholder="assets/projects/slug/loop.mp4">
+          </div>
+
+          <div class="field">
+            <label>Tags (press Enter to add)</label>
+            <div class="tags-wrap" id="tags-${idx}">
+              ${(proj.tags || []).map((t, ti) => `
+                <span class="tag-pill">${esc(t)}<span class="remove" onclick="removeTag(${idx},${ti})">×</span></span>
+              `).join('')}
+              <input class="tag-input" placeholder="add tag..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTag(${idx},this)}">
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn btn-danger" onclick="deleteProject(${idx})">Delete project</button>
+            <button class="btn" onclick="duplicateProject(${idx})">Duplicate</button>
+          </div>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function toggleCard(idx) {
+  const cards = document.querySelectorAll('.project-card');
+  cards[idx].classList.toggle('open');
+}
+
+function updateField(idx, field, value) {
+  if (field === 'year') {
+    projects[idx][field] = value ? (isNaN(value) ? value : Number(value)) : null;
+  } else {
+    projects[idx][field] = value;
+  }
+}
+
+function addTag(idx, input) {
+  const val = input.value.trim();
+  if (!val) return;
+  if (!projects[idx].tags) projects[idx].tags = [];
+  projects[idx].tags.push(val);
+  input.value = '';
+  render();
+  // Re-open the card
+  setTimeout(() => document.querySelectorAll('.project-card')[idx].classList.add('open'), 10);
+}
+
+function removeTag(idx, tagIdx) {
+  projects[idx].tags.splice(tagIdx, 1);
+  render();
+  setTimeout(() => document.querySelectorAll('.project-card')[idx].classList.add('open'), 10);
+}
+
+function updateImgPreview(idx, type, path) {
+  const el = document.getElementById(`${type === 'prev' ? 'prev' : 'cover'}-img-${idx}`);
+  if (path) {
+    el.innerHTML = `<img src="${esc(path)}" onerror="this.replaceWith(document.createTextNode('not found'))">`;
+  } else {
+    el.innerHTML = 'no image';
+  }
+}
+
+function addProject() {
+  projects.push({
+    slug: 'new-project-' + Date.now(),
+    title: 'New Project',
+    subtitle: '',
+    mode: 'Designed',
+    year: new Date().getFullYear(),
+    desc: '',
+    tags: [],
+    link: null,
+    previewImage: null,
+    coverImage: null,
+    previewVideo: null,
+    wip: true
+  });
+  render();
+  // Open the new card
+  setTimeout(() => {
+    const cards = document.querySelectorAll('.project-card');
+    cards[cards.length - 1].classList.add('open');
+    cards[cards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
+}
+
+function deleteProject(idx) {
+  if (confirm(`Delete "${projects[idx].title}"? This cannot be undone.`)) {
+    projects.splice(idx, 1);
+    render();
+  }
+}
+
+function duplicateProject(idx) {
+  const copy = JSON.parse(JSON.stringify(projects[idx]));
+  copy.slug += '-copy';
+  copy.title += ' (copy)';
+  projects.splice(idx + 1, 0, copy);
+  render();
+  setTimeout(() => {
+    const cards = document.querySelectorAll('.project-card');
+    cards[idx + 1].classList.add('open');
+    cards[idx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
+}
+
+function downloadJSON() {
+  // Clean null strings
+  const clean = projects.map(p => {
+    const out = { ...p };
+    ['previewImage', 'coverImage', 'previewVideo', 'link'].forEach(k => {
+      if (out[k] === '' || out[k] === 'null') out[k] = null;
+    });
+    delete out._id;
+    delete out.grad;
+    return out;
+  });
+
+  const blob = new Blob([JSON.stringify(clean, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'projects.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showStatus('Downloaded projects.json — replace the file in your project folder', 'success');
+}
+
+function loadFromFile() {
+  document.getElementById('file-input').click();
+}
+
+function handleFileLoad(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      projects = JSON.parse(ev.target.result);
+      render();
+      showStatus('Loaded ' + projects.length + ' projects from file', 'success');
+    } catch (err) {
+      showStatus('Invalid JSON file: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+</script>
+
+</body>
+</html>

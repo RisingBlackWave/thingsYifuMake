@@ -426,6 +426,66 @@ body.list-active .filters,
 body.list-active #dots-layer,
 body.list-active #canvas{opacity:0;pointer-events:none;transition:opacity .3s}
 body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
+
+/* ── LINKEDIN LINK ── */
+.linkedin-link{
+  color:#0A66C2;opacity:1!important;
+  text-decoration:none;
+  font-weight:400;
+  letter-spacing:.1em;
+  padding:2px 7px;
+  border:1px solid rgba(10,102,194,.35);
+  border-radius:2px;
+  transition:background .2s,color .2s,border-color .2s;
+  cursor:none
+}
+.linkedin-link:hover{
+  background:rgba(10,102,194,.15);
+  border-color:#0A66C2;
+  color:#3B9BF5
+}
+
+/* ── CENTER STONE — 3D canvas xeno-stone ── */
+#center-stone{
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:15;
+  cursor:none;
+  pointer-events:auto;
+  display:flex;flex-direction:column;align-items:center;gap:10px
+}
+#stone-canvas{
+  width:120px;height:120px
+}
+
+.stone-glow{
+  position:absolute;
+  top:50%;left:50%;
+  width:200px;height:200px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(237,233,226,.03) 0%, transparent 65%);
+  pointer-events:none;
+  z-index:-1;
+  animation:glow-pulse 4s ease-in-out infinite alternate
+}
+@keyframes glow-pulse{
+  from{opacity:.6;transform:translate(-50%,-50%) scale(.95)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
+}
+.stone-label{
+  font-family:'DM Mono',monospace;
+  font-size:8px;letter-spacing:.1em;
+  color:rgba(237,233,226,.3);
+  text-align:center;
+  opacity:0;
+  transition:opacity .4s ease;
+  pointer-events:none
+}
+#center-stone:hover .stone-label{opacity:1}
+
+body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity .3s}
 </style>
 </head>
 <body>
@@ -444,6 +504,15 @@ body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
   <span class="active" data-view="constellation">constellation</span>
   <span class="sep">/</span>
   <span data-view="list">list</span>
+  <span class="sep">·</span>
+  <a href="https://www.linkedin.com/in/yifu-zhang-0b8a1b1b8/" target="_blank" rel="noopener" class="linkedin-link">LinkedIn ↗</a>
+</div>
+
+<!-- CENTER STONE — 3D rotating xeno-stone (clickable → RepairBot paper) -->
+<div id="center-stone" title="RepairBot Framework — CHI 2026">
+  <div class="stone-glow"></div>
+  <canvas id="stone-canvas" width="160" height="160"></canvas>
+  <div class="stone-label">RepairBot Paper<br><span style="font-size:7px;opacity:.5">CHI 2026 · click to read</span></div>
 </div>
 
 <div class="filters" id="filters">
@@ -665,6 +734,35 @@ function drawStars(t) {
 let hoveredNode = null;
 let leaderProgress = 0;
 const LEADER_LENGTH = 70;
+
+// CONSTELLATION LINES — connect nearby dots with fading lines
+const CONSTELLATION_MAX_DIST = 220; // px — max connection distance
+const CONSTELLATION_MIN_DIST = 40;  // px — avoid cluttering very close dots
+
+function drawConstellationLines(t) {
+  if (!dotNodes.length) return;
+  const visible = dotNodes.filter(n => n.wrap.style.opacity !== '0');
+  ctx.save();
+  for (let i = 0; i < visible.length; i++) {
+    for (let j = i + 1; j < visible.length; j++) {
+      const a = visible[i], b = visible[j];
+      const dx = a.x - b.x, dy = a.y - b.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < CONSTELLATION_MIN_DIST || dist > CONSTELLATION_MAX_DIST) continue;
+      // Fade: full opacity at min dist, zero at max dist
+      const fade = 1 - (dist - CONSTELLATION_MIN_DIST) / (CONSTELLATION_MAX_DIST - CONSTELLATION_MIN_DIST);
+      const alpha = fade * 0.08 * (0.7 + 0.3 * Math.sin(t * 0.4 + i * 0.5 + j * 0.3));
+      if (alpha < 0.005) continue;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = `rgba(237,233,226,${alpha})`;
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
 
 function drawLeaderLine(t) {
   if (!hoveredNode || leaderProgress <= 0) return;
@@ -981,9 +1079,151 @@ function animLoop() {
   });
 
   ctx.clearRect(0, 0, W, H);
-  drawStars(animT); drawOrbitalRings(animT); drawBlob(animT); drawLeaderLine(animT);
+  drawStars(animT); drawOrbitalRings(animT); drawConstellationLines(animT); drawLeaderLine(animT);
   requestAnimationFrame(animLoop);
 }
+
+// ═══════════════════════════════════════════════════════════
+// 3D XENO-STONE (canvas rendered sphere with sponge texture)
+// ═══════════════════════════════════════════════════════════
+(() => {
+  const sc = document.getElementById('stone-canvas');
+  const sctx = sc.getContext('2d');
+  const S = 160; // canvas pixel size
+  const R = 52;  // sphere radius
+  const cx = S / 2, cy = S / 2;
+  let stoneAngle = 0;
+  let stoneHover = false;
+
+  // Generate fixed pore positions on sphere surface (spherical coords)
+  const pores = [];
+  for (let i = 0; i < 180; i++) {
+    pores.push({
+      theta: Math.random() * Math.PI * 2,
+      phi: Math.acos(2 * Math.random() - 1),
+      size: 1 + Math.random() * 2.5,
+      depth: 0.15 + Math.random() * 0.25
+    });
+  }
+
+  // Surface vein lines (great circle arcs)
+  const veins = [];
+  for (let i = 0; i < 8; i++) {
+    const startTheta = Math.random() * Math.PI * 2;
+    const startPhi = 0.3 + Math.random() * 2.2;
+    const dir = Math.random() * Math.PI * 2;
+    const points = [];
+    for (let t = 0; t < 12; t++) {
+      points.push({
+        theta: startTheta + Math.cos(dir) * t * 0.15,
+        phi: startPhi + Math.sin(dir) * t * 0.12
+      });
+    }
+    veins.push({ points, opacity: 0.03 + Math.random() * 0.04 });
+  }
+
+  function project3D(theta, phi, angle) {
+    // Rotate around Y axis
+    const x0 = Math.sin(phi) * Math.cos(theta);
+    const y0 = Math.cos(phi);
+    const z0 = Math.sin(phi) * Math.sin(theta);
+    // Apply Y rotation
+    const x1 = x0 * Math.cos(angle) - z0 * Math.sin(angle);
+    const z1 = x0 * Math.sin(angle) + z0 * Math.cos(angle);
+    // Slight X tilt
+    const tilt = 0.15;
+    const y1 = y0 * Math.cos(tilt) - z1 * Math.sin(tilt);
+    const z2 = y0 * Math.sin(tilt) + z1 * Math.cos(tilt);
+    return { x: cx + x1 * R, y: cy + y1 * R, z: z2, visible: z2 > -0.1 };
+  }
+
+  function drawStone() {
+    sctx.clearRect(0, 0, S, S);
+    stoneAngle += stoneHover ? 0.012 : 0.004;
+
+    // Base sphere with gradient
+    const lightAngle = stoneAngle * 0.3;
+    const lightX = cx + R * 0.3 * Math.cos(lightAngle);
+    const lightY = cy - R * 0.25;
+    const grad = sctx.createRadialGradient(lightX, lightY, 0, cx, cy, R * 1.15);
+    grad.addColorStop(0, '#5a5650');
+    grad.addColorStop(0.3, '#4a4640');
+    grad.addColorStop(0.6, '#3a3732');
+    grad.addColorStop(0.85, '#2a2825');
+    grad.addColorStop(1, '#1e1d1a');
+
+    sctx.beginPath();
+    sctx.arc(cx, cy, R, 0, Math.PI * 2);
+    sctx.fillStyle = grad;
+    sctx.fill();
+
+    // Subtle edge highlight
+    const edgeGrad = sctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R);
+    edgeGrad.addColorStop(0, 'transparent');
+    edgeGrad.addColorStop(0.7, 'transparent');
+    edgeGrad.addColorStop(1, 'rgba(237,233,226,0.04)');
+    sctx.beginPath();
+    sctx.arc(cx, cy, R, 0, Math.PI * 2);
+    sctx.fillStyle = edgeGrad;
+    sctx.fill();
+
+    // Draw pores (sponge texture)
+    pores.forEach(p => {
+      const proj = project3D(p.theta, p.phi, stoneAngle);
+      if (!proj.visible) return;
+      const facing = Math.max(0, proj.z);
+      const alpha = facing * p.depth;
+      if (alpha < 0.01) return;
+      sctx.beginPath();
+      sctx.arc(proj.x, proj.y, p.size * (0.6 + facing * 0.4), 0, Math.PI * 2);
+      sctx.fillStyle = `rgba(0,0,0,${alpha})`;
+      sctx.fill();
+      // Tiny highlight on pore edge (light catch)
+      if (facing > 0.5 && p.size > 1.5) {
+        sctx.beginPath();
+        sctx.arc(proj.x - p.size * 0.3, proj.y - p.size * 0.3, p.size * 0.3, 0, Math.PI * 2);
+        sctx.fillStyle = `rgba(237,233,226,${facing * 0.03})`;
+        sctx.fill();
+      }
+    });
+
+    // Draw vein lines
+    veins.forEach(v => {
+      sctx.beginPath();
+      let started = false;
+      v.points.forEach(pt => {
+        const proj = project3D(pt.theta, pt.phi, stoneAngle);
+        if (!proj.visible || proj.z < 0.1) return;
+        if (!started) { sctx.moveTo(proj.x, proj.y); started = true; }
+        else sctx.lineTo(proj.x, proj.y);
+      });
+      if (started) {
+        sctx.strokeStyle = `rgba(237,233,226,${v.opacity})`;
+        sctx.lineWidth = 0.6;
+        sctx.stroke();
+      }
+    });
+
+    // Specular highlight
+    const specGrad = sctx.createRadialGradient(
+      cx - R * 0.25, cy - R * 0.3, 0,
+      cx - R * 0.25, cy - R * 0.3, R * 0.5
+    );
+    specGrad.addColorStop(0, 'rgba(237,233,226,0.06)');
+    specGrad.addColorStop(0.5, 'rgba(237,233,226,0.02)');
+    specGrad.addColorStop(1, 'transparent');
+    sctx.beginPath();
+    sctx.arc(cx, cy, R, 0, Math.PI * 2);
+    sctx.fillStyle = specGrad;
+    sctx.fill();
+
+    requestAnimationFrame(drawStone);
+  }
+
+  document.getElementById('center-stone').addEventListener('mouseenter', () => { stoneHover = true; });
+  document.getElementById('center-stone').addEventListener('mouseleave', () => { stoneHover = false; });
+  drawStone();
+})();
 
 // ═══════════════════════════════════════════════════════════
 // PROJECT PAGE
@@ -1040,6 +1280,12 @@ document.getElementById('pp-back').addEventListener('click', () => {
   projectPage.classList.remove('open');
   isAutoPlaying = true;
   scheduleAuto();
+});
+
+// CENTER STONE → open RepairBot paper
+document.getElementById('center-stone').addEventListener('click', () => {
+  const repairbot = PROJECTS.find(p => p.slug === 'repairbot-framework');
+  if (repairbot) openProject(repairbot);
 });
 
 // ═══════════════════════════════════════════════════════════
