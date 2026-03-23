@@ -456,7 +456,8 @@ body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
   display:flex;flex-direction:column;align-items:center;gap:10px
 }
 #stone-canvas{
-  width:120px;height:120px
+  width:120px;height:120px;
+  filter:blur(1.5px)
 }
 
 .stone-glow{
@@ -631,9 +632,9 @@ resize();
 function getRings() {
   const scale = Math.min(W, H);
   return [
-    { a: scale * 0.17, b: scale * 0.12, tilt: -0.18, speed: 0.00038, dash: [2, 8] },
-    { a: scale * 0.28, b: scale * 0.19, tilt: 0.12,  speed: 0.00024, dash: [3, 10] },
-    { a: scale * 0.40, b: scale * 0.27, tilt: -0.06, speed: 0.00015, dash: [2, 12] },
+    { a: scale * 0.24, b: scale * 0.17, tilt: -0.18, speed: 0.00038, dash: [2, 8] },
+    { a: scale * 0.34, b: scale * 0.24, tilt: 0.12,  speed: 0.00024, dash: [3, 10] },
+    { a: scale * 0.46, b: scale * 0.32, tilt: -0.06, speed: 0.00015, dash: [2, 12] },
   ];
 }
 let RINGS = getRings();
@@ -735,86 +736,87 @@ let hoveredNode = null;
 let leaderProgress = 0;
 const LEADER_LENGTH = 70;
 
-// CONSTELLATION LINES — connect nearby dots with fading lines + traveling signals
-const CONSTELLATION_MAX_DIST = 220;
-const CONSTELLATION_MIN_DIST = 40;
-
-// Traveling light signals along constellation edges
+// TRAVELING SIGNALS — white dots fly between stars, bending near the black hole (center)
 const signals = [];
-const MAX_SIGNALS = 4;
+const MAX_SIGNALS = 5;
 let signalTimer = 0;
 
-function spawnSignal(edges) {
-  if (!edges.length) return;
-  const e = edges[Math.floor(Math.random() * edges.length)];
+function spawnSignal() {
+  if (!dotNodes.length || dotNodes.length < 2) return;
+  const visible = dotNodes.filter(n => n.wrap.style.opacity !== '0');
+  if (visible.length < 2) return;
+  const ai = Math.floor(Math.random() * visible.length);
+  let bi = Math.floor(Math.random() * (visible.length - 1));
+  if (bi >= ai) bi++;
+  const a = visible[ai], b = visible[bi];
   signals.push({
-    ax: e.ax, ay: e.ay, bx: e.bx, by: e.by,
-    progress: 0, speed: 0.008 + Math.random() * 0.008
+    ax: a.x, ay: a.y, bx: b.x, by: b.y,
+    progress: 0, speed: 0.005 + Math.random() * 0.006
   });
+}
+
+// Get curved position along path, bending near center (gravitational lensing)
+function getSignalPos(s, t) {
+  // Linear interpolation
+  const lx = s.ax + (s.bx - s.ax) * t;
+  const ly = s.ay + (s.by - s.ay) * t;
+  // Midpoint of the line
+  const mx = (s.ax + s.bx) / 2, my = (s.ay + s.by) / 2;
+  // Distance from midpoint to center (black hole)
+  const distToCenter = Math.hypot(mx - CX, my - CY);
+  // Gravitational bend strength — stronger when path passes closer to center
+  const bendStrength = Math.max(0, 1 - distToCenter / (Math.min(W, H) * 0.4));
+  const bendAmount = bendStrength * 40;
+  // Perpendicular force toward center at the midpoint of the path
+  const dx = CX - mx, dy = CY - my;
+  const dLen = Math.hypot(dx, dy) || 1;
+  // Bend peaks at t=0.5 (middle of path)
+  const bendFactor = Math.sin(t * Math.PI);
+  const px = lx + (dx / dLen) * bendAmount * bendFactor;
+  const py = ly + (dy / dLen) * bendAmount * bendFactor;
+  return { x: px, y: py };
 }
 
 function drawConstellationLines(t) {
   if (!dotNodes.length) return;
-  const visible = dotNodes.filter(n => n.wrap.style.opacity !== '0');
-  const edges = [];
   ctx.save();
-  for (let i = 0; i < visible.length; i++) {
-    for (let j = i + 1; j < visible.length; j++) {
-      const a = visible[i], b = visible[j];
-      const dx = a.x - b.x, dy = a.y - b.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < CONSTELLATION_MIN_DIST || dist > CONSTELLATION_MAX_DIST) continue;
-      const fade = 1 - (dist - CONSTELLATION_MIN_DIST) / (CONSTELLATION_MAX_DIST - CONSTELLATION_MIN_DIST);
-      // Brighter base + variation: some lines shimmer brighter
-      const shimmer = 0.6 + 0.4 * Math.sin(t * 0.5 + i * 1.3 + j * 0.7);
-      const alpha = fade * (0.06 + 0.1 * shimmer);
-      if (alpha < 0.005) continue;
-      edges.push({ ax: a.x, ay: a.y, bx: b.x, by: b.y });
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
-      ctx.lineTo(b.x, b.y);
-      ctx.strokeStyle = `rgba(237,233,226,${alpha})`;
-      ctx.lineWidth = 0.5;
-      ctx.stroke();
-    }
-  }
+
+  // No visible lines — only traveling signals
 
   // Spawn new signals periodically
   signalTimer += 0.008;
-  if (signalTimer > 1.2 + Math.random() * 2 && signals.length < MAX_SIGNALS && edges.length) {
-    spawnSignal(edges);
+  if (signalTimer > 0.8 + Math.random() * 1.5 && signals.length < MAX_SIGNALS) {
+    spawnSignal();
     signalTimer = 0;
   }
 
-  // Draw & update traveling light signals
+  // Draw & update traveling light signals (curved near black hole)
   for (let i = signals.length - 1; i >= 0; i--) {
     const s = signals[i];
+    // Update source/target positions from live dot positions
     s.progress += s.speed;
     if (s.progress > 1) { signals.splice(i, 1); continue; }
-    const px = s.ax + (s.bx - s.ax) * s.progress;
-    const py = s.ay + (s.by - s.ay) * s.progress;
-    // Bright dot with tail
-    const headAlpha = 0.7 * Math.sin(s.progress * Math.PI); // fade in/out
-    const tailLen = 0.12;
-    for (let k = 0; k < 4; k++) {
-      const tp = Math.max(0, s.progress - k * tailLen * 0.25);
-      const tx = s.ax + (s.bx - s.ax) * tp;
-      const ty = s.ay + (s.by - s.ay) * tp;
-      const ta = headAlpha * (1 - k * 0.3);
-      const tr = 2 - k * 0.4;
-      if (ta > 0.01) {
+    const pos = getSignalPos(s, s.progress);
+    const headAlpha = 0.8 * Math.sin(s.progress * Math.PI);
+    // Tail: draw previous positions
+    for (let k = 0; k < 5; k++) {
+      const tp = Math.max(0, s.progress - k * 0.03);
+      const tpos = getSignalPos(s, tp);
+      const ta = headAlpha * (1 - k * 0.2);
+      const tr = 2 - k * 0.35;
+      if (ta > 0.01 && tr > 0.2) {
         ctx.beginPath();
-        ctx.arc(tx, ty, tr, 0, Math.PI * 2);
+        ctx.arc(tpos.x, tpos.y, tr, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,255,255,${ta})`;
         ctx.fill();
       }
     }
     // Glow around signal head
-    const glowGrad = ctx.createRadialGradient(px, py, 0, px, py, 8);
-    glowGrad.addColorStop(0, `rgba(237,233,226,${headAlpha * 0.3})`);
+    const glowGrad = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, 10);
+    glowGrad.addColorStop(0, `rgba(237,233,226,${headAlpha * 0.25})`);
     glowGrad.addColorStop(1, 'transparent');
     ctx.beginPath();
-    ctx.arc(px, py, 8, 0, Math.PI * 2);
+    ctx.arc(pos.x, pos.y, 10, 0, Math.PI * 2);
     ctx.fillStyle = glowGrad;
     ctx.fill();
   }
@@ -1165,21 +1167,26 @@ function animLoop() {
     );
   }
 
-  // Get distorted radius at a given angle
-  function stoneRadius(angle) {
+  // Get distorted radius at a given angle — now time-dependent for living outline
+  function stoneRadius(angle, t) {
     const idx = ((angle / (Math.PI * 2)) * SHAPE_POINTS) % SHAPE_POINTS;
     const i0 = Math.floor(idx) % SHAPE_POINTS;
     const i1 = (i0 + 1) % SHAPE_POINTS;
     const frac = idx - Math.floor(idx);
-    return R * (shapeBumps[i0] * (1 - frac) + shapeBumps[i1] * frac);
+    const base = shapeBumps[i0] * (1 - frac) + shapeBumps[i1] * frac;
+    // Animate: slow morphing over time
+    const morph = 0.03 * Math.sin(t * 0.7 + angle * 2.3) +
+                  0.02 * Math.sin(t * 1.1 + angle * 3.7) +
+                  0.015 * Math.cos(t * 0.5 + angle * 1.5);
+    return R * (base + morph);
   }
 
-  // Draw the irregular stone outline path
-  function stoneOutline() {
+  // Draw the irregular stone outline path (animated)
+  function stoneOutline(t) {
     sctx.beginPath();
     for (let i = 0; i <= SHAPE_POINTS; i++) {
       const a = (i / SHAPE_POINTS) * Math.PI * 2;
-      const r = stoneRadius(a);
+      const r = stoneRadius(a, t || 0);
       const px = cx + Math.cos(a) * r;
       const py = cy + Math.sin(a) * r;
       if (i === 0) sctx.moveTo(px, py); else sctx.lineTo(px, py);
@@ -1207,9 +1214,9 @@ function animLoop() {
     const tilt = 0.18;
     const y1 = y0 * Math.cos(tilt) - z1 * Math.sin(tilt);
     const z2 = y0 * Math.sin(tilt) + z1 * Math.cos(tilt);
-    // Distort projection to match irregular shape
+    // Distort projection to match irregular shape (animated)
     const projAngle = Math.atan2(y1, x1);
-    const rScale = stoneRadius(projAngle) / R;
+    const rScale = stoneRadius(projAngle, stoneAngle) / R;
     return { x: cx + x1 * R * rScale, y: cy + y1 * R * rScale, z: z2, visible: z2 > -0.05 };
   }
 
@@ -1217,9 +1224,9 @@ function animLoop() {
     sctx.clearRect(0, 0, S, S);
     stoneAngle += stoneHover ? 0.012 : 0.004;
 
-    // Clip to irregular stone shape
+    // Clip to irregular stone shape (animated)
     sctx.save();
-    stoneOutline();
+    stoneOutline(stoneAngle);
     sctx.clip();
 
     // Shiny black base — obsidian/xeno feel
@@ -1227,35 +1234,36 @@ function animLoop() {
     const lightX = cx + R * 0.35 * Math.cos(lightAngle);
     const lightY = cy - R * 0.3 + R * 0.1 * Math.sin(lightAngle * 0.7);
     const grad = sctx.createRadialGradient(lightX, lightY, 0, cx, cy, R * 1.2);
-    grad.addColorStop(0, '#383838');    // bright specular center
-    grad.addColorStop(0.15, '#252525');
-    grad.addColorStop(0.4, '#151515');
-    grad.addColorStop(0.7, '#0c0c0c');
-    grad.addColorStop(1, '#050505');
-    stoneOutline();
+    grad.addColorStop(0, '#606060');    // much brighter inner white light
+    grad.addColorStop(0.1, '#404040');
+    grad.addColorStop(0.25, '#252525');
+    grad.addColorStop(0.5, '#121212');
+    grad.addColorStop(0.75, '#0a0a0a');
+    grad.addColorStop(1, '#040404');
+    stoneOutline(stoneAngle);
     sctx.fillStyle = grad;
     sctx.fill();
 
-    // Moving reflection band (like polished obsidian)
+    // Moving reflection band (like polished obsidian) — brighter
     const refAngle = stoneAngle * 0.6;
     const refX = cx + R * 0.5 * Math.cos(refAngle + 1);
     const refY = cy + R * 0.3 * Math.sin(refAngle * 0.8);
     const refGrad = sctx.createRadialGradient(refX, refY, 0, refX, refY, R * 0.6);
-    refGrad.addColorStop(0, 'rgba(255,255,255,0.09)');
-    refGrad.addColorStop(0.3, 'rgba(200,200,210,0.04)');
+    refGrad.addColorStop(0, 'rgba(255,255,255,0.16)');
+    refGrad.addColorStop(0.25, 'rgba(220,220,230,0.07)');
     refGrad.addColorStop(1, 'transparent');
-    stoneOutline();
+    stoneOutline(stoneAngle);
     sctx.fillStyle = refGrad;
     sctx.fill();
 
-    // Second reflection (opposite side, subtler)
+    // Second reflection (opposite side)
     const ref2X = cx - R * 0.4 * Math.cos(refAngle * 0.5);
     const ref2Y = cy - R * 0.35 * Math.sin(refAngle * 0.3 + 2);
     const ref2Grad = sctx.createRadialGradient(ref2X, ref2Y, 0, ref2X, ref2Y, R * 0.45);
-    ref2Grad.addColorStop(0, 'rgba(220,225,235,0.06)');
-    ref2Grad.addColorStop(0.4, 'rgba(180,185,200,0.02)');
+    ref2Grad.addColorStop(0, 'rgba(230,235,245,0.10)');
+    ref2Grad.addColorStop(0.35, 'rgba(200,205,220,0.04)');
     ref2Grad.addColorStop(1, 'transparent');
-    stoneOutline();
+    stoneOutline(stoneAngle);
     sctx.fillStyle = ref2Grad;
     sctx.fill();
 
@@ -1279,25 +1287,19 @@ function animLoop() {
       }
     });
 
-    // Sharp specular highlight (glossy reflection)
+    // Sharp specular highlight (glossy reflection) — brighter
     const specX = cx - R * 0.22 + Math.cos(stoneAngle * 0.3) * 3;
     const specY = cy - R * 0.28 + Math.sin(stoneAngle * 0.2) * 2;
-    const specGrad = sctx.createRadialGradient(specX, specY, 0, specX, specY, R * 0.25);
-    specGrad.addColorStop(0, 'rgba(255,255,255,0.18)');
-    specGrad.addColorStop(0.2, 'rgba(255,255,255,0.08)');
-    specGrad.addColorStop(0.5, 'rgba(255,255,255,0.02)');
+    const specGrad = sctx.createRadialGradient(specX, specY, 0, specX, specY, R * 0.3);
+    specGrad.addColorStop(0, 'rgba(255,255,255,0.35)');
+    specGrad.addColorStop(0.15, 'rgba(255,255,255,0.15)');
+    specGrad.addColorStop(0.4, 'rgba(255,255,255,0.04)');
     specGrad.addColorStop(1, 'transparent');
-    stoneOutline();
+    stoneOutline(stoneAngle);
     sctx.fillStyle = specGrad;
     sctx.fill();
 
-    // Edge rim light
-    sctx.restore();
-    sctx.save();
-    stoneOutline();
-    sctx.strokeStyle = 'rgba(255,255,255,0.07)';
-    sctx.lineWidth = 1;
-    sctx.stroke();
+    // No edge stroke — just restore clip
     sctx.restore();
 
     requestAnimationFrame(drawStone);
