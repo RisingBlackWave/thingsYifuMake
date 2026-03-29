@@ -6,6 +6,7 @@
 <title>thingsYifuMake</title>
 <meta name="description" content="Things Yifu makes — designed, researched, built, taught, talked. PhD researcher, designer, maker, London.">
 <link rel="canonical" href="https://thingsyifumake.uk">
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -924,8 +925,10 @@ let currentView = 'constellation';
 fetch('projects.json')
   .then(r => r.json())
   .then(data => {
+    // Support both bare array and {items:[...]} (Decap CMS format)
+    const list = Array.isArray(data) ? data : data.items || [];
     const modeCount = {};
-    PROJECTS = data.map((p, i) => {
+    PROJECTS = list.map((p, i) => {
       if (!modeCount[p.mode]) modeCount[p.mode] = 0;
       return { ...p, grad: mkGrad(p.mode, modeCount[p.mode]++), _id: i };
     });
@@ -1536,6 +1539,14 @@ const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 if (isTouchDevice) {
   cursorEl.style.display = 'none';
   document.body.style.cursor = 'auto';
+}
+// Netlify Identity redirect after login
+if (window.netlifyIdentity) {
+  window.netlifyIdentity.on('init', user => {
+    if (!user) window.netlifyIdentity.on('login', () => {
+      document.location.href = '/admin/';
+    });
+  });
 }
 </script>
 </body>

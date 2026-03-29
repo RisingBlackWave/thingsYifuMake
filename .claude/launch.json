@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dev",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["-e", "const http=require('http'),fs=require('fs'),path=require('path'),url=require('url');const dir='/Users/yifu/Downloads/thingsYifuMake';const mime={'html':'text/html','json':'application/json','js':'text/javascript','css':'text/css','jpg':'image/jpeg','jpeg':'image/jpeg','png':'image/png','gif':'image/gif','webp':'image/webp','mp4':'video/mp4','mp3':'audio/mpeg','svg':'image/svg+xml','ico':'image/x-icon'};http.createServer((req,res)=>{const parsed=url.parse(req.url);let pathname=decodeURIComponent(parsed.pathname);let p=path.join(dir,pathname==='/'?'index.html':pathname);fs.readFile(p,(e,d)=>{if(e){res.writeHead(404);res.end('Not found');return}const ext=path.extname(p).slice(1);res.writeHead(200,{'Content-Type':mime[ext]||'application/octet-stream','Cache-Control':'no-cache'});res.end(d)})}).listen(8888)"],
+      "port": 8888
+    }
+  ]
+}
