@@ -62,11 +62,17 @@ collections:
                 default: false
                 required: false
 
-              - label: "Description"
+              - label: "Intro (short)"
+                name: "intro"
+                widget: "string"
+                required: false
+                hint: "One-line summary shown in list view before clicking (e.g. 'A robot that helps you learn clothes repair')"
+
+              - label: "Description (full)"
                 name: "desc"
                 widget: "text"
                 required: false
-                hint: "Full project description — supports multiple paragraphs"
+                hint: "Full project description — shown on project detail page"
 
               - label: "Awards"
                 name: "awards"

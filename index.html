@@ -317,15 +317,25 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   min-width:32px;text-align:right
 }
 
-/* Expandable description */
+/* Intro text shown in list row before expand */
+.list-intro{
+  grid-column:2 / -1;
+  font-family:'Times New Roman',Times,serif;
+  font-size:13px;line-height:1.6;
+  color:rgba(237,233,226,.3);
+  padding:2px 0 0;
+  font-style:italic
+}
+
+/* Expandable section */
 .list-expand{
   grid-column:2 / -1;
   max-height:0;overflow:hidden;
-  transition:max-height .35s ease,opacity .3s ease;
+  transition:max-height .5s ease,opacity .3s ease;
   opacity:0
 }
 .list-row.expanded .list-expand{
-  max-height:200px;opacity:1
+  max-height:600px;opacity:1
 }
 .list-desc{
   font-family:'Times New Roman',Times,serif;
@@ -333,6 +343,19 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   color:rgba(237,233,226,.4);
   padding:8px 0 4px
 }
+.list-gallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:8px;
+  padding:10px 0 8px
+}
+.list-gallery img{
+  width:100%;height:80px;object-fit:cover;
+  border-radius:3px;opacity:0;
+  transition:opacity .4s ease;
+  cursor:pointer
+}
+.list-gallery img.loaded{opacity:1}
 .list-enter{
   font-family:Arial,sans-serif;
   font-size:10px;letter-spacing:.1em;
@@ -657,6 +680,13 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 <!-- LIST VIEW -->
 <div id="list-view">
   <div class="list-inner">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:40px">
+      <div>
+        <div style="font-family:'Cormorant Garamond','Noto Sans SC',serif;font-size:19px;font-weight:300;color:var(--text)">things<em style="font-weight:400">Yifu</em>Make</div>
+        <div style="font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:4px">PhD · Designer · Maker · London</div>
+      </div>
+      <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent,#7AB8E8);text-decoration:none;border:1px solid rgba(122,184,232,.3);padding:4px 10px;border-radius:3px">LinkedIn ↗</a>
+    </div>
     <div class="list-filters" id="list-filters"></div>
     <div id="list-rows"></div>
   </div>
@@ -1641,14 +1671,25 @@ function buildListView() {
     const color = COLORS[proj.mode];
     const row = document.createElement('div');
     row.className = 'list-row';
+    // Collect all images for this project
+    const projImages = [];
+    if (proj.coverImage || proj.previewImage) projImages.push(proj.coverImage || proj.previewImage);
+    if (proj.gallery) proj.gallery.forEach(g => {
+      const src = typeof g === 'string' ? g : (g.src || g.gallery);
+      if (src) projImages.push(src);
+    });
+
     row.innerHTML = `
       <div class="list-idx">${String(i + 1).padStart(2, '0')}</div>
       <div class="list-title">${proj.title}${proj.wip ? ' <span style="font-family:Arial,sans-serif;font-size:9px;opacity:.3;margin-left:8px">WIP</span>' : ''}</div>
       <div class="list-mode" style="color:${color};border-color:${color}40">${proj.mode}</div>
       <div class="list-year">${proj.year || ''}</div>
+      ${proj.intro ? `<div class="list-intro">${proj.intro}</div>` : (proj.subtitle ? `<div class="list-intro">${proj.subtitle}</div>` : '')}
       <div class="list-expand">
-        ${proj.subtitle ? `<div style="font-family:'Times New Roman',serif;font-size:14px;font-style:italic;color:rgba(237,233,226,.3);padding:4px 0">${proj.subtitle}</div>` : ''}
         ${proj.desc ? `<div class="list-desc">${proj.desc}</div>` : ''}
+        ${projImages.length ? `<div class="list-gallery">${projImages.map((src, gi) =>
+          `<img src="${src}" loading="lazy" onload="this.classList.add('loaded')" data-gallery-idx="${gi}">`
+        ).join('')}</div>` : ''}
         <div class="list-enter" data-idx="${proj._id}">→ open project</div>
       </div>
     `;
@@ -1657,6 +1698,12 @@ function buildListView() {
     row.addEventListener('click', (e) => {
       if (e.target.classList.contains('list-enter')) {
         openProject(proj);
+        return;
+      }
+      // Gallery image click → open lightbox
+      if (e.target.closest('.list-gallery img')) {
+        const idx = parseInt(e.target.dataset.galleryIdx) || 0;
+        openLightbox(projImages, idx);
         return;
       }
       const wasExpanded = row.classList.contains('expanded');
