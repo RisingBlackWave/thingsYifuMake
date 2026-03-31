@@ -164,6 +164,46 @@ collections:
                 media_library:
                   allow_multiple: false
 
+              - label: "Contributors"
+                name: "contributors"
+                widget: "list"
+                required: false
+                hint: "Project credits (e.g. DESIGN John Smith, PHOTO Jane Doe)"
+                allow_add: true
+                collapsed: false
+                fields:
+                  - label: "Role"
+                    name: "role"
+                    widget: "string"
+                    hint: "e.g. DESIGN, PHOTO CREDITS, CREATIVE DIRECTOR"
+                  - label: "Name"
+                    name: "name"
+                    widget: "string"
+                    hint: "e.g. Yifu Liu, UCL Design Lab"
+
+              - label: "Literature / Press"
+                name: "literature"
+                widget: "list"
+                required: false
+                hint: "Press coverage and publications"
+                allow_add: true
+                collapsed: false
+                fields:
+                  - label: "Publication"
+                    name: "publication"
+                    widget: "string"
+                    hint: "e.g. Dezeen, The Guardian, ACM DL"
+                  - label: "Link"
+                    name: "link"
+                    widget: "string"
+                    required: false
+                    hint: "URL to the article"
+                  - label: "Description"
+                    name: "description"
+                    widget: "string"
+                    required: false
+                    hint: "Article title or short description"
+
               - label: "Whisper"
                 name: "whisper"
                 widget: "string"

@@ -441,72 +441,161 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .list-enter:hover{text-decoration:underline}
 
 /* ── PROJECT PAGE ── */
+/* ── PROJECT PAGE (Formafantasma-inspired) ── */
 #project-page{
   position:fixed;inset:0;z-index:200;
-  background:var(--bg);
+  background:#fff;color:#000;
   opacity:0;pointer-events:none;
   transition:opacity .45s ease;
-  overflow-y:auto
+  overflow-y:auto;
+  font-family:Times,'Times New Roman',serif;
+  font-weight:400;font-size:120%;line-height:1.4;
+  letter-spacing:normal;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:'liga' 1,'kern'
 }
 #project-page.open{opacity:1;pointer-events:auto}
 
-.pp-inner{max-width:700px;margin:0 auto;padding:72px 48px 140px}
+.pp-inner{max-width:900px;margin:0 auto;padding:100px 48px 140px}
 
 .pp-back{
-  font-size:8px;letter-spacing:.17em;text-transform:uppercase;
-  color:var(--dim);cursor:none;
-  display:inline-flex;align-items:center;gap:12px;
-  margin-bottom:72px;
-  padding-bottom:1px;border-bottom:1px solid transparent;
-  transition:color .2s,border-color .2s
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:#999;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+  margin-bottom:80px;
+  transition:color .2s
 }
-.pp-back:hover{color:var(--text);border-color:var(--dim)}
+.pp-back:hover{color:#000}
 
-.pp-mode{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px}
-.pp-year{font-size:8.5px;letter-spacing:.13em;color:var(--dim);margin-bottom:24px}
-
+/* Centered header block */
+.pp-header{text-align:center;margin-bottom:60px}
 .pp-title{
-  font-family:'Cormorant Garamond','Noto Sans SC',serif;
-  font-size:clamp(38px,6vw,62px);font-weight:300;
-  line-height:1.08;letter-spacing:-.01em;margin-bottom:48px
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:14px;font-weight:400;
+  letter-spacing:.25em;text-transform:uppercase;
+  margin-bottom:12px;line-height:1.5
+}
+.pp-subtitle{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:13px;letter-spacing:.15em;text-transform:uppercase;
+  color:#666;margin-bottom:0
 }
 
-.pp-visual{
-  width:100%;height:300px;
-  margin-bottom:48px;overflow:hidden;position:relative
-}
-.pp-visual img,.pp-visual video{
-  width:100%;height:100%;object-fit:cover;display:block
-}
-.pp-visual-bg{position:absolute;inset:0}
-
-.pp-rule{width:36px;height:1px;background:rgba(237,233,226,.18);margin-bottom:36px}
-
+/* Large serif description */
 .pp-desc{
-  font-size:13.5px;line-height:2.05;letter-spacing:.02em;
-  color:rgba(237,233,226,.6);margin-bottom:52px;
-  font-family:'Cormorant Garamond','Noto Sans SC',serif;font-weight:300
+  font-family:Times,'Times New Roman',serif;
+  font-size:clamp(22px,2.8vw,32px);line-height:1.45;
+  font-weight:400;color:#000;
+  margin-bottom:60px;
+  max-width:800px;margin-left:auto;margin-right:auto
+}
+.pp-desc a{color:#0645ad;text-decoration:none}
+.pp-desc a:hover{text-decoration:underline}
+
+/* Awards row */
+.pp-awards{
+  display:flex;flex-wrap:wrap;gap:10px;
+  justify-content:center;margin-bottom:48px
 }
 
+/* Images — full width, 2-up or 1-up */
+.pp-images{margin-bottom:60px}
+.pp-img-row{
+  display:grid;gap:16px;margin-bottom:16px
+}
+.pp-img-row.cols-1{grid-template-columns:1fr}
+.pp-img-row.cols-2{grid-template-columns:1fr 1fr}
+.pp-img-figure{margin:0}
+.pp-img-figure img{
+  width:100%;display:block;opacity:0;
+  transition:opacity .5s ease;cursor:pointer
+}
+.pp-img-figure img.loaded{opacity:1}
+.pp-img-caption{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:11px;color:#888;letter-spacing:.03em;
+  margin-top:8px;line-height:1.4
+}
+
+/* Mid-page text block */
+.pp-text-block{
+  font-family:Times,'Times New Roman',serif;
+  font-size:clamp(22px,2.8vw,32px);line-height:1.45;
+  font-weight:400;color:#000;
+  max-width:800px;margin:60px auto;
+}
+
+/* Visual Appendix grid */
+.pp-appendix{margin:80px 0}
+.pp-appendix-title{
+  font-family:Times,'Times New Roman',serif;
+  font-size:20px;margin-bottom:24px
+}
+.pp-appendix-line{
+  border:none;border-top:1px solid #ddd;margin-bottom:32px
+}
+.pp-appendix-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px
+}
+.pp-appendix-grid img{
+  width:100%;display:block;opacity:0;
+  transition:opacity .5s ease;cursor:pointer
+}
+.pp-appendix-grid img.loaded{opacity:1}
+
+/* Contributors */
+.pp-contributors{margin:80px 0}
+.pp-contributors-title{
+  font-family:Times,'Times New Roman',serif;
+  font-size:20px;margin-bottom:24px
+}
+.pp-contrib-row{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:14px;line-height:1.8;letter-spacing:.02em
+}
+.pp-contrib-role{
+  text-transform:uppercase;letter-spacing:.06em;
+  font-weight:400;display:inline
+}
+.pp-contrib-name{display:inline}
+
+/* Literature / Press */
+.pp-literature{margin:80px 0}
+.pp-literature-title{
+  font-family:Times,'Times New Roman',serif;
+  font-size:20px;margin-bottom:24px
+}
+.pp-lit-row{
+  font-family:Times,'Times New Roman',serif;
+  font-size:16px;line-height:1.8
+}
+.pp-lit-row a{color:#0645ad;text-decoration:none}
+.pp-lit-row a:hover{text-decoration:underline}
+
+/* External link */
 .pp-link{
   display:inline-flex;align-items:center;gap:8px;
-  font-size:8px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--dim);text-decoration:none;
-  padding-bottom:1px;border-bottom:1px solid rgba(237,233,226,.12);
-  margin-bottom:40px;transition:color .2s,border-color .2s
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:13px;letter-spacing:.05em;
+  color:#0645ad;text-decoration:none;
+  margin-bottom:40px;transition:color .2s
 }
-.pp-link:hover{color:var(--text);border-color:var(--dim)}
-.pp-link-arrow{font-size:11px}
+.pp-link:hover{text-decoration:underline}
+.pp-link-arrow{font-size:13px}
 
+/* Legacy compat — hidden */
+.pp-mode,.pp-year,.pp-visual,.pp-rule{display:none}
+
+/* Gallery fallback */
 .pp-gallery{
   display:flex;flex-direction:column;gap:16px;margin-bottom:48px
 }
 .pp-gallery img{
-  width:100%;border-radius:4px;opacity:0;
-  transition:opacity .5s ease
+  width:100%;opacity:0;transition:opacity .5s ease;cursor:pointer
 }
 .pp-gallery img.loaded{opacity:1}
-.pp-gallery img{cursor:pointer}
 
 /* ── LIGHTBOX ── */
 .lightbox{
@@ -729,9 +818,14 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 
   /* Project page mobile */
   .pp-inner{padding:52px 24px 100px}
-  .pp-title{font-size:clamp(28px,8vw,42px);margin-bottom:32px}
-  .pp-visual{height:200px;margin-bottom:32px}
+  .pp-title{font-size:12px;letter-spacing:.2em}
+  .pp-desc{font-size:20px}
+  .pp-text-block{font-size:20px}
   .pp-back{margin-bottom:48px}
+  .pp-img-row.cols-2{grid-template-columns:1fr}
+  .pp-appendix-grid{grid-template-columns:repeat(2,1fr)}
+  .pp-contrib-row{font-size:13px}
+  .pp-lit-row{font-size:14px}
 
   .linkedin-link{font-size:7px;padding:2px 6px}
 }
@@ -762,6 +856,23 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   .list-explore{color:#6ea8fe}
   .award-tag{background:rgba(255,255,255,.1);color:#ede9e2}
   .list-filter-line{border-color:rgba(255,255,255,.15)}
+  /* Project page dark mode */
+  #project-page{background:#121212;color:#e0e0e0}
+  .pp-title{color:#e0e0e0}
+  .pp-subtitle{color:#888}
+  .pp-desc{color:#ccc}
+  .pp-desc a{color:#6ea8fe}
+  .pp-back{color:#888}
+  .pp-back:hover{color:#e0e0e0}
+  .pp-link{color:#6ea8fe}
+  .pp-img-caption{color:#666}
+  .pp-text-block{color:#ccc}
+  .pp-appendix-title,.pp-contributors-title,.pp-literature-title{color:#e0e0e0}
+  .pp-appendix-line{border-top-color:rgba(255,255,255,.15)}
+  .pp-contrib-row{color:#ccc}
+  .pp-lit-row{color:#ccc}
+  .pp-lit-row a{color:#6ea8fe}
+  .award-tag{background:rgba(255,255,255,.1);color:#e0e0e0}
 }
 </style>
 </head>
@@ -830,23 +941,34 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   </div>
 </div>
 
-<!-- PROJECT PAGE -->
+<!-- PROJECT PAGE (Formafantasma-inspired) -->
 <div id="project-page">
   <div class="pp-inner">
-    <div class="pp-back" id="pp-back">← back</div>
-    <div class="pp-mode" id="pp-mode"></div>
-    <div class="pp-year" id="pp-year"></div>
-    <div class="pp-title" id="pp-title"></div>
-    <div class="pp-subtitle" id="pp-subtitle" style="font-family:'Cormorant Garamond','Noto Sans SC',serif;font-size:16px;font-style:italic;color:var(--dim);margin-bottom:36px;display:none"></div>
-    <div class="pp-visual" id="pp-visual"></div>
-    <div class="pp-rule"></div>
-    <div class="pp-awards" id="pp-awards"></div>
+    <div class="pp-back" id="pp-back">← Back to works</div>
+    <div class="pp-header">
+      <div class="pp-title" id="pp-title"></div>
+      <div class="pp-subtitle" id="pp-subtitle"></div>
+    </div>
     <div class="pp-desc" id="pp-desc"></div>
-    <div class="pp-gallery" id="pp-gallery"></div>
+    <div class="pp-awards" id="pp-awards"></div>
     <div class="pp-link-wrap" id="pp-link-wrap"></div>
+    <div class="pp-images" id="pp-images"></div>
+    <div class="pp-contributors" id="pp-contributors" style="display:none">
+      <div class="pp-contributors-title">Contributors</div>
+      <div id="pp-contrib-list"></div>
+    </div>
+    <div class="pp-literature" id="pp-literature" style="display:none">
+      <div class="pp-literature-title">Literature</div>
+      <div id="pp-lit-list"></div>
+    </div>
     <div class="pp-tags" id="pp-tags"></div>
   </div>
 </div>
+<!-- legacy hidden elements for compat -->
+<div id="pp-mode" style="display:none"></div>
+<div id="pp-year" style="display:none"></div>
+<div id="pp-visual" style="display:none"></div>
+<div id="pp-gallery" style="display:none"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════════
@@ -1606,29 +1728,26 @@ const projectPage = document.getElementById('project-page');
 
 function openProject(proj) {
   const color = COLORS[proj.mode];
-  document.getElementById('pp-mode').textContent = proj.mode;
-  document.getElementById('pp-mode').style.color = color;
-  document.getElementById('pp-year').textContent = proj.year ? `${proj.year}` : '';
+
+  // Header: centered title + venue/year subtitle
   document.getElementById('pp-title').textContent = proj.title;
-  // Subtitle
-  const subtitleEl = document.getElementById('pp-subtitle');
-  if (subtitleEl) {
-    subtitleEl.textContent = proj.subtitle || '';
-    subtitleEl.style.display = proj.subtitle ? 'block' : 'none';
-  }
+  const subtitleParts = [proj.venue, proj.year].filter(Boolean);
+  document.getElementById('pp-subtitle').textContent = subtitleParts.join(', ');
+
+  // Description (large serif text)
   document.getElementById('pp-desc').textContent = proj.desc || '';
 
-  // Render award tags (珠光 pearlescent with dense particles)
+  // Awards
   const awardsEl = document.getElementById('pp-awards');
   awardsEl.innerHTML = '';
   if (proj.awards && proj.awards.length) {
-    proj.awards.forEach((award) => {
+    proj.awards.forEach(award => {
       const tag = document.createElement('div');
       tag.className = 'pp-award';
-      const label = typeof award === 'string' ? award : award.name || award.label || award;
+      const label = typeof award === 'string' ? award : award.name || award.label || '';
       tag.innerHTML = `<span>${label}</span>`;
       awardsEl.appendChild(tag);
-      // Create pearl particle canvas after layout
+      // Pearl particle canvas
       requestAnimationFrame(() => {
         const w = tag.offsetWidth, h = tag.offsetHeight;
         const cvs = document.createElement('canvas');
@@ -1636,16 +1755,14 @@ function openProject(proj) {
         cvs.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none';
         tag.appendChild(cvs);
         const ctx = cvs.getContext('2d');
-        // Dense particle field
         const particles = [];
         const count = Math.floor(w * h * 0.15);
         for (let j = 0; j < count; j++) {
           particles.push({
-            x: Math.random() * w * 2,
-            y: Math.random() * h * 2,
+            x: Math.random() * w * 2, y: Math.random() * h * 2,
             r: 0.3 + Math.random() * 1.6 + (Math.random() < 0.1 ? Math.random() * 1.5 : 0),
             baseAlpha: 0.06 + Math.random() * 0.16,
-            sparkle: Math.random() < 0.06, // 6% chance to be a sparkler
+            sparkle: Math.random() < 0.06,
             phase: Math.random() * Math.PI * 2,
             speed: 0.3 + Math.random() * 0.8
           });
@@ -1655,7 +1772,6 @@ function openProject(proj) {
           for (const p of particles) {
             let alpha = p.baseAlpha;
             if (p.sparkle) {
-              // Occasional bright flash
               const flash = Math.sin(t * 0.001 * p.speed + p.phase);
               alpha = flash > 0.85 ? 0.6 + flash * 0.4 : p.baseAlpha;
             }
@@ -1672,65 +1788,12 @@ function openProject(proj) {
     });
   }
 
-  const vis = document.getElementById('pp-visual');
-  vis.innerHTML = '';
-  if (proj.previewVideo) {
-    vis.style.background = proj.grad;
-    const vid = document.createElement('video');
-    vid.src = proj.previewVideo;
-    vid.muted = true; vid.loop = true; vid.playsInline = true; vid.autoplay = true;
-    vid.setAttribute('preload', 'metadata');
-    vid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s';
-    vid.onloadeddata = () => { vid.style.opacity = '1'; vid.play(); };
-    vis.appendChild(vid);
-  } else if (proj.coverImage || proj.previewImage) {
-    vis.style.background = proj.grad;
-    const img = document.createElement('img');
-    img.src = proj.coverImage || proj.previewImage;
-    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s';
-    img.onload = () => { img.style.opacity = '1'; };
-    vis.appendChild(img);
-  } else {
-    vis.style.background = proj.grad;
-    vis.style.border = `1px solid ${color}18`;
-  }
-
-  // Render gallery images + collect all viewable images for lightbox
-  const galleryEl = document.getElementById('pp-gallery');
-  galleryEl.innerHTML = '';
-  const allImages = [];
-  // Include cover/preview as first image
-  if (proj.coverImage || proj.previewImage) allImages.push(proj.coverImage || proj.previewImage);
-  if (proj.gallery && proj.gallery.length) {
-    proj.gallery.forEach((item, i) => {
-      if (!item) return;
-      const src = typeof item === 'string' ? item : (item.src || item.gallery || '');
-      if (!src) return;
-      allImages.push(src);
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = `${proj.title} detail ${i + 1}`;
-      img.loading = 'lazy';
-      img.onload = () => img.classList.add('loaded');
-      const imgIdx = allImages.length - 1;
-      img.addEventListener('click', () => openLightbox(allImages, imgIdx));
-      galleryEl.appendChild(img);
-    });
-  }
-  // Make cover image clickable too
-  const visEl = document.getElementById('pp-visual');
-  const coverImg = visEl.querySelector('img');
-  if (coverImg && allImages.length) {
-    coverImg.style.cursor = 'pointer';
-    coverImg.addEventListener('click', () => openLightbox(allImages, 0));
-  }
-
+  // External link
   const linkWrap = document.getElementById('pp-link-wrap');
   linkWrap.innerHTML = '';
   if (proj.link) {
     const a = document.createElement('a');
     a.className = 'pp-link'; a.href = proj.link; a.target = '_blank'; a.rel = 'noopener';
-    // Smart link label based on URL content
     const lk = proj.link.toLowerCase();
     let linkLabel = 'View externally';
     if (lk.includes('arxiv') || lk.includes('doi.org') || lk.includes('acm.org') || lk.includes('ieee') || lk.includes('paper') || lk.includes('pdf') || lk.includes('scholar') || lk.includes('discovery.ucl'))
@@ -1747,7 +1810,123 @@ function openProject(proj) {
     linkWrap.appendChild(a);
   }
 
-  document.getElementById('pp-tags').innerHTML = proj.tags
+  // Images — Formafantasma style: 2-up rows with captions
+  const imagesEl = document.getElementById('pp-images');
+  imagesEl.innerHTML = '';
+  const allImages = [];
+  if (proj.coverImage || proj.previewImage) allImages.push(proj.coverImage || proj.previewImage);
+
+  // Add gallery images
+  const galleryItems = [];
+  if (proj.gallery && proj.gallery.length) {
+    proj.gallery.forEach(item => {
+      if (!item) return;
+      const src = typeof item === 'string' ? item : (item.src || item.gallery || '');
+      const caption = typeof item === 'object' ? (item.caption || '') : '';
+      if (src) galleryItems.push({ src, caption });
+    });
+  }
+
+  // Cover/preview as first full-width image
+  if (proj.coverImage || proj.previewImage || proj.previewVideo) {
+    const row = document.createElement('div');
+    row.className = 'pp-img-row cols-1';
+    if (proj.previewVideo) {
+      const vid = document.createElement('video');
+      vid.src = proj.previewVideo;
+      vid.muted = true; vid.loop = true; vid.playsInline = true; vid.autoplay = true;
+      vid.setAttribute('preload', 'metadata');
+      vid.style.cssText = 'width:100%;display:block';
+      vid.onloadeddata = () => vid.play();
+      row.appendChild(vid);
+    } else {
+      const fig = document.createElement('figure');
+      fig.className = 'pp-img-figure';
+      const img = document.createElement('img');
+      img.src = proj.coverImage || proj.previewImage;
+      img.alt = proj.title;
+      img.loading = 'lazy';
+      img.onload = () => img.classList.add('loaded');
+      img.addEventListener('click', () => openLightbox(allImages.concat(galleryItems.map(g=>g.src)), 0));
+      fig.appendChild(img);
+      row.appendChild(fig);
+    }
+    imagesEl.appendChild(row);
+  }
+
+  // Gallery images in 2-up rows (Formafantasma style)
+  for (let i = 0; i < galleryItems.length; i += 2) {
+    const row = document.createElement('div');
+    const remaining = galleryItems.length - i;
+    row.className = remaining === 1 ? 'pp-img-row cols-1' : 'pp-img-row cols-2';
+
+    for (let j = 0; j < Math.min(2, remaining); j++) {
+      const item = galleryItems[i + j];
+      allImages.push(item.src);
+      const fig = document.createElement('figure');
+      fig.className = 'pp-img-figure';
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.alt = `${proj.title} — ${item.caption || 'detail'}`;
+      img.loading = 'lazy';
+      img.onload = () => img.classList.add('loaded');
+      const imgIdx = allImages.length - 1;
+      img.addEventListener('click', () => openLightbox(allImages, imgIdx));
+      fig.appendChild(img);
+      if (item.caption) {
+        const cap = document.createElement('figcaption');
+        cap.className = 'pp-img-caption';
+        cap.textContent = item.caption;
+        fig.appendChild(cap);
+      }
+      row.appendChild(fig);
+    }
+    imagesEl.appendChild(row);
+  }
+
+  // Contributors section
+  const contribWrap = document.getElementById('pp-contributors');
+  const contribList = document.getElementById('pp-contrib-list');
+  contribList.innerHTML = '';
+  if (proj.contributors && proj.contributors.length) {
+    contribWrap.style.display = 'block';
+    proj.contributors.forEach(c => {
+      const row = document.createElement('div');
+      row.className = 'pp-contrib-row';
+      const role = typeof c === 'string' ? '' : (c.role || '');
+      const name = typeof c === 'string' ? c : (c.name || '');
+      row.innerHTML = role ? `<span class="pp-contrib-role">${role}</span> ${name}` : name;
+      contribList.appendChild(row);
+    });
+  } else {
+    contribWrap.style.display = 'none';
+  }
+
+  // Literature / Press section
+  const litWrap = document.getElementById('pp-literature');
+  const litList = document.getElementById('pp-lit-list');
+  litList.innerHTML = '';
+  if (proj.literature && proj.literature.length) {
+    litWrap.style.display = 'block';
+    proj.literature.forEach(l => {
+      const row = document.createElement('div');
+      row.className = 'pp-lit-row';
+      const pub = typeof l === 'string' ? l : (l.publication || '');
+      const link = typeof l === 'object' ? (l.link || '') : '';
+      const desc = typeof l === 'object' ? (l.description || '') : '';
+      if (link) {
+        row.innerHTML = `<a href="${link}" target="_blank" rel="noopener">${pub} ↗</a>${desc ? ', ' + desc : ''}`;
+      } else {
+        row.textContent = pub + (desc ? ', ' + desc : '');
+      }
+      litList.appendChild(row);
+    });
+  } else {
+    litWrap.style.display = 'none';
+  }
+
+  // Tags
+  document.getElementById('pp-tags').innerHTML = (proj.tags || [])
     .map(t => `<div class="pp-tag" style="border-color:${color}25;color:${color}80">${t}</div>`).join('');
 
   projectPage.classList.add('open');
