@@ -400,6 +400,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .pp-link:hover{color:var(--text);border-color:var(--dim)}
 .pp-link-arrow{font-size:11px}
 
+.pp-gallery{
+  display:flex;flex-direction:column;gap:16px;margin-bottom:48px
+}
+.pp-gallery img{
+  width:100%;border-radius:4px;opacity:0;
+  transition:opacity .5s ease
+}
+.pp-gallery img.loaded{opacity:1}
+
 .pp-tags{display:flex;gap:7px;flex-wrap:wrap}
 .pp-tag{
   font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;
@@ -600,6 +609,7 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
     <div class="pp-visual" id="pp-visual"></div>
     <div class="pp-rule"></div>
     <div class="pp-desc" id="pp-desc"></div>
+    <div class="pp-gallery" id="pp-gallery"></div>
     <div class="pp-link-wrap" id="pp-link-wrap"></div>
     <div class="pp-tags" id="pp-tags"></div>
   </div>
@@ -1395,6 +1405,22 @@ function openProject(proj) {
   } else {
     vis.style.background = proj.grad;
     vis.style.border = `1px solid ${color}18`;
+  }
+
+  // Render gallery images
+  const galleryEl = document.getElementById('pp-gallery');
+  galleryEl.innerHTML = '';
+  if (proj.gallery && proj.gallery.length) {
+    proj.gallery.forEach((item, i) => {
+      const src = typeof item === 'string' ? item : item.src;
+      if (!src) return;
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = `${proj.title} detail ${i + 1}`;
+      img.loading = 'lazy';
+      img.onload = () => img.classList.add('loaded');
+      galleryEl.appendChild(img);
+    });
   }
 
   const linkWrap = document.getElementById('pp-link-wrap');

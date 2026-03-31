@@ -88,11 +88,23 @@ collections:
                 required: false
                 hint: "Hero image (1400x600). Upload or drag image here."
 
+              - label: "Project Detail Images"
+                name: "gallery"
+                widget: "list"
+                required: false
+                hint: "Add images that show inside the project page (process shots, details, screenshots)"
+                field:
+                  label: "Image"
+                  name: "src"
+                  widget: "image"
+
               - label: "Preview Video"
                 name: "previewVideo"
-                widget: "string"
+                widget: "image"
                 required: false
-                hint: "Path to loop.mp4 or video URL"
+                hint: "Short looping video as cover (MP4). Upload or drag here."
+                media_library:
+                  allow_multiple: false
 
               - label: "Whisper"
                 name: "whisper"
