@@ -277,89 +277,87 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 }
 .list-header-title{
   font-family:'Times New Roman',Georgia,serif;
-  font-size:28px;font-weight:400;color:#1a1a1a
+  font-size:16px;font-weight:400;color:#1a1a1a;
+  letter-spacing:.2em;text-transform:uppercase
 }
-.list-header-title em{font-style:italic}
+.list-header-title em{font-style:normal}
 .list-header-sub{
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:11px;color:#666;margin-top:2px
+  font-family:'Times New Roman',Georgia,serif;
+  font-size:13px;color:#888;margin-top:4px;letter-spacing:.05em
 }
 .list-header-link{
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:12px;color:#0645ad;text-decoration:none
+  font-family:'Times New Roman',Georgia,serif;
+  font-size:14px;letter-spacing:.25em;text-transform:uppercase;
+  color:#1a1a1a;text-decoration:none
 }
-.list-header-link:hover{text-decoration:underline}
+.list-header-link:hover{color:#0645ad}
 .list-intro-para{
   font-family:'Times New Roman',Georgia,serif;
-  font-size:15px;line-height:1.7;color:#444;
-  margin-top:16px;max-width:720px
+  font-size:22px;line-height:1.55;color:#1a1a1a;font-weight:400;
+  margin-top:20px;max-width:780px
 }
 
 .list-filters{
-  display:flex;gap:18px;margin-bottom:24px;
+  display:flex;gap:28px;margin-bottom:48px;
   flex-wrap:wrap;
-  border-bottom:1px solid #ddd;
-  padding-bottom:12px
+  justify-content:center;
+  padding:0
 }
 .list-filter{
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:12px;
-  color:#0645ad;cursor:pointer;
+  font-family:'Times New Roman',Georgia,serif;
+  font-size:18px;
+  color:#999;cursor:pointer;
   transition:color .15s;
   text-decoration:none
 }
-.list-filter:hover{text-decoration:underline}
-.list-filter.active{color:#1a1a1a;font-weight:600;text-decoration:none}
+.list-filter:hover{color:#0645ad}
+.list-filter.active{color:#1a1a1a}
 
-/* Table header */
-.list-table-head{
-  display:grid;
-  grid-template-columns:70px 1fr 180px 90px;
-  gap:16px;
-  padding:8px 0;
-  border-bottom:2px solid #aaa;
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:13px;font-weight:400;
-  color:#999
-}
+/* Table — no header, just rows */
+.list-table-head{display:none}
 
 .list-row{
   display:grid;
-  grid-template-columns:70px 1fr 180px 90px;
-  gap:16px;
+  grid-template-columns:100px 1fr 200px 120px 60px;
+  gap:20px;
   align-items:baseline;
-  padding:9px 0;
-  border-bottom:1px solid #e0e0e0;
+  padding:16px 0;
+  border-bottom:1px solid #ccc;
   cursor:pointer;
-  transition:background .1s;
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:14px;
+  transition:color .15s;
+  font-family:'Times New Roman',Georgia,serif;
+  font-size:20px;
   color:#1a1a1a;
   line-height:1.35
 }
-.list-row:hover{background:rgba(0,0,0,.015)}
-.list-row:hover .list-title{color:#0645ad}
-.list-row.wip-row{opacity:.4}
-.list-row.wip-row .list-title,.list-row.wip-row .list-venue,.list-row.wip-row .list-mode,.list-row.wip-row .list-date{color:#aaa}
-.list-row.wip-row:hover .list-title{color:#0645ad}
+.list-row:first-child{border-top:2px solid #1a1a1a}
+.list-row:hover{color:#0645ad}
+.list-row:hover .list-title,.list-row:hover .list-venue,.list-row:hover .list-mode,.list-row:hover .list-date,.list-row:hover .list-year{color:#0645ad}
+.list-row.wip-row{color:#ccc}
+.list-row.wip-row .list-title,.list-row.wip-row .list-venue,.list-row.wip-row .list-mode,.list-row.wip-row .list-date,.list-row.wip-row .list-year{color:#ccc}
+.list-row.wip-row:hover,.list-row.wip-row:hover .list-title,.list-row.wip-row:hover .list-venue,.list-row.wip-row:hover .list-mode,.list-row.wip-row:hover .list-date,.list-row.wip-row:hover .list-year{color:#0645ad}
 
 .list-date{
-  font-size:14px;color:#1a1a1a;
+  font-size:20px;color:inherit;
   white-space:nowrap
 }
 .list-title{
-  font-size:14px;font-weight:400;
-  color:#1a1a1a;
-  transition:color .1s;
+  font-size:20px;font-weight:400;
+  color:inherit;
+  transition:color .15s;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap
 }
 .list-venue{
-  font-size:14px;color:#1a1a1a;
+  font-size:20px;color:inherit;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap
 }
 .list-mode{
-  font-size:14px;
-  color:#1a1a1a
+  font-size:20px;
+  color:inherit
+}
+.list-year{
+  font-size:20px;color:inherit;
+  text-align:right
 }
 
 /* Expandable section */
@@ -368,7 +366,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   max-height:0;overflow:hidden;
   transition:max-height .5s ease,opacity .3s ease;
   opacity:0;
-  padding-left:86px
+  padding-left:140px
 }
 .list-row.expanded .list-expand{
   max-height:800px;opacity:1;
@@ -658,12 +656,14 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 
   /* List view mobile */
   .list-inner{padding:80px 20px 100px}
-  .list-table-head{display:none}
-  .list-row{grid-template-columns:1fr;gap:2px;padding:12px 0;font-size:13px}
-  .list-venue,.list-mode{display:none}
-  .list-date{font-size:11px;color:#999}
-  .list-title{font-size:14px;white-space:normal}
+  .list-row{grid-template-columns:1fr;gap:2px;padding:12px 0;font-size:16px}
+  .list-venue,.list-mode,.list-year{display:none}
+  .list-date{font-size:13px;color:#999}
+  .list-title{font-size:16px;white-space:normal}
   .list-expand{padding-left:0}
+  .list-filters{gap:16px;justify-content:flex-start}
+  .list-filter{font-size:15px}
+  .list-intro-para{font-size:17px}
 
   /* Project page mobile */
   .pp-inner{padding:52px 24px 100px}
@@ -734,12 +734,6 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
       </div>
     </div>
     <div class="list-filters" id="list-filters"></div>
-    <div class="list-table-head">
-      <div>Date</div>
-      <div>Title</div>
-      <div>Venue / Collab</div>
-      <div>Type</div>
-    </div>
     <div id="list-rows"></div>
   </div>
 </div>
@@ -1740,9 +1734,10 @@ function buildListView() {
 
     row.innerHTML = `
       <div class="list-date">${dateStr}</div>
-      <div class="list-title">${proj.title}${proj.wip ? ' <span style="font-size:11px;color:#bbb;margin-left:4px">WIP</span>' : ''}</div>
+      <div class="list-title">${proj.title}</div>
       <div class="list-venue">${venue}</div>
       <div class="list-mode">${proj.mode}</div>
+      <div class="list-year">${proj.year || ''}</div>
       <div class="list-expand">
         ${proj.intro || proj.subtitle ? `<div style="font-family:'Times New Roman',serif;font-size:14px;font-style:italic;color:#777;padding:0 0 8px">${proj.intro || proj.subtitle}</div>` : ''}
         ${proj.desc ? `<div class="list-desc">${proj.desc}</div>` : ''}
