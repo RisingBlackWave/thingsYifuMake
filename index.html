@@ -7,7 +7,6 @@
 <title>thingsYifuMake</title>
 <meta name="description" content="Things Yifu makes — designed, researched, built, taught, talked. PhD researcher, designer, maker, London.">
 <link rel="canonical" href="https://thingsyifumake.uk">
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -818,14 +817,16 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 
   /* Project page mobile */
   .pp-inner{padding:52px 24px 100px}
-  .pp-title{font-size:12px;letter-spacing:.2em}
-  .pp-desc{font-size:20px}
-  .pp-text-block{font-size:20px}
-  .pp-back{margin-bottom:48px}
+  .pp-title{font-size:15px;letter-spacing:.2em}
+  .pp-desc{font-size:26px}
+  .pp-text-block{font-size:26px}
+  .pp-back{margin-bottom:48px;font-size:14px}
   .pp-img-row.cols-2{grid-template-columns:1fr}
   .pp-appendix-grid{grid-template-columns:repeat(2,1fr)}
-  .pp-contrib-row{font-size:13px}
-  .pp-lit-row{font-size:14px}
+  .pp-contrib-row{font-size:17px}
+  .pp-lit-row{font-size:18px}
+  .pp-link{font-size:17px}
+  .pp-subtitle{font-size:16px}
 
   .linkedin-link{font-size:7px;padding:2px 6px}
 }
@@ -2164,14 +2165,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') lbNext();
 });
 
-// Netlify Identity redirect after login
-if (window.netlifyIdentity) {
-  window.netlifyIdentity.on('init', user => {
-    if (!user) window.netlifyIdentity.on('login', () => {
-      document.location.href = '/admin/';
-    });
-  });
-}
+
 </script>
 </body>
 </html>
