@@ -68,9 +68,14 @@ collections:
                 name: "awards"
                 widget: "list"
                 required: false
-                hint: "Awards and honours (e.g. Best Paper, CHI Honourable Mention)"
+                hint: "Click Add to enter each award separately"
                 allow_add: true
-                default: []
+                collapsed: false
+                fields:
+                  - label: "Award Name"
+                    name: "name"
+                    widget: "string"
+                    hint: "e.g. Best Paper Award, CHI 2026 Honourable Mention"
 
               - label: "Tags"
                 name: "tags"

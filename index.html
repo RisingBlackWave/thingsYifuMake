@@ -1411,7 +1411,7 @@ function openProject(proj) {
     proj.awards.forEach((award) => {
       const tag = document.createElement('div');
       tag.className = 'pp-award';
-      const label = typeof award === 'string' ? award : award.label || award;
+      const label = typeof award === 'string' ? award : award.name || award.label || award;
       tag.innerHTML = `<span>${label}</span>`;
       awardsEl.appendChild(tag);
       // Create pearl particle canvas after layout
