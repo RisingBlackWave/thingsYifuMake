@@ -4,6 +4,10 @@ backend:
   branch: main
   base_url: https://api.netlify.com
   auth_endpoint: auth
+  commit_messages:
+    create: "Create {{collection}} {{slug}}"
+    update: "Update {{collection}} {{slug}}"
+    delete: "Delete {{collection}} {{slug}}"
 
 media_folder: "assets/projects"
 public_folder: "assets/projects"
