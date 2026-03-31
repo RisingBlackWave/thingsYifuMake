@@ -705,26 +705,24 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   .preview{width:220px}
   .preview-body{padding:10px 12px 12px}
 
-  /* List view mobile header */
-  .list-top-bar{flex-direction:column;align-items:flex-start;gap:8px;padding:16px 20px 12px}
+  /* List view mobile header — centered like Formafantasma */
+  .list-top-bar{flex-direction:column;align-items:center;gap:6px;padding:20px 20px 14px}
   .list-logo{font-size:18px}
   .list-nav{gap:10px;font-size:9px}
 
-  /* List view mobile — keep title + year */
+  /* List view mobile — direct click to project, no expand */
   .list-inner{padding:20px 20px 100px;max-width:100%}
-  .list-row{grid-template-columns:1fr 50px;gap:8px;padding:12px 0;font-size:16px}
+  .list-row{grid-template-columns:1fr 50px;gap:8px;padding:14px 0;font-size:20px}
+  .list-row .list-expand{display:none!important}
   .list-venue,.list-mode{display:none}
   .list-date{font-size:13px;color:#999}
-  .list-title{font-size:16px;white-space:normal}
-  .list-year{font-size:14px}
-  .list-expand{padding-left:0}
-  .list-desc{font-size:14px;line-height:1.6}
-  .list-explore{font-size:14px}
-  .list-filters{gap:16px;justify-content:flex-start}
-  .list-filter{font-size:15px}
-  .list-intro-para{font-size:15px}
+  .list-title{font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .list-year{font-size:18px}
+  .list-filters{gap:16px;justify-content:flex-start;flex-wrap:wrap}
+  .list-filter{font-size:16px}
+  .list-intro-para{font-size:18px;line-height:1.5}
   .list-intro-second{display:none}
-  .list-intro-wrap{max-width:100%;padding:0;margin:0 0 20px}
+  .list-intro-wrap{max-width:100%;padding:0;margin:0 0 24px}
 
   /* Project page mobile */
   .pp-inner{padding:52px 24px 100px}
@@ -738,6 +736,29 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 @media (max-width:400px) {
   .sub{display:none}
   .filters{top:60px}
+}
+
+/* ── DARK MODE (system preference) ── */
+@media (prefers-color-scheme:dark) {
+  #list-view{background:#0a0a0a;color:#ede9e2}
+  .list-top-bar{background:#0a0a0a;border-bottom-color:rgba(255,255,255,.1)}
+  .list-logo{color:#ede9e2}
+  .list-nav-link{color:#888}
+  .list-nav-link:hover{color:#ede9e2}
+  .list-nav-active{color:#ede9e2}
+  .list-nav-sep{color:#444}
+  .list-intro-para{color:#ccc}
+  .list-filter{color:#888}
+  .list-filter.active{color:#ede9e2}
+  .list-row{color:#ede9e2;border-bottom-color:rgba(255,255,255,.12)}
+  .list-row:first-child{border-top-color:rgba(255,255,255,.12)}
+  .list-row:hover,.list-row:hover .list-title,.list-row:hover .list-venue,.list-row:hover .list-mode,.list-row:hover .list-year{color:#6ea8fe}
+  .list-row.wip-row,.list-row.wip-row .list-title,.list-row.wip-row .list-venue,.list-row.wip-row .list-mode,.list-row.wip-row .list-year{color:#555}
+  .list-row.wip-row:hover,.list-row.wip-row:hover .list-title,.list-row.wip-row:hover .list-venue,.list-row.wip-row:hover .list-mode,.list-row.wip-row:hover .list-year{color:#6ea8fe}
+  .list-desc{color:#aaa}
+  .list-explore{color:#6ea8fe}
+  .award-tag{background:rgba(255,255,255,.1);color:#ede9e2}
+  .list-filter-line{border-color:rgba(255,255,255,.15)}
 }
 </style>
 </head>
@@ -1827,6 +1848,11 @@ function buildListView() {
 
     // Toggle expand on row click
     row.addEventListener('click', (e) => {
+      // Mobile: go directly to project page (no expand)
+      if (window.innerWidth <= 768) {
+        openProject(proj);
+        return;
+      }
       if (e.target.classList.contains('list-enter')) {
         openProject(proj);
         return;
