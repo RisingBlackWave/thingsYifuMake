@@ -136,9 +136,19 @@
       ],
       "previewVideo": "",
       "previewImage": "",
-      "awards": [],
+      "awards": [
+        {
+          "name": "Oppo X RCA 2020 Finalists"
+        },
+        {
+          "name": "Distributed Design Award 2020"
+        },
+        {
+          "name": "Index Project Nominee 2020"
+        }
+      ],
       "subtitle": "A future cooking engineering project.",
-      "title": "Meal Engine",
+      "title": "Meal Engine: Graphical Recipe Editor that leverages food databases",
       "tags": [
         "IDE",
         "Engineering",
