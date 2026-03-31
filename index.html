@@ -260,11 +260,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 }
 #list-view.open{opacity:1;pointer-events:auto}
 #list-view *{cursor:default}
+/* Hide cursor-lens in list view */
+.list-active #cursor{display:none!important}
+.list-active{cursor:default!important}
+.list-active *{cursor:default!important}
 
 .list-inner{
-  max-width:960px;
+  max-width:90%;
   margin:0 auto;
-  padding:48px 48px 140px
+  padding:48px 64px 140px
 }
 
 .list-header{
@@ -277,8 +281,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 }
 .list-header-title{
   font-family:'Times New Roman',Georgia,serif;
-  font-size:16px;font-weight:400;color:#1a1a1a;
-  letter-spacing:.2em;text-transform:uppercase
+  font-size:18px;font-weight:400;color:#1a1a1a;
+  letter-spacing:.25em;text-transform:uppercase
 }
 .list-header-title em{font-style:normal}
 .list-header-sub{
@@ -293,44 +297,46 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .list-header-link:hover{color:#0645ad}
 .list-intro-para{
   font-family:'Times New Roman',Georgia,serif;
-  font-size:22px;line-height:1.55;color:#1a1a1a;font-weight:400;
-  margin-top:20px;max-width:780px
+  font-size:28px;line-height:1.5;color:#1a1a1a;font-weight:400;
+  margin-top:24px;max-width:100%
 }
 
 .list-filters{
-  display:flex;gap:28px;margin-bottom:48px;
+  display:flex;gap:32px;margin-bottom:0;
   flex-wrap:wrap;
   justify-content:center;
-  padding:0
+  padding:0 0 20px;
+  border-bottom:2.5px solid #1a1a1a
 }
 .list-filter{
   font-family:'Times New Roman',Georgia,serif;
-  font-size:18px;
-  color:#999;cursor:pointer;
+  font-size:22px;
+  color:#0645ad;cursor:pointer;
   transition:color .15s;
   text-decoration:none
 }
-.list-filter:hover{color:#0645ad}
-.list-filter.active{color:#1a1a1a}
+.list-filter:hover{color:#1a1a1a}
+.list-filter.active{color:#1a1a1a;font-weight:400}
+.list-filter[data-m="all"]{color:#1a1a1a}
 
 /* Table — no header, just rows */
 .list-table-head{display:none}
 
 .list-row{
   display:grid;
-  grid-template-columns:100px 1fr 200px 120px 60px;
-  gap:20px;
+  grid-template-columns:1fr 1fr 160px 80px;
+  gap:24px;
   align-items:baseline;
-  padding:16px 0;
-  border-bottom:1px solid #ccc;
+  padding:22px 0;
+  border-bottom:1px solid #1a1a1a;
   cursor:pointer;
   transition:color .15s;
   font-family:'Times New Roman',Georgia,serif;
-  font-size:20px;
+  font-size:24px;
   color:#1a1a1a;
   line-height:1.35
 }
-.list-row:first-child{border-top:1px solid #ccc}
+.list-row:first-child{border-top:none}
 .list-row:hover{color:#0645ad}
 .list-row:hover .list-title,.list-row:hover .list-venue,.list-row:hover .list-mode,.list-row:hover .list-date,.list-row:hover .list-year{color:#0645ad}
 .list-row.wip-row{color:#ccc}
@@ -338,25 +344,25 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .list-row.wip-row:hover,.list-row.wip-row:hover .list-title,.list-row.wip-row:hover .list-venue,.list-row.wip-row:hover .list-mode,.list-row.wip-row:hover .list-date,.list-row.wip-row:hover .list-year{color:#0645ad}
 
 .list-date{
-  font-size:20px;color:inherit;
+  font-size:24px;color:inherit;
   white-space:nowrap
 }
 .list-title{
-  font-size:20px;font-weight:400;
+  font-size:24px;font-weight:400;
   color:inherit;
   transition:color .15s;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap
 }
 .list-venue{
-  font-size:20px;color:inherit;
+  font-size:24px;color:inherit;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap
 }
 .list-mode{
-  font-size:20px;
+  font-size:24px;
   color:inherit
 }
 .list-year{
-  font-size:20px;color:inherit;
+  font-size:24px;color:inherit;
   text-align:right
 }
 
@@ -366,7 +372,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   max-height:0;overflow:hidden;
   transition:max-height .5s ease,opacity .3s ease;
   opacity:0;
-  padding-left:140px
+  padding-left:0
 }
 .list-row.expanded .list-expand{
   max-height:800px;opacity:1;
@@ -558,7 +564,10 @@ body.list-active .sub,
 body.list-active .hint,
 body.list-active .filters,
 body.list-active #dots-layer,
-body.list-active #canvas{opacity:0;pointer-events:none;transition:opacity .3s}
+body.list-active #canvas,
+body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity .3s}
+body.list-active .view-toggle,
+body.list-active .wordmark{display:none!important}
 body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
 
 /* ── LINKEDIN LINK ── */
@@ -695,7 +704,7 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 <div class="view-toggle" id="view-toggle">
   <span class="active" data-view="constellation">constellation</span>
   <span class="sep">/</span>
-  <span data-view="list">eco-friendly</span>
+  <span data-view="list">list</span>
   <span class="sep">·</span>
   <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" class="linkedin-link">LinkedIn ↗</a>
 </div>
@@ -727,7 +736,10 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
           <div class="list-header-title">things<em>Yifu</em>Make</div>
           <div class="list-header-sub">PhD researcher · Designer · Maker · London</div>
         </div>
-        <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" class="list-header-link">LinkedIn ↗</a>
+        <nav style="display:flex;gap:32px;align-items:baseline;flex-shrink:0">
+          <span class="list-header-link" id="list-to-constellation" style="cursor:pointer">Constellation</span>
+          <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" class="list-header-link" style="color:#0A66C2">LinkedIn ↗</a>
+        </nav>
       </div>
       <div class="list-intro-para">
         A collection of things designed, researched, built, taught, and talked about — from robotic repair tutors and textile sensors to rocking chairs and cooking machines.
@@ -1733,7 +1745,6 @@ function buildListView() {
     const dateStr = proj.date || (proj.year ? String(proj.year) : '');
 
     row.innerHTML = `
-      <div class="list-date">${dateStr}</div>
       <div class="list-title">${proj.title}</div>
       <div class="list-venue">${venue}</div>
       <div class="list-mode">${proj.mode}</div>
@@ -1797,6 +1808,7 @@ function switchView(view) {
 document.querySelectorAll('.view-toggle span[data-view]').forEach(s => {
   s.addEventListener('click', () => switchView(s.dataset.view));
 });
+document.getElementById('list-to-constellation').addEventListener('click', () => switchView('constellation'));
 
 // Listen for hash changes
 window.addEventListener('hashchange', () => {
