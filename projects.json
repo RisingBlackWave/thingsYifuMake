@@ -129,7 +129,7 @@
       "slug": "meal-engine",
       "intro": "Meal Engine (ME) is a web-based recipe editor that leverages food databases to create healthier, more sustainable, and tastier meals. It aims at installing cooking confidence and promoting ingredient transparency to support those who care about health, the environment, and food experiences. ",
       "date": "",
-      "venue": "Innovation Design Engineering",
+      "venue": "Oppo",
       "modes": [
         "Product"
       ],
@@ -193,7 +193,7 @@
     {
       "whisper": "",
       "mode": "Research",
-      "coverImage": "assets/projects/ph.d.-showcase-ppt.png",
+      "coverImage": "",
       "slug": "repairbot-framework",
       "intro": "Existing tools fail to provide holistic support as interactive tutors and lack awareness of the embodied interactions of working with textiles. This paper presents a multi-phase study that investigates these challenges and explores the design space for a Human-Touch-Aware conversational agent (RepairBot). ",
       "date": "",
