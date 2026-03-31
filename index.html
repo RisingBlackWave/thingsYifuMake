@@ -252,11 +252,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 /* ── LIST VIEW (system fonts, Wikipedia-inspired) ── */
 #list-view{
   position:fixed;inset:0;z-index:100;
-  background:#fafafa;
+  background:#fff;
   overflow-y:auto;
   opacity:0;pointer-events:none;
   transition:opacity .4s ease;
-  cursor:default
+  cursor:default;
+  font-size:120%
 }
 #list-view.open{opacity:1;pointer-events:auto}
 #list-view *{cursor:default}
@@ -383,7 +384,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   display:grid;
   grid-template-columns:1fr 1.2fr;
   gap:32px;
-  align-items:start
+  align-items:stretch
 }
 .list-expand-text{
   display:flex;flex-direction:column;gap:12px
@@ -399,7 +400,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:10px;
-  max-height:360px;overflow:hidden
+  height:100%
 }
 .list-gallery img{
   width:100%;height:100%;object-fit:cover;
@@ -644,6 +645,10 @@ body.list-active .wordmark,body.list-active .wordmark em{color:#1a1a1a!important
 body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity .3s}
 
 /* ── MOBILE ── */
+@media (min-width:1400px) {
+  #list-view{font-size:140%}
+}
+
 @media (max-width:768px) {
   html,body{cursor:auto}
   #cursor{display:none!important}
