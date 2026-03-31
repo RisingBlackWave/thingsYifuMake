@@ -49,7 +49,10 @@
       "slug": "dancing-pig",
       "intro": "",
       "date": "",
-      "venue": "",
+      "venue": "MOMA Shanghai",
+      "modes": [
+        "Product"
+      ],
       "desc": "The pig rocking chair seduces spectators to rock, as people start to enjoy the rocking experience, the pig moans and screams. The unknown emotions of the pig sounds reveals the gap or connection between human and nonhumans. With the built-in movement sensor data, the pig senses its rider and produce the generative moaning sounds. \n\nThe work was later reproduced and sold to private collector during exhibition at Shanghai MOMA.",
       "visibility": "shown",
       "gallery": [
@@ -58,7 +61,14 @@
       ],
       "previewVideo": "",
       "previewImage": "",
-      "awards": [],
+      "awards": [
+        {
+          "name": "Art Hill Gallery Selection"
+        },
+        {
+          "name": "MOMA Shanghai Selection"
+        }
+      ],
       "subtitle": "Oh! A Pig Rocking Chair.",
       "title": "Dancing Pig: Rocking Pig Chair",
       "tags": [
@@ -87,7 +97,17 @@
       ],
       "previewVideo": "",
       "previewImage": "",
-      "awards": [],
+      "awards": [
+        {
+          "name": "Belmond Hotel Design Award"
+        },
+        {
+          "name": "John L Paterson Award (Best Design Candidate of the Year)"
+        },
+        {
+          "name": "Student Design Selection Award"
+        }
+      ],
       "subtitle": "How could technology rekindle human connections?",
       "title": "About Two",
       "tags": [
