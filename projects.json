@@ -221,19 +221,25 @@
     {
       "whisper": "",
       "mode": "Research",
-      "coverImage": "",
+      "coverImage": "assets/projects/screenshot-2026-03-31-at-20.18.40.png",
       "slug": "T2-GR2",
-      "intro": "",
+      "intro": "Tactile gesture plays a vital role in understanding, selecting, and feeling attached to clothes. In this paper, we introduce the FabricTouch II dataset with multimodal infromation, which focuses on fabric assessment touch gestures and aims to support sustainable fashion consumption. ",
       "date": "",
-      "venue": "",
-      "desc": "The fashion industry’s negative impact and overconsumption require urgent action to improve and reduce fashion consumption. Tactile gesture plays a vital role in understanding, selecting, and feeling attached to clothes. In this paper, we introduce the FabricTouch II dataset with multimodal infromation, which focuses on fabric assessment touch gestures and aims to support sustainable fashion consumption. By integrating gesture labels, we enhance the dataset’s comprehensiveness, improve recognition accuracy, and provide valuable information for consumers and intelligent systems, such as conversational agents in shop or home wardrobe. Additionally, this study has made preliminary explorations on recognizing fabric touch gestures using time-spectral representations of EMG combined with graph representations on this small batch dataset. The experiment found that the graph representation of EMG outperforms the regular neural network and that the representation capacity of bilateral EMG data is superior to that of unilateral data.",
+      "venue": "ACII 2024",
+      "modes": [
+        "Research"
+      ],
+      "desc": "The fashion industry’s negative impact and overconsumption require urgent action to improve and reduce fashion consumption. Tactile gesture plays a vital role in understanding, selecting, and feeling attached to clothes. In this paper, we introduce the FabricTouch II dataset with multimodal information, which focuses on fabric assessment touch gestures and aims to support sustainable fashion consumption. By integrating gesture labels, we enhance the dataset’s comprehensiveness, improve recognition accuracy, and provide valuable information for consumers and intelligent systems, such as conversational agents in shop or home wardrobe. Additionally, this study has made preliminary explorations on recognizing fabric touch gestures using time-spectral representations of EMG combined with graph representations on this small batch dataset. The experiment found that the graph representation of EMG outperforms the regular neural network and that the representation capacity of bilateral EMG data is superior to that of unilateral data.",
       "visibility": "shown",
-      "gallery": [],
+      "gallery": [
+        "assets/projects/screenshot-2026-03-31-at-20.18.31.png",
+        "assets/projects/screenshot-2026-03-31-at-20.18.15.png"
+      ],
       "previewVideo": "",
       "previewImage": "",
       "awards": [],
       "subtitle": "T2GR2: Textile Touch Gesture Recognition with Graph Representation of EMG",
-      "title": "Textile Touch Gesture Recognition (ACII 2024)",
+      "title": "Textile-Touch Gesture Recognition Dataset",
       "tags": [
         "IEEE",
         "Workshop",
