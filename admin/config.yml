@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: RisingBlackWave/thingsYifuMake
   branch: main
 
 media_folder: "assets/projects"
