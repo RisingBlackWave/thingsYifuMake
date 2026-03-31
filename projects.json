@@ -124,9 +124,12 @@
       "mode": "Product",
       "coverImage": "",
       "slug": "meal-engine",
-      "intro": "",
+      "intro": "Meal Engine (ME) is a web-based recipe editor that leverages food databases to create healthier, more sustainable, and tastier meals. It aims at installing cooking confidence and promoting ingredient transparency to support those who care about health, the environment, and food experiences. ",
       "date": "",
-      "venue": "",
+      "venue": "Innovation Design Engineering",
+      "modes": [
+        "Product"
+      ],
       "desc": "Meal Engine (ME) is a web-based recipe editor that leverages food databases to create healthier, more sustainable, and tastier meals. It aims at installing cooking confidence and promoting ingredient transparency to support those who care about health, the environment, and food experiences. \n\nRecipes contain enormous amounts of information about food and our world in general. For example, preparation techniques, taste combinations, nutritional and health information, kitchen equipment, historical information about dishes, scientific explanations regarding cooking methods, and so forth. The richness and versatility of information is an opportunity to engage in cooking when tailored to the individual. Current text and video recipes fail on flexibility and clarity, making it difficult to adapt recipes to personal preferences creatively.  \n\nUnlike non-adaptive recipe articles or video tutorials, ME presents recipes as an interactive graphical flow made up of ingredients and cooking actions (nodes) that reveal cooking processes at a glance.  The strongest feature of ME is recipe personalization. A recipe can be downloaded and then adapted simply with the press of a button to incorporate more sustainable and healthier alternatives, while retaining the taste and feel of the original.\n",
       "visibility": "shown",
       "gallery": [
@@ -156,7 +159,7 @@
         "Future"
       ],
       "link": "",
-      "year": "",
+      "year": 2020,
       "wip": false
     },
     {
