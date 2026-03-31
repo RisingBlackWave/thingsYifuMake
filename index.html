@@ -10,6 +10,7 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#07070A;
@@ -417,45 +418,64 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   color:rgba(237,233,226,.4)
 }
 
-/* ── AWARD TAGS (pearl-like) ── */
+/* ── AWARD TAGS (珠光 pearlescent) ── */
 .pp-awards{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px}
 .pp-award{
   position:relative;
   font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;
   padding:5px 14px;border-radius:20px;
-  color:rgba(255,255,255,.95);
-  background:linear-gradient(135deg,
-    rgba(255,255,255,.12) 0%,
-    rgba(255,255,255,.04) 40%,
-    rgba(255,255,255,.1) 60%,
-    rgba(255,255,255,.03) 100%);
-  border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.9);
+  background:
+    linear-gradient(var(--bg),var(--bg)) padding-box,
+    linear-gradient(
+      var(--a,0deg),
+      rgba(255,160,160,.4),
+      rgba(255,220,130,.3),
+      rgba(160,255,180,.4),
+      rgba(130,190,255,.4),
+      rgba(190,140,255,.35),
+      rgba(255,160,160,.4)
+    ) border-box;
+  border:1px solid transparent;
   box-shadow:
-    0 0 8px rgba(255,255,255,.08),
-    0 0 20px rgba(255,255,255,.04),
-    inset 0 1px 1px rgba(255,255,255,.15);
+    0 0 6px rgba(255,255,255,.05),
+    inset 0 0 8px rgba(255,255,255,.03);
   overflow:hidden;
-  animation:awardFloat 4s ease-in-out infinite
+  animation:awardFloat 4s ease-in-out infinite, awardRainbow 4s linear infinite
+}
+@keyframes awardRainbow{
+  to{--a:360deg}
+}
+/* Tiny sparkle particles */
+.pp-award::before,
+.pp-award::after{
+  content:'';position:absolute;
+  width:2px;height:2px;border-radius:50%;
+  background:white;
+  animation:sparkle 2s ease-in-out infinite
 }
 .pp-award::before{
-  content:'';position:absolute;top:-50%;left:-50%;
-  width:200%;height:200%;
-  background:conic-gradient(
-    from 0deg,
-    transparent 0%,
-    rgba(255,255,255,.15) 10%,
-    transparent 20%,
-    transparent 50%,
-    rgba(255,255,255,.1) 60%,
-    transparent 70%
-  );
-  animation:awardShine 3s linear infinite
+  top:25%;left:20%;
+  animation-delay:0s;
+  box-shadow:
+    12px 4px 0 rgba(255,200,200,.6),
+    28px -2px 0 rgba(200,255,220,.5),
+    45px 6px 0 rgba(180,200,255,.6),
+    60px 1px 0 rgba(220,180,255,.5)
+}
+.pp-award::after{
+  top:60%;left:35%;
+  animation-delay:1s;
+  box-shadow:
+    8px -3px 0 rgba(255,220,180,.5),
+    22px 4px 0 rgba(180,255,200,.6),
+    38px -1px 0 rgba(200,180,255,.5)
 }
 .pp-award span{position:relative;z-index:1}
 
-@keyframes awardShine{
-  from{transform:rotate(0deg)}
-  to{transform:rotate(360deg)}
+@keyframes sparkle{
+  0%,100%{opacity:0;transform:scale(.5)}
+  50%{opacity:.8;transform:scale(1)}
 }
 @keyframes awardFloat{
   0%,100%{transform:translateY(0)}
