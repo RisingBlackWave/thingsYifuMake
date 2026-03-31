@@ -292,14 +292,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .list-nav-sep{color:#ccc}
 
 .list-inner{
-  max-width:66%;
+  max-width:88%;
   margin:0 auto;
   padding:48px 0 140px
 }
 
-/* Intro — narrower and centered */
+/* Intro — narrower than the list, centered */
 .list-intro-wrap{
-  max-width:80%;
+  max-width:70%;
   margin:0 auto 40px;
   text-align:left
 }
@@ -331,7 +331,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 
 .list-row{
   display:grid;
-  grid-template-columns:1fr 200px 160px 60px;
+  grid-template-columns:1fr 220px 220px 70px;
   gap:20px;
   align-items:center;
   padding:18px 0;
@@ -364,7 +364,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .list-mode{
   font-family:'Times New Roman',Georgia,serif;
   font-size:24px;
-  color:inherit
+  color:inherit;
+  white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis
 }
 .list-year{
   font-size:24px;color:inherit;
@@ -656,8 +658,15 @@ body.list-active .view-toggle{display:none!important}
 body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity .3s}
 
 /* ── MOBILE ── */
+/* Mid-size: hide venue, keep title + mode + year */
+@media (max-width:1024px) and (min-width:769px) {
+  .list-row{grid-template-columns:1fr 160px 60px;font-size:20px}
+  .list-venue{display:none}
+  .list-title,.list-mode,.list-year{font-size:20px}
+}
+
 @media (min-width:1600px) {
-  .list-inner{max-width:60%}
+  .list-inner{max-width:78%}
   .list-intro-para{font-size:28px}
   .list-row{font-size:24px}
   .list-title,.list-venue,.list-year{font-size:24px}
@@ -695,12 +704,13 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   .preview{width:220px}
   .preview-body{padding:10px 12px 12px}
 
-  /* List view mobile */
-  .list-inner{padding:80px 20px 100px}
-  .list-row{grid-template-columns:1fr;gap:2px;padding:12px 0;font-size:16px}
-  .list-venue,.list-mode,.list-year{display:none}
+  /* List view mobile — keep title + year */
+  .list-inner{padding:80px 20px 100px;max-width:100%}
+  .list-row{grid-template-columns:1fr 50px;gap:8px;padding:12px 0;font-size:16px}
+  .list-venue,.list-mode{display:none}
   .list-date{font-size:13px;color:#999}
   .list-title{font-size:16px;white-space:normal}
+  .list-year{font-size:14px}
   .list-expand{padding-left:0}
   .list-filters{gap:16px;justify-content:flex-start}
   .list-filter{font-size:15px}
