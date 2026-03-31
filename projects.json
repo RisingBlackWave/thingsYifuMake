@@ -3,11 +3,11 @@
     {
       "whisper": "",
       "mode": "Product",
-      "coverImage": "",
+      "coverImage": "assets/projects/img_9709-1-1-.png",
       "slug": "tact-monster",
       "intro": "Tact Monster began as a master's thesis and became a startup, a robot, and a question that wouldn't resolve: does a machine need to be intelligent to change how someone practises, or does it only need to be present? Across three prototype generations, a basketball training companion evolved from a tracking device into an investigation of physical co-presence between human and machine.",
       "date": "",
-      "venue": "CHI",
+      "venue": "InnovationRCA",
       "modes": [
         "Research",
         "Product"
@@ -20,13 +20,13 @@
         "assets/projects/tm-4.png"
       ],
       "previewVideo": "",
-      "previewImage": "",
+      "previewImage": "assets/projects/img_9709-1-1-.png",
       "awards": [
         {
-          "name": "InnovationRCA_Patent"
+          "name": "InnovationRCA_Patent_Support"
         },
         {
-          "name": "dassadsa"
+          "name": "InnovationRCA_Incubation_Support"
         }
       ],
       "subtitle": "A basketball training robot that became a startup, a paper, and a lesson in making things that move.",
