@@ -34,6 +34,11 @@
       "coverImage": null,
       "slug": "dancing-pig",
       "desc": "The pig rocking chair seduces spectators to rock, as people start to enjoy the rocking experience, the pig moans and screams. The unknown emotions of the pig sounds reveals the gap or connection between human and nonhumans. With the built-in movement sensor data, the pig senses its rider and produce the generative moaning sounds. \n\nThe work was later reproduced and sold to private collector during exhibition at Shanghai MOMA.",
+      "gallery": [
+        "assets/projects/chair.png",
+        "assets/projects/chair-2.png",
+        null
+      ],
       "previewVideo": null,
       "previewImage": null,
       "subtitle": "Oh! A Pig Rocking Chair.",
@@ -51,10 +56,14 @@
     {
       "whisper": null,
       "mode": "Designed",
-      "coverImage": "assets/projects/chair.png",
+      "coverImage": "",
       "slug": "about-two",
       "desc": "Disengaged and facing away from one another, the couple here are absorbed by their screens, becoming less dependent on each other.  About two (~2) is a poetic idea questions how technology could be used to support humane relationships rather than empowering oneself. The lamps only activate by two people collaborate at the same time, to bring people’s attention back to our shared mundane world. \n\nAs my BA degree project, other than implementing the speculative approach, I wanted to explore new manufacture methods, Glass moulding and lathing. From sketch to prototype, every step was enjoyable and rewarding. ",
-      "previewVideo": "https://productdesign.eca.ed.ac.uk/wp-content/uploads/2019/08/2-workbook-online-small.pdf",
+      "gallery": [
+        "assets/projects/about-two.png",
+        "assets/projects/about-two-2.png"
+      ],
+      "previewVideo": "",
       "previewImage": null,
       "subtitle": "How could technology rekindle human connections?",
       "title": "About Two",
@@ -73,6 +82,11 @@
       "coverImage": null,
       "slug": "meal-engine",
       "desc": "Meal Engine (ME) is a web-based recipe editor that leverages food databases to create healthier, more sustainable, and tastier meals. It aims at installing cooking confidence and promoting ingredient transparency to support those who care about health, the environment, and food experiences. \n\nRecipes contain enormous amounts of information about food and our world in general. For example, preparation techniques, taste combinations, nutritional and health information, kitchen equipment, historical information about dishes, scientific explanations regarding cooking methods, and so forth. The richness and versatility of information is an opportunity to engage in cooking when tailored to the individual. Current text and video recipes fail on flexibility and clarity, making it difficult to adapt recipes to personal preferences creatively.  \n\nUnlike non-adaptive recipe articles or video tutorials, ME presents recipes as an interactive graphical flow made up of ingredients and cooking actions (nodes) that reveal cooking processes at a glance.  The strongest feature of ME is recipe personalization. A recipe can be downloaded and then adapted simply with the press of a button to incorporate more sustainable and healthier alternatives, while retaining the taste and feel of the original.\n",
+      "gallery": [
+        "assets/projects/meal-engine-5.png",
+        "assets/projects/meal-engine-6.png",
+        "assets/projects/meal-engine-7.png"
+      ],
       "previewVideo": null,
       "previewImage": null,
       "subtitle": "A future cooking engineering project.",
