@@ -14,7 +14,9 @@
       "previewVideo": null,
       "previewImage": null,
       "awards": [
-        "InnovationRCA_Patent"
+        {
+          "name": "InnovationRCA_Patent"
+        }
       ],
       "subtitle": "A basketball training robot that became a startup, a paper, and a lesson in making things that move.",
       "title": "Tact Monster",
