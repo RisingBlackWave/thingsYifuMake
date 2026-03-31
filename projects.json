@@ -6,8 +6,16 @@
       "coverImage": null,
       "slug": "tact-monster",
       "desc": "A basketball training companion robot, developed from master's thesis at Imperial College London through three prototype generations into a startup with co-founders Alice and Lun. Tact Monster sits courtside and uses computer vision to track your form — but the real discovery was that the robot's physical presence changed how players practiced, not just its feedback.",
+      "gallery": [
+        "assets/projects/tm-2.png",
+        "assets/projects/tm-3.png",
+        "assets/projects/tm-4.png"
+      ],
       "previewVideo": null,
       "previewImage": null,
+      "awards": [
+        "InnovationRCA_Patent"
+      ],
       "subtitle": "A basketball training robot that became a startup, a paper, and a lesson in making things that move.",
       "title": "Tact Monster",
       "tags": [
