@@ -8,6 +8,9 @@
       "intro": "Tact Monster began as a master's thesis and became a startup, a robot, and a question that wouldn't resolve: does a machine need to be intelligent to change how someone practises, or does it only need to be present? Across three prototype generations, a basketball training companion evolved from a tracking device into an investigation of physical co-presence between human and machine.",
       "date": "",
       "venue": "CHI",
+      "modes": [
+        "Research"
+      ],
       "desc": "A basketball training companion robot, developed from master's thesis at Imperial College London through three prototype generations into a startup with co-founders Alice and Lun. Tact Monster sits courtside and uses computer vision to track your form — but the real discovery was that the robot's physical presence changed how players practiced, not just its feedback.",
       "visibility": "shown",
       "gallery": [
