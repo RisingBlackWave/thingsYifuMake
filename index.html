@@ -1376,10 +1376,19 @@ function openProject(proj) {
 
   const vis = document.getElementById('pp-visual');
   vis.innerHTML = '';
-  if (proj.coverImage) {
+  if (proj.previewVideo) {
+    vis.style.background = proj.grad;
+    const vid = document.createElement('video');
+    vid.src = proj.previewVideo;
+    vid.muted = true; vid.loop = true; vid.playsInline = true; vid.autoplay = true;
+    vid.setAttribute('preload', 'metadata');
+    vid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s';
+    vid.onloadeddata = () => { vid.style.opacity = '1'; vid.play(); };
+    vis.appendChild(vid);
+  } else if (proj.coverImage || proj.previewImage) {
     vis.style.background = proj.grad;
     const img = document.createElement('img');
-    img.src = proj.coverImage;
+    img.src = proj.coverImage || proj.previewImage;
     img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s';
     img.onload = () => { img.style.opacity = '1'; };
     vis.appendChild(img);
