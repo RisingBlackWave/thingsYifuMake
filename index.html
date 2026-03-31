@@ -1393,7 +1393,20 @@ function openProject(proj) {
   if (proj.link) {
     const a = document.createElement('a');
     a.className = 'pp-link'; a.href = proj.link; a.target = '_blank'; a.rel = 'noopener';
-    a.innerHTML = `View externally <span class="pp-link-arrow">↗</span>`;
+    // Smart link label based on URL content
+    const lk = proj.link.toLowerCase();
+    let linkLabel = 'View externally';
+    if (lk.includes('arxiv') || lk.includes('doi.org') || lk.includes('acm.org') || lk.includes('ieee') || lk.includes('paper') || lk.includes('pdf') || lk.includes('scholar') || lk.includes('discovery.ucl'))
+      linkLabel = 'Read Paper';
+    else if (lk.includes('youtube') || lk.includes('youtu.be') || lk.includes('vimeo') || lk.includes('video') || lk.includes('bilibili'))
+      linkLabel = 'Watch Video';
+    else if (lk.includes('github'))
+      linkLabel = 'View on GitHub';
+    else if (lk.includes('instagram'))
+      linkLabel = 'View on Instagram';
+    else if (lk.includes('behance'))
+      linkLabel = 'View on Behance';
+    a.innerHTML = `${linkLabel} <span class="pp-link-arrow">↗</span>`;
     linkWrap.appendChild(a);
   }
 
