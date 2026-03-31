@@ -374,13 +374,20 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 /* Expandable section */
 .list-expand{
   grid-column:1 / -1;
-  max-height:0;overflow:hidden;
-  transition:max-height .6s ease,opacity .4s ease;
+  display:grid;
+  grid-template-rows:0fr;
+  transition:grid-template-rows .4s ease,opacity .3s ease;
   opacity:0;
-  padding-left:0
+  overflow:hidden
+}
+.list-expand-wrap{
+  overflow:hidden
 }
 .list-row.expanded .list-expand{
-  max-height:1200px;opacity:1;
+  grid-template-rows:1fr;
+  opacity:1
+}
+.list-row.expanded .list-expand-wrap{
   padding-top:20px;padding-bottom:8px
 }
 .list-expand-inner{
@@ -1781,7 +1788,7 @@ function buildListView() {
       <div class="list-mode">${(proj.modes || [proj.mode]).join(', ')}</div>
       <div class="list-year">${proj.year || ''}</div>
       <div class="list-expand">
-        <div class="list-expand-inner">
+        <div class="list-expand-wrap"><div class="list-expand-inner">
           <div class="list-expand-text">
             ${proj.desc ? `<div class="list-desc">${proj.desc}</div>` : ''}
             <div class="list-enter" data-idx="${proj._id}">Explore</div>
@@ -1789,7 +1796,7 @@ function buildListView() {
           ${projImages.length ? `<div class="list-gallery">${projImages.slice(0,2).map((src, gi) =>
             `<img src="${src}" loading="lazy" onload="this.classList.add('loaded')" data-gallery-idx="${gi}">`
           ).join('')}</div>` : '<div></div>'}
-        </div>
+        </div></div>
       </div>
     `;
 
