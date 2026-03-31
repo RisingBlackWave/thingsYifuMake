@@ -1429,8 +1429,8 @@ function openProject(proj) {
           particles.push({
             x: Math.random() * w * 2,
             y: Math.random() * h * 2,
-            r: 0.4 + Math.random() * 0.8,
-            baseAlpha: 0.08 + Math.random() * 0.15,
+            r: 0.3 + Math.random() * 1.6 + (Math.random() < 0.1 ? Math.random() * 1.5 : 0),
+            baseAlpha: 0.06 + Math.random() * 0.16,
             sparkle: Math.random() < 0.06, // 6% chance to be a sparkler
             phase: Math.random() * Math.PI * 2,
             speed: 0.3 + Math.random() * 0.8
@@ -1445,8 +1445,9 @@ function openProject(proj) {
               const flash = Math.sin(t * 0.001 * p.speed + p.phase);
               alpha = flash > 0.85 ? 0.6 + flash * 0.4 : p.baseAlpha;
             }
+            const drawR = p.sparkle && alpha > 0.3 ? p.r * (1 + alpha * 0.6) : p.r;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, drawR, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(180,180,180,${alpha})`;
             ctx.fill();
           }

@@ -131,7 +131,7 @@ let projects=[];let selectedIdx=-1;let projectImages={};let dirty=false;
 const COLORS={Designed:'#E8C17A',Researched:'#7AB8E8',Built:'#7AE8C1',Taught:'#E87A7A',Talked:'#C17AE8'};
 
 async function loadProjects(){
-  try{const r=await fetch('projects.json?t='+Date.now());projects=await r.json();renderSidebar()}
+  try{const r=await fetch('projects.json?t='+Date.now());const data=await r.json();projects=Array.isArray(data)?data:data.items||[];renderSidebar()}
   catch(e){alert('Failed to load projects.json: '+e.message)}
 }
 
@@ -192,9 +192,15 @@ async function selectProject(idx){
     +'<div class="field"><label>Description</label><textarea id="f-desc" rows="8" placeholder="Full project description..." oninput="markDirty()">'+esc(p.desc||'')+'</textarea></div>'
     +'<div class="section-title">Link</div>'
     +'<div class="field"><label>External Link</label><input id="f-link" value="'+esc(p.link||'')+'" placeholder="https://..." oninput="markDirty()"></div>'
+    +'<div class="section-title">Awards</div>'
+    +'<div class="tags-wrap" id="awards-wrap">'+(p.awards||[]).map(a=>'<span class="tag" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)">'+esc(typeof a==='string'?a:a.label||a)+'<span class="tag-remove" onclick="removeAward(this)">x</span></span>').join('')+'</div>'
+    +'<div class="tag-input"><input id="f-new-award" placeholder="Add award (e.g. Best Paper, CHI 2026)..." onkeypress="if(event.key===\'Enter\'){event.preventDefault();addAward()}"><button onclick="addAward()">Add</button></div>'
     +'<div class="section-title">Tags</div>'
     +'<div class="tags-wrap" id="tags-wrap">'+(p.tags||[]).map(t=>'<span class="tag">'+esc(t)+'<span class="tag-remove" onclick="removeTag(this)">x</span></span>').join('')+'</div>'
     +'<div class="tag-input"><input id="f-new-tag" placeholder="Add tag..." onkeypress="if(event.key===\'Enter\'){event.preventDefault();addTag()}"><button onclick="addTag()">Add</button></div>'
+    +'<div class="section-title">Gallery Images</div>'
+    +'<div class="tags-wrap" id="gallery-wrap">'+(p.gallery||[]).map((g,gi)=>{const src=typeof g==='string'?g:g.src;return '<span class="tag" style="background:rgba(122,232,193,.08);border-color:rgba(122,232,193,.2)"><img src="'+esc(src)+'" style="width:40px;height:25px;object-fit:cover;border-radius:2px;margin-right:4px;vertical-align:middle">'+esc(src.split('/').pop())+'<span class="tag-remove" onclick="removeGallery(this,'+gi+')">x</span></span>'}).join('')+'</div>'
+    +'<div class="tag-input"><input id="f-new-gallery" placeholder="Image path (e.g. assets/projects/'+esc(p.slug)+'/01.jpg)..." onkeypress="if(event.key===\'Enter\'){event.preventDefault();addGalleryPath()}"><button onclick="addGalleryPath()">Add Path</button></div>'
     +'<div class="section-title">Images</div>'
     +'<div class="image-instructions">'
     +'<strong>How images work:</strong><br>'
@@ -237,6 +243,12 @@ function collectFormData(){
   p.previewImage=get('f-previewImage')||null;p.coverImage=get('f-coverImage')||null;p.previewVideo=get('f-previewVideo')||null;
   var tagEls=document.querySelectorAll('#tags-wrap .tag');
   p.tags=Array.from(tagEls).map(function(el){return el.textContent.replace('x','').trim()});
+  var awardEls=document.querySelectorAll('#awards-wrap .tag');
+  p.awards=Array.from(awardEls).map(function(el){return el.textContent.replace('x','').trim()});
+  if(!p.awards.length)delete p.awards;
+  var galleryEls=document.querySelectorAll('#gallery-wrap .tag');
+  p.gallery=Array.from(galleryEls).map(function(el){var img=el.querySelector('img');return img?img.src.replace(window.location.origin+'/',''):el.textContent.replace('x','').trim()});
+  if(!p.gallery.length)delete p.gallery;
 }
 
 function addTag(){var input=document.getElementById('f-new-tag');var val=input.value.trim();if(!val)return;
@@ -244,17 +256,30 @@ function addTag(){var input=document.getElementById('f-new-tag');var val=input.v
   tag.innerHTML=esc(val)+'<span class="tag-remove" onclick="removeTag(this)">x</span>';wrap.appendChild(tag);input.value='';markDirty()}
 function removeTag(el){el.parentElement.remove();markDirty()}
 
+function addAward(){var input=document.getElementById('f-new-award');var val=input.value.trim();if(!val)return;
+  var wrap=document.getElementById('awards-wrap');var tag=document.createElement('span');tag.className='tag';
+  tag.style.cssText='background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)';
+  tag.innerHTML=esc(val)+'<span class="tag-remove" onclick="removeAward(this)">x</span>';wrap.appendChild(tag);input.value='';markDirty()}
+function removeAward(el){el.parentElement.remove();markDirty()}
+
+function addGalleryPath(){var input=document.getElementById('f-new-gallery');var val=input.value.trim();if(!val)return;
+  var wrap=document.getElementById('gallery-wrap');var tag=document.createElement('span');tag.className='tag';
+  tag.style.cssText='background:rgba(122,232,193,.08);border-color:rgba(122,232,193,.2)';
+  tag.innerHTML='<img src="'+esc(val)+'" style="width:40px;height:25px;object-fit:cover;border-radius:2px;margin-right:4px;vertical-align:middle" onerror="this.style.display=\'none\'">'+esc(val.split('/').pop())+'<span class="tag-remove" onclick="removeGallery(this)">x</span>';
+  wrap.appendChild(tag);input.value='';markDirty()}
+function removeGallery(el){el.parentElement.remove();markDirty()}
+
 async function rescanImages(){if(selectedIdx<0)return;selectProject(selectedIdx);showStatus('Rescanned images')}
 
 function markDirty(){dirty=true;document.getElementById('save-status').textContent='Unsaved changes';document.getElementById('save-status').style.color='#E8C17A'}
 
 async function saveAll(){
-  collectFormData();var json=JSON.stringify(projects,null,2);
+  collectFormData();var json=JSON.stringify({items:projects},null,2);
   try{var r=await fetch('projects.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:json});if(r.ok){dirty=false;showStatus('Saved!');renderSidebar();return}}catch(e){}
   downloadJSON();showStatus('Downloaded — replace projects.json with the downloaded file');
 }
 
-function downloadJSON(){collectFormData();var json=JSON.stringify(projects,null,2);var blob=new Blob([json],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='projects.json';a.click();URL.revokeObjectURL(url);showStatus('Downloaded projects.json')}
+function downloadJSON(){collectFormData();var json=JSON.stringify({items:projects},null,2);var blob=new Blob([json],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='projects.json';a.click();URL.revokeObjectURL(url);showStatus('Downloaded projects.json')}
 
 function showStatus(msg){var el=document.getElementById('save-status');el.textContent=msg;el.style.color='#7AE8C1';
   setTimeout(function(){if(el.textContent===msg){el.textContent=dirty?'Unsaved changes':'';el.style.color='var(--dim)'}},3000)}
@@ -265,7 +290,7 @@ function closeModal(){document.getElementById('new-modal').classList.remove('ope
 function confirmNewProject(){
   var title=document.getElementById('new-title').value.trim();var mode=document.getElementById('new-mode').value;if(!title){alert('Enter a title');return}
   var slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  projects.push({mode:mode,slug:slug,title:title,subtitle:null,desc:'',tags:[],year:new Date().getFullYear(),link:null,whisper:null,wip:true,previewImage:null,coverImage:null,previewVideo:null});
+  projects.push({mode:mode,slug:slug,title:title,subtitle:null,desc:'',tags:[],awards:[],gallery:[],year:new Date().getFullYear(),link:null,whisper:null,wip:true,previewImage:null,coverImage:null,previewVideo:null});
   closeModal();markDirty();renderSidebar();selectProject(projects.length-1);
 }
 
