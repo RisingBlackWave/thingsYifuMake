@@ -332,7 +332,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 
 .list-row{
   display:grid;
-  grid-template-columns:1fr 220px 220px 70px;
+  grid-template-columns:1.2fr 180px 160px 60px;
   gap:20px;
   align-items:center;
   padding:18px 0;
@@ -705,8 +705,13 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   .preview{width:220px}
   .preview-body{padding:10px 12px 12px}
 
+  /* List view mobile header */
+  .list-top-bar{flex-direction:column;align-items:flex-start;gap:8px;padding:16px 20px 12px}
+  .list-logo{font-size:18px}
+  .list-nav{gap:10px;font-size:9px}
+
   /* List view mobile — keep title + year */
-  .list-inner{padding:80px 20px 100px;max-width:100%}
+  .list-inner{padding:20px 20px 100px;max-width:100%}
   .list-row{grid-template-columns:1fr 50px;gap:8px;padding:12px 0;font-size:16px}
   .list-venue,.list-mode{display:none}
   .list-date{font-size:13px;color:#999}
@@ -715,8 +720,9 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   .list-expand{padding-left:0}
   .list-filters{gap:16px;justify-content:flex-start}
   .list-filter{font-size:15px}
-  .list-intro-para{font-size:17px}
+  .list-intro-para{font-size:15px}
   .list-intro-second{display:none}
+  .list-intro-wrap{max-width:100%;padding:0;margin:0 0 20px}
 
   /* Project page mobile */
   .pp-inner{padding:52px 24px 100px}
@@ -1772,10 +1778,12 @@ function buildListView() {
   // Build rows
   const container = document.getElementById('list-rows');
   container.innerHTML = '';
-  const visible = listFilter === 'all' ? PROJECTS : PROJECTS.filter(p => {
+  const filtered = listFilter === 'all' ? PROJECTS.slice() : PROJECTS.filter(p => {
     const modes = p.modes || [p.mode];
     return modes.includes(listFilter);
   });
+  // Sort by year descending (latest first)
+  const visible = filtered.sort((a, b) => (b.year || 0) - (a.year || 0));
 
   visible.forEach((proj, i) => {
     // Skip hidden projects
