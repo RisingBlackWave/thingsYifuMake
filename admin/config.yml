@@ -64,6 +64,16 @@ collections:
                 required: false
                 hint: "Full project description — supports multiple paragraphs"
 
+              - label: "Awards"
+                name: "awards"
+                widget: "list"
+                required: false
+                hint: "Awards and honours (e.g. Best Paper, CHI Honourable Mention)"
+                field:
+                  label: "Award"
+                  name: "label"
+                  widget: "string"
+
               - label: "Tags"
                 name: "tags"
                 widget: "list"

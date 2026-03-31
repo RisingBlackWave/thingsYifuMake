@@ -417,6 +417,51 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   color:rgba(237,233,226,.4)
 }
 
+/* ── AWARD TAGS (pearl-like) ── */
+.pp-awards{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px}
+.pp-award{
+  position:relative;
+  font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;
+  padding:5px 14px;border-radius:20px;
+  color:rgba(255,255,255,.95);
+  background:linear-gradient(135deg,
+    rgba(255,255,255,.12) 0%,
+    rgba(255,255,255,.04) 40%,
+    rgba(255,255,255,.1) 60%,
+    rgba(255,255,255,.03) 100%);
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow:
+    0 0 8px rgba(255,255,255,.08),
+    0 0 20px rgba(255,255,255,.04),
+    inset 0 1px 1px rgba(255,255,255,.15);
+  overflow:hidden;
+  animation:awardFloat 4s ease-in-out infinite
+}
+.pp-award::before{
+  content:'';position:absolute;top:-50%;left:-50%;
+  width:200%;height:200%;
+  background:conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(255,255,255,.15) 10%,
+    transparent 20%,
+    transparent 50%,
+    rgba(255,255,255,.1) 60%,
+    transparent 70%
+  );
+  animation:awardShine 3s linear infinite
+}
+.pp-award span{position:relative;z-index:1}
+
+@keyframes awardShine{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+@keyframes awardFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-2px)}
+}
+
 @keyframes fadeUp{
   from{opacity:0;transform:translateY(8px)}
   to{opacity:1;transform:translateY(0)}
@@ -609,6 +654,7 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
     <div class="pp-subtitle" id="pp-subtitle" style="font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:var(--dim);margin-bottom:36px;display:none"></div>
     <div class="pp-visual" id="pp-visual"></div>
     <div class="pp-rule"></div>
+    <div class="pp-awards" id="pp-awards"></div>
     <div class="pp-desc" id="pp-desc"></div>
     <div class="pp-gallery" id="pp-gallery"></div>
     <div class="pp-link-wrap" id="pp-link-wrap"></div>
@@ -1384,6 +1430,19 @@ function openProject(proj) {
     subtitleEl.style.display = proj.subtitle ? 'block' : 'none';
   }
   document.getElementById('pp-desc').textContent = proj.desc || '';
+
+  // Render award tags
+  const awardsEl = document.getElementById('pp-awards');
+  awardsEl.innerHTML = '';
+  if (proj.awards && proj.awards.length) {
+    proj.awards.forEach((award, i) => {
+      const tag = document.createElement('div');
+      tag.className = 'pp-award';
+      tag.style.animationDelay = `${i * 0.6}s`;
+      tag.innerHTML = `<span>${typeof award === 'string' ? award : award.label || award}</span>`;
+      awardsEl.appendChild(tag);
+    });
+  }
 
   const vis = document.getElementById('pp-visual');
   vis.innerHTML = '';
