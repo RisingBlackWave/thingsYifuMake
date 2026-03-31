@@ -39,11 +39,27 @@ collections:
                 name: "mode"
                 widget: "select"
                 options:
-                  - { label: "Designed", value: "Designed" }
-                  - { label: "Researched", value: "Researched" }
-                  - { label: "Built", value: "Built" }
-                  - { label: "Taught", value: "Taught" }
-                  - { label: "Talked", value: "Talked" }
+                  - { label: "Product", value: "Product" }
+                  - { label: "Research", value: "Research" }
+                  - { label: "Education", value: "Education" }
+                  - { label: "Podcast", value: "Podcast" }
+
+              - label: "Venue / Collab"
+                name: "venue"
+                widget: "string"
+                required: false
+                hint: "Conference, partner, or brand (e.g. CHI 2026, UCL, ACII)"
+
+              - label: "Visibility"
+                name: "visibility"
+                widget: "select"
+                required: false
+                default: "shown"
+                hint: "Shown = visible, WIP = grey, Hidden = not displayed"
+                options:
+                  - { label: "Shown", value: "shown" }
+                  - { label: "WIP (grey)", value: "wip" }
+                  - { label: "Hidden", value: "hidden" }
 
               - label: "Slug"
                 name: "slug"
@@ -55,12 +71,6 @@ collections:
                 widget: "number"
                 required: false
                 value_type: "int"
-
-              - label: "Work in Progress"
-                name: "wip"
-                widget: "boolean"
-                default: false
-                required: false
 
               - label: "Intro (short)"
                 name: "intro"

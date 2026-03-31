@@ -128,7 +128,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </div>
 <script>
 let projects=[];let selectedIdx=-1;let projectImages={};let dirty=false;
-const COLORS={Designed:'#E8C17A',Researched:'#7AB8E8',Built:'#7AE8C1',Taught:'#E87A7A',Talked:'#C17AE8'};
+const COLORS={Product:'#E8C17A',Research:'#7AB8E8',Education:'#E87A7A',Podcast:'#C17AE8'};
 
 async function loadProjects(){
   try{const r=await fetch('projects.json?t='+Date.now());const data=await r.json();projects=Array.isArray(data)?data:data.items||[];renderSidebar()}
@@ -150,7 +150,7 @@ loadProjects();
 
 function renderSidebar(){
   const list=document.getElementById('sidebar-list');list.innerHTML='';
-  ['Designed','Researched','Built','Taught','Talked'].forEach(mode=>{
+  ['Product','Research','Education','Podcast'].forEach(mode=>{
     const mp=projects.filter(p=>p.mode===mode);if(!mp.length)return;
     const h=document.createElement('div');
     h.style.cssText='padding:8px 20px;font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:'+COLORS[mode]+';opacity:.6;margin-top:8px';
@@ -184,7 +184,7 @@ async function selectProject(idx){
     +'<div class="field"><label>Subtitle</label><input id="f-subtitle" value="'+esc(p.subtitle||'')+'" placeholder="One-line subtitle" oninput="markDirty()"></div>'
     +'<div class="field"><label>Slug (folder name)</label><input id="f-slug" value="'+esc(p.slug)+'" style="color:var(--dim)" oninput="markDirty()"></div>'
     +'<div class="field-row">'
-    +'<div class="field"><label>Mode</label><select id="f-mode" onchange="markDirty()">'+['Designed','Researched','Built','Taught','Talked'].map(m=>'<option value="'+m+'" '+(p.mode===m?'selected':'')+'>'+m+'</option>').join('')+'</select></div>'
+    +'<div class="field"><label>Mode</label><select id="f-mode" onchange="markDirty()">'+['Product','Research','Education','Podcast'].map(m=>'<option value="'+m+'" '+(p.mode===m?'selected':'')+'>'+m+'</option>').join('')+'</select></div>'
     +'<div class="field"><label>Year</label><input id="f-year" type="number" value="'+(p.year||'')+'" placeholder="e.g. 2026" oninput="markDirty()"></div>'
     +'</div>'
     +'<div class="checkbox-field"><input type="checkbox" id="f-wip" '+(p.wip?'checked':'')+' onchange="markDirty()"><label for="f-wip">Work in Progress (WIP)</label></div>'

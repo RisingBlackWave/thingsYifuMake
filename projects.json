@@ -2,7 +2,7 @@
   "items": [
     {
       "whisper": null,
-      "mode": "Designed",
+      "mode": "Product",
       "coverImage": null,
       "slug": "tact-monster",
       "desc": "A basketball training companion robot, developed from master's thesis at Imperial College London through three prototype generations into a startup with co-founders Alice and Lun. Tact Monster sits courtside and uses computer vision to track your form — but the real discovery was that the robot's physical presence changed how players practiced, not just its feedback.",
@@ -30,7 +30,7 @@
     },
     {
       "whisper": null,
-      "mode": "Designed",
+      "mode": "Product",
       "coverImage": null,
       "slug": "dancing-pig",
       "desc": "The pig rocking chair seduces spectators to rock, as people start to enjoy the rocking experience, the pig moans and screams. The unknown emotions of the pig sounds reveals the gap or connection between human and nonhumans. With the built-in movement sensor data, the pig senses its rider and produce the generative moaning sounds. \n\nThe work was later reproduced and sold to private collector during exhibition at Shanghai MOMA.",
@@ -55,7 +55,7 @@
     },
     {
       "whisper": null,
-      "mode": "Designed",
+      "mode": "Product",
       "coverImage": "",
       "slug": "about-two",
       "desc": "Disengaged and facing away from one another, the couple here are absorbed by their screens, becoming less dependent on each other.  About two (~2) is a poetic idea questions how technology could be used to support humane relationships rather than empowering oneself. The lamps only activate by two people collaborate at the same time, to bring people’s attention back to our shared mundane world. \n\nAs my BA degree project, other than implementing the speculative approach, I wanted to explore new manufacture methods, Glass moulding and lathing. From sketch to prototype, every step was enjoyable and rewarding. ",
@@ -78,7 +78,7 @@
     },
     {
       "whisper": null,
-      "mode": "Designed",
+      "mode": "Product",
       "coverImage": null,
       "slug": "meal-engine",
       "desc": "Meal Engine (ME) is a web-based recipe editor that leverages food databases to create healthier, more sustainable, and tastier meals. It aims at installing cooking confidence and promoting ingredient transparency to support those who care about health, the environment, and food experiences. \n\nRecipes contain enormous amounts of information about food and our world in general. For example, preparation techniques, taste combinations, nutritional and health information, kitchen equipment, historical information about dishes, scientific explanations regarding cooking methods, and so forth. The richness and versatility of information is an opportunity to engage in cooking when tailored to the individual. Current text and video recipes fail on flexibility and clarity, making it difficult to adapt recipes to personal preferences creatively.  \n\nUnlike non-adaptive recipe articles or video tutorials, ME presents recipes as an interactive graphical flow made up of ingredients and cooking actions (nodes) that reveal cooking processes at a glance.  The strongest feature of ME is recipe personalization. A recipe can be downloaded and then adapted simply with the press of a button to incorporate more sustainable and healthier alternatives, while retaining the taste and feel of the original.\n",
@@ -103,7 +103,7 @@
     },
     {
       "whisper": null,
-      "mode": "Designed",
+      "mode": "Product",
       "coverImage": null,
       "slug": "noctambule",
       "desc": "",
@@ -122,7 +122,7 @@
     },
     {
       "whisper": null,
-      "mode": "Researched",
+      "mode": "Research",
       "coverImage": null,
       "slug": "repairbot-framework",
       "desc": "Learning clothes repair is challenging for novices, who face interconnected procedural and embodied challenges, especially when learning alone. Existing tools fail to provide holistic support as interactive tutors and lack awareness of the embodied interactions of working with textiles. This paper presents a multi-phase study that investigates these challenges and explores the design space for a Human-Touch-Aware conversational agent (RepairBot). We began with an in-depth autoethnography to understand the novice experience, which informed the development of the RepairBot Conversation Framework (RBCF) together with a design implementation of a technology probe. Using the RepairBot prototype together with a Wizard-of-Oz approach to simulate Human-Touch-Awareness, we investigated how a conversational agent could support repair learning in novices as well as engage them with their own clothes-repairing projects. Subsequent lab and in-home studies with novice participants suggested specific conversational and embodied mechanisms that would facilitate novices' holistic understanding of repair, increase their confidence, and elicit attentive touch and emotional reflection. We bring these mechanisms together in the framework presented in this paper.",
@@ -142,7 +142,7 @@
     },
     {
       "whisper": null,
-      "mode": "Researched",
+      "mode": "Research",
       "coverImage": null,
       "slug": "tools-for-thought",
       "desc": "Workshop paper at CHI 2026, co-authored with Raffaele Buono and Nadia Bianchi-Berthouze. Argues that emotional engagement is not a distraction from thinking — it is its constitutive substrate.\n\nCurrent Tools for Thought (TfTs) treat affect as either friction that slows cognitive progress or a signal to optimise it. Drawing on enactive cognitive science, we argue that affect is constitutive of cognition: it reshapes the trajectory of thinking, not just the speed. We identify two core barriers for Affective TfTs---the lack of Shared Attention (caring, directed attention to the user's mode of engagement) and the lack of Affective Reorienting (the capacity to use emotional moments to open new trajectories rather than reinforcing predetermined ones)---and propose three design strategies that address both: Chain of Emotion X Chain of Thought, Affective Mirror, and Prompted Reorienting. The strategies are grounded in empirical findings from a study of a touch-aware conversational agent for embodied craft learning, and are oriented as provocations for future design.",
@@ -161,7 +161,7 @@
     },
     {
       "whisper": null,
-      "mode": "Researched",
+      "mode": "Research",
       "coverImage": null,
       "slug": "T2-GR2",
       "desc": "The fashion industry’s negative impact and overconsumption require urgent action to improve and reduce fashion consumption. Tactile gesture plays a vital role in understanding, selecting, and feeling attached to clothes. In this paper, we introduce the FabricTouch II dataset with multimodal infromation, which focuses on fabric assessment touch gestures and aims to support sustainable fashion consumption. By integrating gesture labels, we enhance the dataset’s comprehensiveness, improve recognition accuracy, and provide valuable information for consumers and intelligent systems, such as conversational agents in shop or home wardrobe. Additionally, this study has made preliminary explorations on recognizing fabric touch gestures using time-spectral representations of EMG combined with graph representations on this small batch dataset. The experiment found that the graph representation of EMG outperforms the regular neural network and that the representation capacity of bilateral EMG data is superior to that of unilateral data.",
@@ -180,7 +180,7 @@
     },
     {
       "whisper": null,
-      "mode": "Researched",
+      "mode": "Research",
       "coverImage": null,
       "slug": "provoice",
       "desc": "The next step for In-vehicle Conversational Assistants (IVCAs) will be their capability to initiate and automate proactive system interactions throughout journeys. However, diverse drivers make it challenging to design voice interventions tailored towards individual on-road expectations. This paper evaluates the effectiveness of Human-in-the-Loop (HITL) Multi-Objective Bayesian Optimization (MOBO) in design by implementing ProVoice: a Virtual Reality (VR) driving simulator integrating MOBO to investigate the effects of IVCA design variants on perceived mental demand, predictability, and usefulness. By reporting the Pareto Front from a within-subjects VR study (N=19), this paper proposes optimal design trade-offs. Follow-up analysis demonstrates MOBO's success in discovering effective intervention strategies, with reduced participant mental demand, alongside enhanced predictability and usefulness while engaging with the proactive IVCA. Implications for computational techniques in future research on proactive intervention strategies are discussed. ProVoice can extend to include alternative design parameters and driving scenarios, encouraging intervention design on a broad scale.",
@@ -199,7 +199,7 @@
     },
     {
       "whisper": null,
-      "mode": "Researched",
+      "mode": "Research",
       "coverImage": null,
       "slug": "mmw-wave",
       "desc": "In recent years, mmWave sensing has become an emerging research field. mmWave sensor demonstrates its unique advantage of passive, Non-line-of-sight (NLOS) sensing capability with less privacy concerns. It has been widely adapted in various applications such as human activity recognition, healthcare, tracking and navigation, and etc. In fashion industry, RGB-based smart mirror is commonly used in retail for tracking human gestures and offering virtual try-on experience. However, utilizing RGB camera can raises privacy issues and be restricted to lighting conditions. In contrast, mmWave sensor shows unique potentials as an alternative modality. However, there is a lack of exploration on investigating the feasibility of leveraging mmWave for clothes try-on gesture recognition. In this study, we propose the mmWaveTryOn, the first-of-its-kind multimodal dataset including mmWave, RGB-extracted skeleton and action type labels, focusing on try-on gesture recognition. Experiments show that mmWave-based model outperforms RGB-based model for fine-grained try-on gesture classification, and fusion of both modalities further improves the accuracy to 81.51%. The mmWaveTryOn dataset is publicly available to encourage the community to explore the integration of mmWave sensing technology in fashion industry and also serve as strong benchmark baselines.",
@@ -217,7 +217,7 @@
     },
     {
       "whisper": null,
-      "mode": "Researched",
+      "mode": "Research",
       "coverImage": null,
       "slug": "study-3",
       "desc": "",
@@ -237,7 +237,7 @@
     },
     {
       "whisper": null,
-      "mode": "Researched",
+      "mode": "Research",
       "coverImage": null,
       "slug": "textile-repair-ecosystem",
       "desc": "Repair practices are increasingly recognised as critical interventions for extending garment lifecycles and supporting circular economy transitions, yet the socio-technical ecosystems that enable repair remain poorly understood. This paper presents an Actor-Network Theory (ANT) informed analysis of textile repair ecosystems across three distinct pathways: individual self-repair (I-Repair), community repair (Repair Café), and brand-led repair (Brand Repair). Through a two-day participatory workshop with 13 stakeholders at the United Repair Centre, we employed ecosystem mapping activities, function and tool cards, and walk-through interviews to elicit how human and non-human actors co-construct repair practices. Using a systematic ANT analysis protocol involving semantic coding, translation process analysis, and enrolment assessment, we identified and compared the actor-networks across all three scenarios. Our findings reveal a technology trust gradient: community repair contexts exhibit high wariness toward digital tools (Partial enrolment), while brand repair contexts readily integrate them (Full enrolment). We identify seven categories of tensions that shape technology adoption in repair, including conflicts between human expertise and automated diagnosis, critique versus encouragement in social networks, and competing logics of efficiency versus craft. We contribute (1) the first systematic ANT mapping of textile repair ecosystems across multiple pathways, (2) a reusable participatory ANT analysis protocol, and (3) design implications for developing repair technologies that align with the social infrastructure of diverse repair contexts.\n",
@@ -256,7 +256,7 @@
     },
     {
       "whisper": null,
-      "mode": "Built",
+      "mode": "Product",
       "coverImage": null,
       "slug": "tennis-ball-machine",
       "desc": "",
@@ -274,7 +274,7 @@
     },
     {
       "whisper": null,
-      "mode": "Taught",
+      "mode": "Education",
       "coverImage": null,
       "slug": "underwater-robot",
       "desc": "",
@@ -293,7 +293,7 @@
     },
     {
       "whisper": null,
-      "mode": "Taught",
+      "mode": "Education",
       "coverImage": null,
       "slug": "warm-wood",
       "desc": "",
@@ -312,7 +312,7 @@
     },
     {
       "whisper": null,
-      "mode": "Taught",
+      "mode": "Education",
       "coverImage": null,
       "slug": "helilab",
       "desc": "",
@@ -331,7 +331,7 @@
     },
     {
       "whisper": null,
-      "mode": "Taught",
+      "mode": "Education",
       "coverImage": null,
       "slug": "fiber-material",
       "desc": "",
@@ -349,7 +349,7 @@
     },
     {
       "whisper": null,
-      "mode": "Taught",
+      "mode": "Education",
       "coverImage": null,
       "slug": "robopiper",
       "desc": "",
@@ -368,7 +368,7 @@
     },
     {
       "whisper": null,
-      "mode": "Taught",
+      "mode": "Education",
       "coverImage": null,
       "slug": "sleep-pulse",
       "desc": "",
@@ -387,7 +387,7 @@
     },
     {
       "whisper": null,
-      "mode": "Taught",
+      "mode": "Education",
       "coverImage": null,
       "slug": "ucl-pgta",
       "desc": "",
@@ -407,7 +407,7 @@
     },
     {
       "whisper": null,
-      "mode": "Talked",
+      "mode": "Podcast",
       "coverImage": null,
       "slug": "abq-episode-1",
       "desc": "ABQ is a bilingual conversation series about the inner life of creative work. I talk with designers, researchers, coaches, and makers — people who build things with their hands, their bodies, and their ideas — to trace the decisions, doubts, and pivots that never make it into the final product. Not a showcase. A dissection.\n\nWhat does it actually take to put a shoe on an NBA star's foot? In this first episode, I sit down with Li Pengfei — LEEA — core designer at Li-Ning and one of the key minds behind the Way of Wade signature line. We pull apart the black box of sneaker design: how AI is quietly reshaping the design process (tool or gimmick?), the commercial and creative tensions inside a flagship athlete collaboration, and how designers working inside one of the world's most overproducing industries are beginning to think about what comes next. A conversation about craft, compromise, and the long distance between a sketch and a sole.",
@@ -427,7 +427,7 @@
     },
     {
       "whisper": null,
-      "mode": "Talked",
+      "mode": "Podcast",
       "coverImage": null,
       "slug": "abq-raffaele",
       "desc": "",

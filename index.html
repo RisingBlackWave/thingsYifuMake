@@ -16,11 +16,10 @@
   --text:#EDE9E2;
   --dim:rgba(237,233,226,0.32);
   --dimmer:rgba(237,233,226,0.1);
-  --designed:#E8C17A;
-  --researched:#7AB8E8;
-  --built:#7AE8C1;
-  --taught:#E87A7A;
-  --talked:#C17AE8;
+  --product:#E8C17A;
+  --research:#7AB8E8;
+  --education:#E87A7A;
+  --podcast:#C17AE8;
 }
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Pitch','DM Mono','Noto Sans SC',monospace;cursor:none}
 
@@ -124,11 +123,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .filter:hover{opacity:.65}
 .filter.active{opacity:1;border-color:currentColor}
 .filter[data-m="all"]{color:var(--text)}
-.filter[data-m="Designed"]{color:var(--designed)}
-.filter[data-m="Researched"]{color:var(--researched)}
-.filter[data-m="Built"]{color:var(--built)}
-.filter[data-m="Taught"]{color:var(--taught)}
-.filter[data-m="Talked"]{color:var(--talked)}
+.filter[data-m="Product"]{color:var(--product)}
+.filter[data-m="Research"]{color:var(--research)}
+.filter[data-m="Education"]{color:var(--education)}
+.filter[data-m="Podcast"]{color:var(--podcast)}
 
 /* ── DOTS LAYER ── */
 #dots-layer{position:fixed;inset:0;pointer-events:none}
@@ -251,10 +249,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   animation:pulse-out .8s ease forwards
 }
 
-/* ── LIST VIEW (Formafantasma-inspired) ── */
+/* ── LIST VIEW (system fonts, Wikipedia-inspired) ── */
 #list-view{
   position:fixed;inset:0;z-index:100;
-  background:#f5f4f1;
+  background:#fafafa;
   overflow-y:auto;
   opacity:0;pointer-events:none;
   transition:opacity .4s ease;
@@ -264,140 +262,152 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 #list-view *{cursor:default}
 
 .list-inner{
-  max-width:900px;
+  max-width:960px;
   margin:0 auto;
-  padding:60px 48px 140px
+  padding:48px 48px 140px
 }
 
 .list-header{
+  margin-bottom:32px;padding-bottom:16px;
+  border-bottom:1px solid #ddd
+}
+.list-header-top{
   display:flex;align-items:baseline;justify-content:space-between;
-  margin-bottom:48px;padding-bottom:20px;
-  border-bottom:1px solid rgba(0,0,0,.1)
+  margin-bottom:8px
 }
 .list-header-title{
   font-family:'Times New Roman',Georgia,serif;
-  font-size:22px;font-weight:400;color:#1a1a1a;
-  letter-spacing:-.01em
+  font-size:28px;font-weight:400;color:#1a1a1a
 }
-.list-header-title em{font-style:italic;font-weight:400}
+.list-header-title em{font-style:italic}
 .list-header-sub{
   font-family:Arial,Helvetica,sans-serif;
-  font-size:10px;letter-spacing:.12em;text-transform:uppercase;
-  color:#999;margin-top:4px
+  font-size:11px;color:#666;margin-top:2px
 }
 .list-header-link{
   font-family:Arial,Helvetica,sans-serif;
-  font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-  color:#1a1a1a;text-decoration:none;
-  border-bottom:1px solid #ccc;padding-bottom:2px;
-  transition:border-color .2s
+  font-size:12px;color:#0645ad;text-decoration:none
 }
-.list-header-link:hover{border-color:#1a1a1a}
+.list-header-link:hover{text-decoration:underline}
+.list-intro-para{
+  font-family:'Times New Roman',Georgia,serif;
+  font-size:15px;line-height:1.7;color:#444;
+  margin-top:16px;max-width:720px
+}
 
 .list-filters{
-  display:flex;gap:20px;margin-bottom:40px;
-  flex-wrap:wrap
+  display:flex;gap:18px;margin-bottom:24px;
+  flex-wrap:wrap;
+  border-bottom:1px solid #ddd;
+  padding-bottom:12px
 }
 .list-filter{
   font-family:Arial,Helvetica,sans-serif;
-  font-size:11px;letter-spacing:.08em;
-  color:#aaa;cursor:pointer;
-  padding-bottom:3px;border-bottom:1px solid transparent;
-  transition:color .2s,border-color .2s
+  font-size:12px;
+  color:#0645ad;cursor:pointer;
+  transition:color .15s;
+  text-decoration:none
 }
-.list-filter:hover{color:#1a1a1a}
-.list-filter.active{color:#1a1a1a;border-color:#1a1a1a}
+.list-filter:hover{text-decoration:underline}
+.list-filter.active{color:#1a1a1a;font-weight:600;text-decoration:none}
+
+/* Table header */
+.list-table-head{
+  display:grid;
+  grid-template-columns:36px 1fr 160px 100px 50px;
+  gap:12px;
+  padding:8px 0;
+  border-bottom:2px solid #999;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:11px;font-weight:600;
+  color:#666;text-transform:uppercase;letter-spacing:.04em
+}
 
 .list-row{
-  border-top:1px solid rgba(0,0,0,.08);
-  padding:28px 0;
+  display:grid;
+  grid-template-columns:36px 1fr 160px 100px 50px;
+  gap:12px;
+  align-items:baseline;
+  padding:10px 0;
+  border-bottom:1px solid #e8e8e8;
   cursor:pointer;
-  transition:background .2s
+  transition:background .15s
 }
-.list-row:last-child{border-bottom:1px solid rgba(0,0,0,.08)}
-.list-row:hover{background:rgba(0,0,0,.015)}
+.list-row:hover{background:rgba(0,0,0,.02)}
+.list-row:hover .list-title{color:#0645ad}
+.list-row.wip-row{opacity:.45}
+.list-row.wip-row .list-title{color:#888}
+.list-row.wip-row:hover .list-title{color:#0645ad}
 
-.list-row-top{
-  display:flex;align-items:baseline;gap:16px
-}
 .list-idx{
   font-family:Arial,Helvetica,sans-serif;
-  font-size:11px;color:#ccc;
-  min-width:28px
+  font-size:12px;color:#999;
+  text-align:right
 }
 .list-title{
   font-family:'Times New Roman',Georgia,serif;
-  font-size:20px;font-weight:400;
-  color:#1a1a1a;
-  line-height:1.35;flex:1
+  font-size:17px;font-weight:400;
+  color:#0645ad;
+  line-height:1.35;
+  transition:color .15s
 }
-.list-meta{
-  display:flex;align-items:baseline;gap:14px;flex-shrink:0
+.list-venue{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:12px;color:#555
 }
 .list-mode{
   font-family:Arial,Helvetica,sans-serif;
-  font-size:9px;letter-spacing:.1em;text-transform:uppercase;
-  padding:3px 9px;
-  border:1px solid;
-  opacity:.7
+  font-size:11px;
+  color:#555
 }
 .list-year{
   font-family:Arial,Helvetica,sans-serif;
-  font-size:11px;color:#bbb;
-  min-width:32px;text-align:right
-}
-
-/* Intro text — always visible under title */
-.list-intro{
-  font-family:'Times New Roman',Georgia,serif;
-  font-size:14px;line-height:1.6;
-  color:#888;
-  padding:6px 0 0 44px;
-  font-style:italic
+  font-size:12px;color:#888;
+  text-align:right
 }
 
 /* Expandable section */
 .list-expand{
+  grid-column:1 / -1;
   max-height:0;overflow:hidden;
   transition:max-height .5s ease,opacity .3s ease;
   opacity:0;
-  padding-left:44px
+  padding-left:48px
 }
 .list-row.expanded .list-expand{
   max-height:800px;opacity:1;
-  padding-top:16px
+  padding-top:12px
 }
 .list-desc{
   font-family:'Times New Roman',Georgia,serif;
-  font-size:14px;line-height:1.8;
-  color:#666;
-  padding:0 0 12px;
+  font-size:14px;line-height:1.75;
+  color:#444;
+  padding:0 0 10px;
   max-width:640px
 }
 .list-gallery{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:10px;
-  padding:12px 0 8px
+  gap:8px;
+  padding:10px 0 8px
 }
 .list-gallery img{
-  width:100%;height:95px;object-fit:cover;
+  width:100%;height:90px;object-fit:cover;
   opacity:0;
   transition:opacity .4s ease;
   cursor:pointer
 }
 .list-gallery img.loaded{opacity:1}
-.list-gallery img:hover{opacity:.8}
+.list-gallery img:hover{opacity:.75}
 .list-enter{
   font-family:Arial,Helvetica,sans-serif;
-  font-size:10px;letter-spacing:.1em;
-  color:#999;
+  font-size:11px;
+  color:#0645ad;
   display:inline-flex;align-items:center;gap:6px;
-  padding:12px 0 0;cursor:pointer;
-  transition:color .2s;
+  padding:10px 0 0;cursor:pointer;
   text-decoration:none
 }
-.list-enter:hover{color:#1a1a1a}
+.list-enter:hover{text-decoration:underline}
 
 /* ── PROJECT PAGE ── */
 #project-page{
@@ -651,10 +661,13 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   .preview-body{padding:10px 12px 12px}
 
   /* List view mobile */
-  .list-inner{padding:100px 24px 100px}
-  .list-row{grid-template-columns:28px 1fr auto;gap:10px;padding:12px 0}
-  .list-year{display:none}
-  .list-title{font-size:14px}
+  .list-inner{padding:80px 20px 100px}
+  .list-table-head{display:none}
+  .list-row{grid-template-columns:28px 1fr;gap:6px 10px;padding:14px 0}
+  .list-venue,.list-year{display:none}
+  .list-mode{grid-column:2;font-size:10px;color:#888}
+  .list-title{font-size:15px}
+  .list-expand{padding-left:38px}
 
   /* Project page mobile */
   .pp-inner{padding:52px 24px 100px}
@@ -686,7 +699,7 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 <div class="view-toggle" id="view-toggle">
   <span class="active" data-view="constellation">constellation</span>
   <span class="sep">/</span>
-  <span data-view="list">list</span>
+  <span data-view="list">eco-friendly</span>
   <span class="sep">·</span>
   <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" class="linkedin-link">LinkedIn ↗</a>
 </div>
@@ -700,27 +713,38 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 
 <div class="filters" id="filters">
   <div class="filter active" data-m="all">All</div>
-  <div class="filter" data-m="Designed">Designed</div>
-  <div class="filter" data-m="Researched">Researched</div>
-  <div class="filter" data-m="Built">Built</div>
-  <div class="filter" data-m="Taught">Taught</div>
-  <div class="filter" data-m="Talked">Talked</div>
+  <div class="filter" data-m="Product">Product</div>
+  <div class="filter" data-m="Research">Research</div>
+  <div class="filter" data-m="Education">Education</div>
+  <div class="filter" data-m="Podcast">Podcast</div>
 </div>
 
 
 <div id="dots-layer"></div>
 
-<!-- LIST VIEW -->
+<!-- LIST VIEW (Eco-friendly view) -->
 <div id="list-view">
   <div class="list-inner">
     <div class="list-header">
-      <div>
-        <div class="list-header-title">things<em>Yifu</em>Make</div>
-        <div class="list-header-sub">PhD · Designer · Maker · London</div>
+      <div class="list-header-top">
+        <div>
+          <div class="list-header-title">things<em>Yifu</em>Make</div>
+          <div class="list-header-sub">PhD researcher · Designer · Maker · London</div>
+        </div>
+        <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" class="list-header-link">LinkedIn ↗</a>
       </div>
-      <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" class="list-header-link">LinkedIn ↗</a>
+      <div class="list-intro-para">
+        A collection of things designed, researched, built, taught, and talked about — from robotic repair tutors and textile sensors to rocking chairs and cooking machines.
+      </div>
     </div>
     <div class="list-filters" id="list-filters"></div>
+    <div class="list-table-head">
+      <div>#</div>
+      <div>Title</div>
+      <div>Venue / Collab</div>
+      <div>Type</div>
+      <div>Year</div>
+    </div>
     <div id="list-rows"></div>
   </div>
 </div>
@@ -749,8 +773,8 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 // ═══════════════════════════════════════════════════════════
 
 const COLORS = {
-  Designed:'#E8C17A', Researched:'#7AB8E8',
-  Built:'#7AE8C1', Taught:'#E87A7A', Talked:'#C17AE8'
+  Product:'#E8C17A', Research:'#7AB8E8',
+  Education:'#E87A7A', Podcast:'#C17AE8'
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -786,11 +810,10 @@ const PERLIN = (() => {
 // ═══════════════════════════════════════════════════════════
 function mkGrad(mode, i) {
   const P = {
-    Designed:   [['#E8C17A','#8B5E00','#0e0900'],['#F0D090','#C17A20','#120a00'],['#D4A830','#7A4800','#100800'],['#F0C060','#A06020','#0e0800'],['#C89840','#6B4010','#0c0700']],
-    Researched: [['#7AB8E8','#1A5898','#040d18'],['#90C8F8','#2060B0','#050f1a'],['#50A0D8','#104880','#030c16'],['#A0D0F8','#3070C0','#060e1a'],['#6AB0E0','#1050A0','#040c18']],
-    Built:      [['#7AE8C1','#0A8058','#030f0b'],['#90F0D0','#1A9060','#04120d'],['#50D8A8','#087050','#030e0a'],['#A0F0D8','#2A9868','#040f0c']],
-    Taught:     [['#E87A7A','#980000','#0f0000'],['#F09090','#B02020','#120000'],['#D86060','#880808','#0c0000'],['#F08080','#A01010','#110000'],['#E87080','#901820','#0e0002']],
-    Talked:     [['#C17AE8','#600098','#0a0012'],['#D090F8','#7820B0','#0c0018'],['#A850D8','#500080','#080010'],['#D880F0','#6810A8','#0b0015']],
+    Product:    [['#E8C17A','#8B5E00','#0e0900'],['#F0D090','#C17A20','#120a00'],['#D4A830','#7A4800','#100800'],['#F0C060','#A06020','#0e0800'],['#C89840','#6B4010','#0c0700']],
+    Research:   [['#7AB8E8','#1A5898','#040d18'],['#90C8F8','#2060B0','#050f1a'],['#50A0D8','#104880','#030c16'],['#A0D0F8','#3070C0','#060e1a'],['#6AB0E0','#1050A0','#040c18']],
+    Education:  [['#E87A7A','#980000','#0f0000'],['#F09090','#B02020','#120000'],['#D86060','#880808','#0c0000'],['#F08080','#A01010','#110000'],['#E87080','#901820','#0e0002']],
+    Podcast:    [['#C17AE8','#600098','#0a0012'],['#D090F8','#7820B0','#0c0018'],['#A850D8','#500080','#080010'],['#D880F0','#6810A8','#0b0015']],
   };
   const p = P[mode][i % P[mode].length];
   const g = [
@@ -1683,7 +1706,7 @@ function buildListView() {
   // Build filter bar
   const filterBar = document.getElementById('list-filters');
   filterBar.innerHTML = '';
-  const modes = ['all', 'Designed', 'Researched', 'Built', 'Taught', 'Talked'];
+  const modes = ['all', 'Product', 'Research', 'Education', 'Podcast'];
   modes.forEach(m => {
     const el = document.createElement('span');
     el.className = 'list-filter' + (m === listFilter ? ' active' : '');
@@ -1701,9 +1724,12 @@ function buildListView() {
   const visible = listFilter === 'all' ? PROJECTS : PROJECTS.filter(p => p.mode === listFilter);
 
   visible.forEach((proj, i) => {
-    const color = COLORS[proj.mode];
+    // Skip hidden projects
+    if (proj.visibility === 'hidden') return;
+
     const row = document.createElement('div');
-    row.className = 'list-row';
+    row.className = 'list-row' + (proj.wip ? ' wip-row' : '');
+
     // Collect all images for this project
     const projImages = [];
     if (proj.coverImage || proj.previewImage) projImages.push(proj.coverImage || proj.previewImage);
@@ -1713,19 +1739,16 @@ function buildListView() {
       if (src) projImages.push(src);
     });
 
-    const introText = proj.intro || proj.subtitle || '';
+    const venue = proj.venue || proj.collab || '';
 
     row.innerHTML = `
-      <div class="list-row-top">
-        <div class="list-idx">${String(i + 1).padStart(2, '0')}</div>
-        <div class="list-title">${proj.title}${proj.wip ? ' <span style="font-family:Arial,sans-serif;font-size:9px;opacity:.4;margin-left:8px;vertical-align:middle">WIP</span>' : ''}</div>
-        <div class="list-meta">
-          <div class="list-mode" style="color:${color};border-color:${color}50">${proj.mode}</div>
-          <div class="list-year">${proj.year || ''}</div>
-        </div>
-      </div>
-      ${introText ? `<div class="list-intro">${introText}</div>` : ''}
+      <div class="list-idx">${String(i + 1).padStart(2, '0')}</div>
+      <div class="list-title">${proj.title}${proj.wip ? ' <span style="font-family:Arial,sans-serif;font-size:9px;color:#aaa;margin-left:6px">WIP</span>' : ''}</div>
+      <div class="list-venue">${venue}</div>
+      <div class="list-mode">${proj.mode}</div>
+      <div class="list-year">${proj.year || ''}</div>
       <div class="list-expand">
+        ${proj.intro || proj.subtitle ? `<div style="font-family:'Times New Roman',serif;font-size:14px;font-style:italic;color:#777;padding:0 0 8px">${proj.intro || proj.subtitle}</div>` : ''}
         ${proj.desc ? `<div class="list-desc">${proj.desc}</div>` : ''}
         ${projImages.length ? `<div class="list-gallery">${projImages.map((src, gi) =>
           `<img src="${src}" loading="lazy" onload="this.classList.add('loaded')" data-gallery-idx="${gi}">`
