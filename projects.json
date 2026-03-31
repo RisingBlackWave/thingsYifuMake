@@ -649,6 +649,16 @@
       "link": "",
       "year": 2026,
       "wip": true
+    },
+    {
+      "visibility": "shown",
+      "gallery": [],
+      "mode": "Research",
+      "title": "Toolkits",
+      "modes": [
+        "Research"
+      ],
+      "slug": "toolkits"
     }
   ]
 }
