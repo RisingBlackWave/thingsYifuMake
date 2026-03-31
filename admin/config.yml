@@ -39,9 +39,21 @@ collections:
                 required: false
                 hint: "One-line subtitle shown on hover and project page"
 
-              - label: "Mode"
+              - label: "Primary Mode"
                 name: "mode"
                 widget: "select"
+                options:
+                  - { label: "Product", value: "Product" }
+                  - { label: "Research", value: "Research" }
+                  - { label: "Education", value: "Education" }
+                  - { label: "Podcast", value: "Podcast" }
+
+              - label: "Categories (multiple)"
+                name: "modes"
+                widget: "select"
+                multiple: true
+                required: false
+                hint: "Select all categories that apply. Shown as comma-separated in the list."
                 options:
                   - { label: "Product", value: "Product" }
                   - { label: "Research", value: "Research" }

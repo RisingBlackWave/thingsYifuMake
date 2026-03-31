@@ -249,70 +249,76 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   animation:pulse-out .8s ease forwards
 }
 
-/* ── LIST VIEW (system fonts, Wikipedia-inspired) ── */
+/* ── LIST VIEW ── */
 #list-view{
   position:fixed;inset:0;z-index:100;
   background:#fff;
   overflow-y:auto;
   opacity:0;pointer-events:none;
   transition:opacity .4s ease;
-  cursor:default;
-  font-size:120%
+  cursor:default
 }
 #list-view.open{opacity:1;pointer-events:auto}
 #list-view *{cursor:default}
-/* Hide cursor-lens in list view */
 .list-active #cursor{display:none!important}
 .list-active{cursor:default!important}
 .list-active *{cursor:default!important}
 
+/* Fixed top bar */
+.list-topbar{
+  position:sticky;top:0;z-index:10;
+  background:#fff;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 5% 20px;
+  border-bottom:1px solid #eee
+}
+.list-logo{
+  font-family:'Cormorant Garamond','Times New Roman',serif;
+  font-size:20px;font-weight:300;color:#1a1a1a;
+  letter-spacing:.08em
+}
+.list-logo em{font-style:italic;font-weight:400}
+.list-nav{
+  display:flex;align-items:center;gap:12px;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase
+}
+.list-nav-link{
+  color:#666;text-decoration:none;cursor:pointer;
+  transition:color .15s
+}
+.list-nav-link:hover{color:#1a1a1a}
+.list-nav-active{color:#1a1a1a;font-weight:600}
+.list-nav-sep{color:#ccc}
+
 .list-inner{
-  max-width:1100px;
+  max-width:66%;
   margin:0 auto;
-  padding:48px 48px 140px
+  padding:48px 0 140px
 }
 
-.list-header{
-  margin-bottom:32px;padding-bottom:16px;
-  border-bottom:1px solid #ddd
+/* Intro — narrower and centered */
+.list-intro-wrap{
+  max-width:80%;
+  margin:0 auto 40px;
+  text-align:left
 }
-.list-header-top{
-  display:flex;align-items:baseline;justify-content:space-between;
-  margin-bottom:8px;
-  opacity:.6
-}
-.list-header-title{
-  font-family:'Times New Roman',Georgia,serif;
-  font-size:18px;font-weight:400;color:#1a1a1a;
-  letter-spacing:.25em;text-transform:uppercase
-}
-.list-header-title em{font-style:normal}
-.list-header-sub{
-  font-family:'Times New Roman',Georgia,serif;
-  font-size:13px;color:#888;margin-top:4px;letter-spacing:.05em
-}
-.list-header-link{
-  font-family:'Times New Roman',Georgia,serif;
-  font-size:14px;letter-spacing:.25em;text-transform:uppercase;
-  color:#1a1a1a;text-decoration:none
-}
-.list-header-link:hover{color:#0645ad}
 .list-intro-para{
   font-family:'Times New Roman',Georgia,serif;
-  font-size:20px;line-height:1.6;color:#1a1a1a;font-weight:400;
-  margin-top:16px;max-width:780px
+  font-size:24px;line-height:1.55;color:#1a1a1a;font-weight:400
 }
 
+/* Filters — Arial, same size as body */
 .list-filters{
-  display:flex;gap:24px;margin-bottom:0;
+  display:flex;gap:32px;margin-bottom:0;
   flex-wrap:wrap;
   justify-content:center;
   padding:0 0 16px;
-  border-bottom:2px solid #1a1a1a
+  border-bottom:1px solid #1a1a1a
 }
 .list-filter{
-  font-family:'Times New Roman',Georgia,serif;
-  font-size:16px;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:18px;
   color:#0645ad;cursor:pointer;
   transition:color .15s;
   text-decoration:none
@@ -321,54 +327,52 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .list-filter.active{color:#1a1a1a;font-weight:400}
 .list-filter[data-m="all"]{color:#1a1a1a}
 
-/* Table — no header, just rows */
 .list-table-head{display:none}
 
 .list-row{
   display:grid;
-  grid-template-columns:1fr 200px 120px 60px;
-  gap:16px;
+  grid-template-columns:1fr 200px 160px 60px;
+  gap:20px;
   align-items:center;
-  padding:14px 0;
-  border-bottom:1px solid #1a1a1a;
+  padding:18px 0;
+  border-bottom:1px solid #ddd;
   cursor:pointer;
   transition:color .15s;
   font-family:'Times New Roman',Georgia,serif;
-  font-size:20px;
+  font-size:22px;
   color:#1a1a1a;
   line-height:1.4
 }
-.list-row:first-child{border-top:none}
+.list-row:first-child{border-top:1px solid #ddd}
 .list-row:hover{color:#0645ad}
 .list-row:hover .list-title,.list-row:hover .list-venue,.list-row:hover .list-mode,.list-row:hover .list-date,.list-row:hover .list-year{color:#0645ad}
 .list-row.wip-row{color:#ccc}
 .list-row.wip-row .list-title,.list-row.wip-row .list-venue,.list-row.wip-row .list-mode,.list-row.wip-row .list-date,.list-row.wip-row .list-year{color:#ccc}
 .list-row.wip-row:hover,.list-row.wip-row:hover .list-title,.list-row.wip-row:hover .list-venue,.list-row.wip-row:hover .list-mode,.list-row.wip-row:hover .list-date,.list-row.wip-row:hover .list-year{color:#0645ad}
 
-.list-date{
-  font-size:20px;color:inherit;
-  white-space:nowrap
-}
 .list-title{
-  font-size:20px;font-weight:400;
+  font-size:22px;font-weight:400;
   color:inherit;
   transition:color .15s;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  max-width:100%
 }
 .list-venue{
-  font-size:20px;color:inherit;
+  font-size:22px;color:inherit;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap
 }
 .list-mode{
-  font-size:20px;
-  color:inherit
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:16px;
+  color:inherit;
+  letter-spacing:.02em
 }
 .list-year{
-  font-size:20px;color:inherit;
+  font-size:22px;color:inherit;
   text-align:right
 }
 
-/* Expandable section — Formafantasma style: text left, images right */
+/* Expandable section */
 .list-expand{
   grid-column:1 / -1;
   max-height:0;overflow:hidden;
@@ -390,9 +394,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   display:flex;flex-direction:column;gap:12px
 }
 .list-desc{
-  font-family:'Times New Roman',Georgia,serif;
-  font-size:17px;line-height:1.7;
-  color:#1a1a1a;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:16px;line-height:1.75;
+  color:#333;
   padding:0;
   max-width:100%
 }
@@ -411,8 +415,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .list-gallery img.loaded{opacity:1}
 .list-gallery img:hover{opacity:.8}
 .list-enter{
-  font-family:'Times New Roman',Georgia,serif;
-  font-size:15px;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:14px;
   color:#0645ad;
   display:inline-flex;align-items:center;gap:6px;
   padding:4px 0 0;cursor:pointer;
@@ -578,10 +582,7 @@ body.list-active #dots-layer,
 body.list-active #canvas,
 body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity .3s}
 body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
-body.list-active .view-toggle span,
-body.list-active .view-toggle .sep,
-body.list-active .view-toggle .linkedin-link{color:#1a1a1a!important;opacity:1!important}
-body.list-active .wordmark,body.list-active .wordmark em{color:#1a1a1a!important}
+body.list-active .view-toggle{display:none!important}
 
 /* ── LINKEDIN LINK ── */
 .linkedin-link{
@@ -645,8 +646,12 @@ body.list-active .wordmark,body.list-active .wordmark em{color:#1a1a1a!important
 body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity .3s}
 
 /* ── MOBILE ── */
-@media (min-width:1400px) {
-  #list-view{font-size:140%}
+@media (min-width:1600px) {
+  .list-inner{max-width:60%}
+  .list-intro-para{font-size:28px}
+  .list-row{font-size:24px}
+  .list-title,.list-venue,.list-year{font-size:24px}
+  .list-filter{font-size:20px}
 }
 
 @media (max-width:768px) {
@@ -744,16 +749,21 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 
 <div id="dots-layer"></div>
 
-<!-- LIST VIEW (Eco-friendly view) -->
+<!-- LIST VIEW -->
 <div id="list-view">
+  <!-- Fixed header bar: logo left, nav right -->
+  <div class="list-topbar">
+    <div class="list-logo">things<em>Yifu</em>Make</div>
+    <nav class="list-nav">
+      <span id="list-to-constellation" class="list-nav-link">Constellation</span>
+      <span class="list-nav-sep">/</span>
+      <span class="list-nav-link list-nav-active">List</span>
+      <span class="list-nav-sep">·</span>
+      <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" class="list-nav-link" style="color:#0A66C2">LinkedIn ↗</a>
+    </nav>
+  </div>
   <div class="list-inner">
-    <div class="list-header">
-      <div class="list-header-top">
-        <div>
-          <div class="list-header-title">things<em>Yifu</em>Make</div>
-          <div class="list-header-sub">PhD researcher · Designer · Maker · London</div>
-        </div>
-      </div>
+    <div class="list-intro-wrap">
       <div class="list-intro-para">
         Yifu Liu is a research-based designer investigating how artificial intelligence can support embodied skill, material engagement, and creative learning. Whether developing conversational AI for textile repair, supervising student robotics projects, or hosting a podcast on creativity across disciplines, the practice applies the same rigorous attention to context, making, and detail. Based in London. Final-year PhD at UCL Interaction Centre.<br><br>The work embraces a broad spectrum of typologies and methods, from product design through embodied interaction research, robotic prototyping, design pedagogy, and cultural commentary. Across all outputs, the portfolio is characterised by a coherent interest in the body's intelligence and meticulously researched outcomes.
       </div>
@@ -1095,7 +1105,7 @@ let userHovering = false;
 let autoTimer = null;
 let autoIndex = -1;
 let currentAutoWrap = null;
-let currentView = 'constellation';
+let currentView = 'list';
 
 fetch('projects.json')
   .then(r => r.json())
@@ -1110,8 +1120,10 @@ fetch('projects.json')
     document.getElementById('count').textContent = `${PROJECTS.length} things`;
     ringAssignments = assignRings(PROJECTS);
 
-    // Check URL hash
-    if (window.location.hash === '#list') {
+    // Default to list view unless hash says constellation
+    if (window.location.hash === '#constellation') {
+      switchView('constellation');
+    } else {
       switchView('list');
     }
 
@@ -1735,7 +1747,10 @@ function buildListView() {
   // Build rows
   const container = document.getElementById('list-rows');
   container.innerHTML = '';
-  const visible = listFilter === 'all' ? PROJECTS : PROJECTS.filter(p => p.mode === listFilter);
+  const visible = listFilter === 'all' ? PROJECTS : PROJECTS.filter(p => {
+    const modes = p.modes || [p.mode];
+    return modes.includes(listFilter);
+  });
 
   visible.forEach((proj, i) => {
     // Skip hidden projects
@@ -1760,7 +1775,7 @@ function buildListView() {
     row.innerHTML = `
       <div class="list-title">${proj.title}</div>
       <div class="list-venue">${venue}</div>
-      <div class="list-mode">${proj.mode}</div>
+      <div class="list-mode">${(proj.modes || [proj.mode]).join(', ')}</div>
       <div class="list-year">${proj.year || ''}</div>
       <div class="list-expand">
         <div class="list-expand-inner">
@@ -1824,7 +1839,8 @@ function switchView(view) {
 document.querySelectorAll('.view-toggle span[data-view]').forEach(s => {
   s.addEventListener('click', () => switchView(s.dataset.view));
 });
-document.getElementById('list-to-constellation').addEventListener('click', () => switchView('constellation'));
+const listToConst = document.getElementById('list-to-constellation');
+if (listToConst) listToConst.addEventListener('click', () => switchView('constellation'));
 
 // Listen for hash changes
 window.addEventListener('hashchange', () => {
