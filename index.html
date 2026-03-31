@@ -8,7 +8,7 @@
 <meta name="description" content="Things Yifu makes — designed, researched, built, taught, talked. PhD researcher, designer, maker, London.">
 <link rel="canonical" href="https://thingsyifumake.uk">
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -22,7 +22,7 @@
   --taught:#E87A7A;
   --talked:#C17AE8;
 }
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;cursor:none}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Pitch','DM Mono','Noto Sans SC',monospace;cursor:none}
 
 /* ── CURSOR-LENS ── */
 #cursor{
@@ -72,7 +72,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 /* ── UI CHROME ── */
 .wordmark{
   position:fixed;top:40px;left:48px;z-index:10;
-  font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;
+  font-family:'Cormorant Garamond','Noto Sans SC',serif;font-size:19px;font-weight:300;
   letter-spacing:.01em;opacity:0;animation:fadeUp .9s ease .1s forwards
 }
 .wordmark em{font-style:italic;opacity:.4}
@@ -160,7 +160,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .whisper-title{
   position:absolute;
   white-space:nowrap;
-  font-family:'DM Mono',monospace;
+  font-family:'Pitch','DM Mono','Noto Sans SC',monospace;
   font-size:9px;
   letter-spacing:.08em;
   opacity:0;
@@ -219,7 +219,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   font-size:7.5px;letter-spacing:.19em;text-transform:uppercase;margin-bottom:8px
 }
 .preview-title{
-  font-family:'Cormorant Garamond',serif;
+  font-family:'Cormorant Garamond','Noto Sans SC',serif;
   font-size:17px;font-weight:300;line-height:1.3;color:var(--text);
   margin-bottom:10px
 }
@@ -369,7 +369,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .pp-year{font-size:8.5px;letter-spacing:.13em;color:var(--dim);margin-bottom:24px}
 
 .pp-title{
-  font-family:'Cormorant Garamond',serif;
+  font-family:'Cormorant Garamond','Noto Sans SC',serif;
   font-size:clamp(38px,6vw,62px);font-weight:300;
   line-height:1.08;letter-spacing:-.01em;margin-bottom:48px
 }
@@ -388,7 +388,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .pp-desc{
   font-size:13.5px;line-height:2.05;letter-spacing:.02em;
   color:rgba(237,233,226,.6);margin-bottom:52px;
-  font-family:'Cormorant Garamond',serif;font-weight:300
+  font-family:'Cormorant Garamond','Noto Sans SC',serif;font-weight:300
 }
 
 .pp-link{
@@ -505,7 +505,7 @@ body.list-active .count{opacity:0;pointer-events:none;transition:opacity .3s}
   to{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
 }
 .stone-label{
-  font-family:'DM Mono',monospace;
+  font-family:'Pitch','DM Mono','Noto Sans SC',monospace;
   font-size:8px;letter-spacing:.1em;
   color:rgba(237,233,226,.3);
   text-align:center;
@@ -624,7 +624,7 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
     <div class="pp-mode" id="pp-mode"></div>
     <div class="pp-year" id="pp-year"></div>
     <div class="pp-title" id="pp-title"></div>
-    <div class="pp-subtitle" id="pp-subtitle" style="font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:var(--dim);margin-bottom:36px;display:none"></div>
+    <div class="pp-subtitle" id="pp-subtitle" style="font-family:'Cormorant Garamond','Noto Sans SC',serif;font-size:16px;font-style:italic;color:var(--dim);margin-bottom:36px;display:none"></div>
     <div class="pp-visual" id="pp-visual"></div>
     <div class="pp-rule"></div>
     <div class="pp-awards" id="pp-awards"></div>
@@ -1101,7 +1101,7 @@ function buildPreviewCard(proj, color) {
   body.className = 'preview-body';
   body.innerHTML = `<div class="preview-mode" style="color:${color}">${proj.mode}${proj.wip ? ' · wip' : ''}</div>
     <div class="preview-title">${proj.title}</div>
-    ${proj.subtitle ? `<div style="font-size:11px;color:var(--dim);font-family:'Cormorant Garamond',serif;font-style:italic;margin-bottom:8px">${proj.subtitle}</div>` : ''}
+    ${proj.subtitle ? `<div style="font-size:11px;color:var(--dim);font-family:'Cormorant Garamond','Noto Sans SC',serif;font-style:italic;margin-bottom:8px">${proj.subtitle}</div>` : ''}
     <div class="preview-cta">open project</div>`;
   preview.appendChild(visual); preview.appendChild(body);
   return preview;
