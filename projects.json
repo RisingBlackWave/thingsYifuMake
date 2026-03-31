@@ -284,22 +284,27 @@
     {
       "whisper": "",
       "mode": "Research",
-      "coverImage": "",
+      "coverImage": "assets/projects/screenshot-2026-03-31-at-20.27.18.png",
       "slug": "mmw-wave",
-      "intro": "",
+      "intro": "In this study, we propose the mmWaveTryOn, the first-of-its-kind multimodal dataset including mmWave, RGB-extracted skeleton and action type labels, focusing on try-on gesture recognition. ",
       "date": "",
-      "venue": "",
+      "venue": "UKRI Textile Circularity Center",
+      "modes": [
+        "Research"
+      ],
       "desc": "In recent years, mmWave sensing has become an emerging research field. mmWave sensor demonstrates its unique advantage of passive, Non-line-of-sight (NLOS) sensing capability with less privacy concerns. It has been widely adapted in various applications such as human activity recognition, healthcare, tracking and navigation, and etc. In fashion industry, RGB-based smart mirror is commonly used in retail for tracking human gestures and offering virtual try-on experience. However, utilizing RGB camera can raises privacy issues and be restricted to lighting conditions. In contrast, mmWave sensor shows unique potentials as an alternative modality. However, there is a lack of exploration on investigating the feasibility of leveraging mmWave for clothes try-on gesture recognition. In this study, we propose the mmWaveTryOn, the first-of-its-kind multimodal dataset including mmWave, RGB-extracted skeleton and action type labels, focusing on try-on gesture recognition. Experiments show that mmWave-based model outperforms RGB-based model for fine-grained try-on gesture classification, and fusion of both modalities further improves the accuracy to 81.51%. The mmWaveTryOn dataset is publicly available to encourage the community to explore the integration of mmWave sensing technology in fashion industry and also serve as strong benchmark baselines.",
       "visibility": "shown",
-      "gallery": [],
+      "gallery": [
+        "assets/projects/screenshot-2026-03-31-at-20.27.30.png",
+        "assets/projects/screenshot-2026-03-31-at-20.27.40.png"
+      ],
       "previewVideo": "",
       "previewImage": "",
       "awards": [],
       "subtitle": "mmWaveTryOn: The first mmWave-RGB Dataset for Clothes Try-On Multimodal Gesture Recognition",
       "title": "mmWaveTryOn",
       "tags": [
-        "Published",
-        "Second Author"
+        "Published"
       ],
       "link": "https://dl.acm.org/doi/10.1145/3737904.3768535",
       "year": 2025,
