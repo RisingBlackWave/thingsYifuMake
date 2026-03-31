@@ -66,11 +66,18 @@ collections:
                 widget: "string"
                 hint: "URL-friendly name and image folder name (e.g. dancing-pig)"
 
+              - label: "Date"
+                name: "date"
+                widget: "string"
+                required: false
+                hint: "Display date (e.g. '2026', '03.2026', 'Spring 2024')"
+
               - label: "Year"
                 name: "year"
                 widget: "number"
                 required: false
                 value_type: "int"
+                hint: "Used for sorting (number only)"
 
               - label: "Intro (short)"
                 name: "intro"

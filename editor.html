@@ -187,6 +187,10 @@ async function selectProject(idx){
     +'<div class="field"><label>Mode</label><select id="f-mode" onchange="markDirty()">'+['Product','Research','Education','Podcast'].map(m=>'<option value="'+m+'" '+(p.mode===m?'selected':'')+'>'+m+'</option>').join('')+'</select></div>'
     +'<div class="field"><label>Year</label><input id="f-year" type="number" value="'+(p.year||'')+'" placeholder="e.g. 2026" oninput="markDirty()"></div>'
     +'</div>'
+    +'<div class="field-row">'
+    +'<div class="field"><label>Date (display)</label><input id="f-date" value="'+esc(p.date||'')+'" placeholder="e.g. 03.2026, Spring 2024" oninput="markDirty()"></div>'
+    +'<div class="field"><label>Venue / Collab</label><input id="f-venue" value="'+esc(p.venue||'')+'" placeholder="e.g. CHI 2026, UCL, ACII" oninput="markDirty()"></div>'
+    +'</div>'
     +'<div class="checkbox-field"><input type="checkbox" id="f-wip" '+(p.wip?'checked':'')+' onchange="markDirty()"><label for="f-wip">Work in Progress (WIP)</label></div>'
     +'<div class="section-title">Intro & Description</div>'
     +'<div class="field"><label>Intro (short — shown in list view)</label><input id="f-intro" value="'+esc(p.intro||'')+'" placeholder="One-line summary, e.g. A robot that helps you learn clothes repair" oninput="markDirty()"></div>'
@@ -239,7 +243,7 @@ function collectFormData(){
   if(selectedIdx<0)return;var p=projects[selectedIdx];
   var get=function(id){var el=document.getElementById(id);return el?el.value:''};
   p.title=get('f-title');p.subtitle=get('f-subtitle')||null;p.slug=get('f-slug');p.mode=get('f-mode');
-  p.year=get('f-year')?parseInt(get('f-year')):null;p.intro=get('f-intro')||null;p.desc=get('f-desc');p.link=get('f-link')||null;
+  p.year=get('f-year')?parseInt(get('f-year')):null;p.date=get('f-date')||null;p.venue=get('f-venue')||null;p.intro=get('f-intro')||null;p.desc=get('f-desc');p.link=get('f-link')||null;
   var wipEl=document.getElementById('f-wip');p.wip=wipEl?wipEl.checked:false;
   p.previewImage=get('f-previewImage')||null;p.coverImage=get('f-coverImage')||null;p.previewVideo=get('f-previewVideo')||null;
   var tagEls=document.querySelectorAll('#tags-wrap .tag');
