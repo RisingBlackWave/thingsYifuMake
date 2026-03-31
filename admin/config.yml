@@ -69,10 +69,8 @@ collections:
                 widget: "list"
                 required: false
                 hint: "Awards and honours (e.g. Best Paper, CHI Honourable Mention)"
-                field:
-                  label: "Award"
-                  name: "label"
-                  widget: "string"
+                allow_add: true
+                default: []
 
               - label: "Tags"
                 name: "tags"
@@ -103,9 +101,11 @@ collections:
                 widget: "list"
                 required: false
                 hint: "Add images that show inside the project page (process shots, details, screenshots)"
+                allow_add: true
+                default: []
                 field:
                   label: "Image"
-                  name: "src"
+                  name: "gallery"
                   widget: "image"
 
               - label: "Preview Video"
