@@ -409,6 +409,51 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   transition:opacity .5s ease
 }
 .pp-gallery img.loaded{opacity:1}
+.pp-gallery img{cursor:pointer}
+
+/* ── LIGHTBOX ── */
+.lightbox{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.92);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+  cursor:none
+}
+.lightbox.open{opacity:1;pointer-events:auto}
+.lightbox img{
+  max-width:90vw;max-height:90vh;
+  object-fit:contain;
+  transition:opacity .25s ease;
+  user-select:none;-webkit-user-drag:none
+}
+.lightbox-close{
+  position:absolute;top:28px;right:32px;
+  font-size:18px;color:rgba(255,255,255,.5);
+  cursor:pointer;z-index:10;
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.15);border-radius:50%;
+  transition:color .2s,border-color .2s;
+  font-family:'Pitch','DM Mono','Noto Sans SC',monospace
+}
+.lightbox-close:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+.lightbox-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  font-size:28px;color:rgba(255,255,255,.4);
+  cursor:pointer;z-index:10;
+  width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.1);border-radius:50%;
+  transition:color .2s,border-color .2s,background .2s;
+  user-select:none
+}
+.lightbox-arrow:hover{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.05)}
+.lightbox-arrow.left{left:24px}
+.lightbox-arrow.right{right:24px}
+.lightbox-counter{
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  font-size:10px;letter-spacing:.15em;color:rgba(255,255,255,.35);
+  font-family:'Pitch','DM Mono','Noto Sans SC',monospace
+}
 
 .pp-tags{display:flex;gap:7px;flex-wrap:wrap}
 .pp-tag{
@@ -1481,20 +1526,33 @@ function openProject(proj) {
     vis.style.border = `1px solid ${color}18`;
   }
 
-  // Render gallery images
+  // Render gallery images + collect all viewable images for lightbox
   const galleryEl = document.getElementById('pp-gallery');
   galleryEl.innerHTML = '';
+  const allImages = [];
+  // Include cover/preview as first image
+  if (proj.coverImage || proj.previewImage) allImages.push(proj.coverImage || proj.previewImage);
   if (proj.gallery && proj.gallery.length) {
     proj.gallery.forEach((item, i) => {
-      const src = typeof item === 'string' ? item : item.src;
+      const src = typeof item === 'string' ? item : (item.src || item.gallery);
       if (!src) return;
+      allImages.push(src);
       const img = document.createElement('img');
       img.src = src;
       img.alt = `${proj.title} detail ${i + 1}`;
       img.loading = 'lazy';
       img.onload = () => img.classList.add('loaded');
+      const imgIdx = allImages.length - 1;
+      img.addEventListener('click', () => openLightbox(allImages, imgIdx));
       galleryEl.appendChild(img);
     });
+  }
+  // Make cover image clickable too
+  const visEl = document.getElementById('pp-visual');
+  const coverImg = visEl.querySelector('img');
+  if (coverImg && allImages.length) {
+    coverImg.style.cursor = 'pointer';
+    coverImg.addEventListener('click', () => openLightbox(allImages, 0));
   }
 
   const linkWrap = document.getElementById('pp-link-wrap');
@@ -1662,6 +1720,62 @@ if (isTouchDevice) {
   cursorEl.style.display = 'none';
   document.body.style.cursor = 'auto';
 }
+// ═══════════════════════════════════════════════════════════
+// LIGHTBOX
+// ═══════════════════════════════════════════════════════════
+const lightboxEl = document.createElement('div');
+lightboxEl.className = 'lightbox';
+lightboxEl.innerHTML = `
+  <div class="lightbox-close">✕</div>
+  <div class="lightbox-arrow left">‹</div>
+  <div class="lightbox-arrow right">›</div>
+  <img src="" alt="">
+  <div class="lightbox-counter"></div>
+`;
+document.body.appendChild(lightboxEl);
+
+let lbImages = [];
+let lbIndex = 0;
+const lbImg = lightboxEl.querySelector('img');
+const lbCounter = lightboxEl.querySelector('.lightbox-counter');
+
+function openLightbox(images, index) {
+  lbImages = images;
+  lbIndex = index;
+  updateLightbox();
+  lightboxEl.classList.add('open');
+}
+
+function closeLightbox() {
+  lightboxEl.classList.remove('open');
+}
+
+function updateLightbox() {
+  lbImg.style.opacity = '0';
+  lbImg.src = lbImages[lbIndex];
+  lbImg.onload = () => { lbImg.style.opacity = '1'; };
+  lbCounter.textContent = (lbIndex + 1) + ' / ' + lbImages.length;
+  // Hide arrows if only one image
+  lightboxEl.querySelector('.left').style.display = lbImages.length <= 1 ? 'none' : 'flex';
+  lightboxEl.querySelector('.right').style.display = lbImages.length <= 1 ? 'none' : 'flex';
+}
+
+function lbPrev() { lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length; updateLightbox(); }
+function lbNext() { lbIndex = (lbIndex + 1) % lbImages.length; updateLightbox(); }
+
+lightboxEl.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+lightboxEl.querySelector('.left').addEventListener('click', (e) => { e.stopPropagation(); lbPrev(); });
+lightboxEl.querySelector('.right').addEventListener('click', (e) => { e.stopPropagation(); lbNext(); });
+lightboxEl.addEventListener('click', (e) => { if (e.target === lightboxEl) closeLightbox(); });
+
+// Keyboard nav
+document.addEventListener('keydown', (e) => {
+  if (!lightboxEl.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lbPrev();
+  if (e.key === 'ArrowRight') lbNext();
+});
+
 // Netlify Identity redirect after login
 if (window.netlifyIdentity) {
   window.netlifyIdentity.on('init', user => {
