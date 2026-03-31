@@ -26,7 +26,11 @@
       ],
       "link": null,
       "year": 2021,
-      "wip": true
+      "wip": true,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": ""
     },
     {
       "whisper": null,
@@ -51,7 +55,12 @@
       ],
       "link": null,
       "year": 2020,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": []
     },
     {
       "whisper": null,
@@ -74,7 +83,12 @@
       ],
       "link": "https://productdesign.eca.ed.ac.uk/wp-content/uploads/2019/08/2-workbook-online-small.pdf",
       "year": 2018,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": []
     },
     {
       "whisper": null,
@@ -99,7 +113,12 @@
       ],
       "link": null,
       "year": null,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": []
     },
     {
       "whisper": null,
@@ -118,7 +137,13 @@
       ],
       "link": null,
       "year": 2021,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -138,7 +163,13 @@
       ],
       "link": "https://discovery.ucl.ac.uk/id/eprint/10222053/",
       "year": 2026,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -157,7 +188,13 @@
       ],
       "link": null,
       "year": 2026,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -176,7 +213,13 @@
       ],
       "link": "https://ieeexplore.ieee.org/document/10388087",
       "year": 2024,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -195,7 +238,13 @@
       ],
       "link": "https://arxiv.org/abs/2601.19421",
       "year": 2026,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -213,7 +262,13 @@
       ],
       "link": "https://dl.acm.org/doi/10.1145/3737904.3768535",
       "year": 2025,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -233,7 +288,13 @@
       ],
       "link": null,
       "year": 2026,
-      "wip": true
+      "wip": true,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -252,7 +313,13 @@
       ],
       "link": null,
       "year": null,
-      "wip": true
+      "wip": true,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -270,7 +337,13 @@
       ],
       "link": null,
       "year": null,
-      "wip": true
+      "wip": true,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -289,7 +362,13 @@
       ],
       "link": null,
       "year": null,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -308,7 +387,13 @@
       ],
       "link": null,
       "year": null,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -327,7 +412,13 @@
       ],
       "link": null,
       "year": null,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -345,7 +436,13 @@
       ],
       "link": null,
       "year": null,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -364,7 +461,13 @@
       ],
       "link": null,
       "year": null,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -383,7 +486,13 @@
       ],
       "link": null,
       "year": null,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -403,7 +512,13 @@
       ],
       "link": null,
       "year": 2025,
-      "wip": true
+      "wip": true,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -423,7 +538,13 @@
       ],
       "link": "https://www.bilibili.com/video/BV1eRknBsE3V/?spm_id_from=333.1387.homepage.video_card.click&vd_source=65dd5504c50e09cabfcead2ad305884a",
       "year": 2026,
-      "wip": false
+      "wip": false,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     },
     {
       "whisper": null,
@@ -442,7 +563,13 @@
       ],
       "link": null,
       "year": 2026,
-      "wip": true
+      "wip": true,
+      "venue": "",
+      "date": "",
+      "visibility": "shown",
+      "intro": "",
+      "awards": [],
+      "gallery": []
     }
   ]
 }

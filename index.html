@@ -277,7 +277,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 }
 .list-header-top{
   display:flex;align-items:baseline;justify-content:space-between;
-  margin-bottom:8px
+  margin-bottom:8px;
+  opacity:.6
 }
 .list-header-title{
   font-family:'Times New Roman',Georgia,serif;
@@ -366,45 +367,58 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   text-align:right
 }
 
-/* Expandable section */
+/* Expandable section — Formafantasma style: text left, images right */
 .list-expand{
   grid-column:1 / -1;
   max-height:0;overflow:hidden;
-  transition:max-height .5s ease,opacity .3s ease;
+  transition:max-height .6s ease,opacity .4s ease;
   opacity:0;
   padding-left:0
 }
 .list-row.expanded .list-expand{
-  max-height:800px;opacity:1;
-  padding-top:12px
+  max-height:1200px;opacity:1;
+  padding-top:20px;padding-bottom:8px
+}
+.list-expand-inner{
+  display:grid;
+  grid-template-columns:1fr 1.2fr;
+  gap:32px;
+  align-items:start
+}
+.list-expand-text{
+  display:flex;flex-direction:column;gap:12px
 }
 .list-desc{
   font-family:'Times New Roman',Georgia,serif;
-  font-size:14px;line-height:1.75;
-  color:#444;
-  padding:0 0 10px;
-  max-width:640px
+  font-size:15px;line-height:1.75;
+  color:#333;
+  padding:0;
+  max-width:100%
+}
+.list-intro-text{
+  font-family:'Times New Roman',Georgia,serif;
+  font-size:15px;font-style:italic;
+  color:#666;line-height:1.65
 }
 .list-gallery{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:8px;
-  padding:10px 0 8px
+  grid-template-columns:repeat(2,1fr);
+  gap:8px
 }
 .list-gallery img{
-  width:100%;height:90px;object-fit:cover;
+  width:100%;height:auto;object-fit:cover;
   opacity:0;
   transition:opacity .4s ease;
   cursor:pointer
 }
 .list-gallery img.loaded{opacity:1}
-.list-gallery img:hover{opacity:.75}
+.list-gallery img:hover{opacity:.8}
 .list-enter{
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:11px;
+  font-family:'Times New Roman',Georgia,serif;
+  font-size:15px;
   color:#0645ad;
   display:inline-flex;align-items:center;gap:6px;
-  padding:10px 0 0;cursor:pointer;
+  padding:4px 0 0;cursor:pointer;
   text-decoration:none
 }
 .list-enter:hover{text-decoration:underline}
@@ -1748,12 +1762,16 @@ function buildListView() {
       <div class="list-mode">${proj.mode}</div>
       <div class="list-year">${proj.year || ''}</div>
       <div class="list-expand">
-        ${proj.intro || proj.subtitle ? `<div style="font-family:'Times New Roman',serif;font-size:14px;font-style:italic;color:#777;padding:0 0 8px">${proj.intro || proj.subtitle}</div>` : ''}
-        ${proj.desc ? `<div class="list-desc">${proj.desc}</div>` : ''}
-        ${projImages.length ? `<div class="list-gallery">${projImages.map((src, gi) =>
-          `<img src="${src}" loading="lazy" onload="this.classList.add('loaded')" data-gallery-idx="${gi}">`
-        ).join('')}</div>` : ''}
-        <div class="list-enter" data-idx="${proj._id}">Explore →</div>
+        <div class="list-expand-inner">
+          <div class="list-expand-text">
+            ${proj.intro || proj.subtitle ? `<div class="list-intro-text">${proj.intro || proj.subtitle}</div>` : ''}
+            ${proj.desc ? `<div class="list-desc">${proj.desc}</div>` : ''}
+            <div class="list-enter" data-idx="${proj._id}">Explore</div>
+          </div>
+          ${projImages.length ? `<div class="list-gallery">${projImages.map((src, gi) =>
+            `<img src="${src}" loading="lazy" onload="this.classList.add('loaded')" data-gallery-idx="${gi}">`
+          ).join('')}</div>` : '<div></div>'}
+        </div>
       </div>
     `;
 
