@@ -195,9 +195,12 @@
       "mode": "Research",
       "coverImage": "",
       "slug": "tools-for-thought",
-      "intro": "",
+      "intro": "Current Tools for Thought (TfTs) treat affect as either friction that slows cognitive progress or a signal to optimise it. We identify two core barriers for Affective TfTs. ",
       "date": "",
-      "venue": "",
+      "venue": "Tools for Thought Workshop",
+      "modes": [
+        "Research"
+      ],
       "desc": "Workshop paper at CHI 2026, co-authored with Raffaele Buono and Nadia Bianchi-Berthouze. Argues that emotional engagement is not a distraction from thinking — it is its constitutive substrate.\n\nCurrent Tools for Thought (TfTs) treat affect as either friction that slows cognitive progress or a signal to optimise it. Drawing on enactive cognitive science, we argue that affect is constitutive of cognition: it reshapes the trajectory of thinking, not just the speed. We identify two core barriers for Affective TfTs---the lack of Shared Attention (caring, directed attention to the user's mode of engagement) and the lack of Affective Reorienting (the capacity to use emotional moments to open new trajectories rather than reinforcing predetermined ones)---and propose three design strategies that address both: Chain of Emotion X Chain of Thought, Affective Mirror, and Prompted Reorienting. The strategies are grounded in empirical findings from a study of a touch-aware conversational agent for embodied craft learning, and are oriented as provocations for future design.",
       "visibility": "shown",
       "gallery": [],
@@ -205,7 +208,7 @@
       "previewImage": "",
       "awards": [],
       "subtitle": "Affective Tools for Thought: Towards Shared Attention and Affective Reorienting in AI-Supported Thinking",
-      "title": "Affective Tools for Thought (CHI2026)",
+      "title": "Affective Tools for Thought in AI-Supported Thinking",
       "tags": [
         "CHI 2026",
         "Workshop",
