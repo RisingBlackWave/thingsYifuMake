@@ -10,7 +10,6 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#07070A;
@@ -424,62 +423,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   position:relative;
   font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;
   padding:5px 14px;border-radius:20px;
-  color:rgba(255,255,255,.9);
-  background:
-    linear-gradient(var(--bg),var(--bg)) padding-box,
-    linear-gradient(
-      var(--a,0deg),
-      rgba(255,160,160,.4),
-      rgba(255,220,130,.3),
-      rgba(160,255,180,.4),
-      rgba(130,190,255,.4),
-      rgba(190,140,255,.35),
-      rgba(255,160,160,.4)
-    ) border-box;
-  border:1px solid transparent;
-  box-shadow:
-    0 0 6px rgba(255,255,255,.05),
-    inset 0 0 8px rgba(255,255,255,.03);
-  overflow:hidden;
-  animation:awardFloat 4s ease-in-out infinite, awardRainbow 4s linear infinite
+  color:rgba(0,0,0,.85);
+  background:rgba(255,255,255,.92);
+  border:none;
+  overflow:hidden
 }
-@keyframes awardRainbow{
-  to{--a:360deg}
-}
-/* Tiny sparkle particles */
-.pp-award::before,
-.pp-award::after{
-  content:'';position:absolute;
-  width:2px;height:2px;border-radius:50%;
-  background:white;
-  animation:sparkle 2s ease-in-out infinite
-}
-.pp-award::before{
-  top:25%;left:20%;
-  animation-delay:0s;
-  box-shadow:
-    12px 4px 0 rgba(255,200,200,.6),
-    28px -2px 0 rgba(200,255,220,.5),
-    45px 6px 0 rgba(180,200,255,.6),
-    60px 1px 0 rgba(220,180,255,.5)
-}
-.pp-award::after{
-  top:60%;left:35%;
-  animation-delay:1s;
-  box-shadow:
-    8px -3px 0 rgba(255,220,180,.5),
-    22px 4px 0 rgba(180,255,200,.6),
-    38px -1px 0 rgba(200,180,255,.5)
-}
-.pp-award span{position:relative;z-index:1}
-
-@keyframes sparkle{
-  0%,100%{opacity:0;transform:scale(.5)}
-  50%{opacity:.8;transform:scale(1)}
-}
-@keyframes awardFloat{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-2px)}
+.pp-award span{position:relative;z-index:2}
+/* Dense particle field via canvas — initialized in JS */
+.pp-award canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  z-index:1;pointer-events:none
 }
 
 @keyframes fadeUp{
@@ -1451,16 +1404,56 @@ function openProject(proj) {
   }
   document.getElementById('pp-desc').textContent = proj.desc || '';
 
-  // Render award tags
+  // Render award tags (珠光 pearlescent with dense particles)
   const awardsEl = document.getElementById('pp-awards');
   awardsEl.innerHTML = '';
   if (proj.awards && proj.awards.length) {
-    proj.awards.forEach((award, i) => {
+    proj.awards.forEach((award) => {
       const tag = document.createElement('div');
       tag.className = 'pp-award';
-      tag.style.animationDelay = `${i * 0.6}s`;
-      tag.innerHTML = `<span>${typeof award === 'string' ? award : award.label || award}</span>`;
+      const label = typeof award === 'string' ? award : award.label || award;
+      tag.innerHTML = `<span>${label}</span>`;
       awardsEl.appendChild(tag);
+      // Create pearl particle canvas after layout
+      requestAnimationFrame(() => {
+        const w = tag.offsetWidth, h = tag.offsetHeight;
+        const cvs = document.createElement('canvas');
+        cvs.width = w * 2; cvs.height = h * 2;
+        cvs.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none';
+        tag.appendChild(cvs);
+        const ctx = cvs.getContext('2d');
+        // Dense particle field
+        const particles = [];
+        const count = Math.floor(w * h * 0.15);
+        for (let j = 0; j < count; j++) {
+          particles.push({
+            x: Math.random() * w * 2,
+            y: Math.random() * h * 2,
+            r: 0.4 + Math.random() * 0.8,
+            baseAlpha: 0.08 + Math.random() * 0.15,
+            sparkle: Math.random() < 0.06, // 6% chance to be a sparkler
+            phase: Math.random() * Math.PI * 2,
+            speed: 0.3 + Math.random() * 0.8
+          });
+        }
+        function drawParticles(t) {
+          ctx.clearRect(0, 0, w * 2, h * 2);
+          for (const p of particles) {
+            let alpha = p.baseAlpha;
+            if (p.sparkle) {
+              // Occasional bright flash
+              const flash = Math.sin(t * 0.001 * p.speed + p.phase);
+              alpha = flash > 0.85 ? 0.6 + flash * 0.4 : p.baseAlpha;
+            }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(180,180,180,${alpha})`;
+            ctx.fill();
+          }
+          requestAnimationFrame(drawParticles);
+        }
+        requestAnimationFrame(drawParticles);
+      });
     });
   }
 
