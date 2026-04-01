@@ -462,26 +462,36 @@
     {
       "whisper": "",
       "mode": "Education",
-      "coverImage": "",
+      "coverImage": "assets/projects/gemini_generated_image_jqlef1jqlef1jqle-1-1.png",
       "slug": "warm-wood",
-      "intro": "",
+      "intro": "The project began with the traditional process: grinding wormwood and herbal medicines into powder, separating fibers, air-drying into mud forms. Three experimental directions followed. Traditional incense mud lacked structural versatility. Mixing wormwood with wax created shapeable composites but the binder interfered with the burning experience. ",
       "date": "",
       "venue": "",
-      "desc": "",
+      "modes": [
+        "Education",
+        "Product",
+        "Research"
+      ],
+      "desc": "Wormwood has been used in Chinese medicine for centuries — to warm meridians, stop bleeding, resist bacteria. But younger generations associate it with their grandparents, not with themselves. A student set out to answer a deceptively simple question: how do you make a twenty-five-year-old want to burn wormwood? The answer turned out to be not about marketing, but about material innovation — reinventing the physical form of incense through paper-pulping techniques, and giving the result a shape borrowed from Chinese calligraphy.\n\nThe project began with the traditional process: grinding wormwood and herbal medicines into powder, separating fibers, air-drying into mud forms. Three experimental directions followed. Traditional incense mud lacked structural versatility. Mixing wormwood with wax created shapeable composites but the binder interfered with the burning experience. The breakthrough came from a wet-lay papermaking technique — pulping — which produced thin, formable sheets that burned cleanly and held their scent. The material research was scored systematically across manufacture time, shapeability, burning endurance, and scent intensity.\n\nWith the material resolved, the project turned to form. Using a molded pulp technique, wormwood fibers were combined with dried citrus peel powder and shaped into hollow vessels — the internal cavity optimizing airflow for a controlled burn. The most striking output is a series of Chinese calligraphy characters cast in wormwood pulp — the dragon character (龙) rendered as a sculptural, burnable object. The design brief was explicit: reflect younger generation needs, with customisable shape and form, bringing a sculptural presence to the home.",
       "visibility": "shown",
-      "gallery": [],
+      "gallery": [
+        "assets/projects/portfolio_regular.png",
+        "assets/projects/portfolio_regular-1.png",
+        "assets/projects/portfolio_regular-2.png",
+        "assets/projects/portfolio_regular-3.png"
+      ],
       "previewVideo": "",
       "previewImage": "",
       "awards": [],
       "subtitle": "Material innovation through student collaboration.",
-      "title": "Warm Wood",
+      "title": "Wormwood Aromatherapy",
       "tags": [
         "Student Project",
         "Material",
         "Innovation"
       ],
       "link": "",
-      "year": "",
+      "year": 2025,
       "wip": false
     },
     {
