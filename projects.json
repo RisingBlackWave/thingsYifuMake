@@ -622,19 +622,31 @@
     {
       "whisper": "",
       "mode": "Podcast",
-      "coverImage": "",
+      "coverImage": "assets/projects/6b8487ba-e76c-4679-8fd2-b01b630bf319.png",
       "slug": "abq-episode-1",
-      "intro": "",
+      "intro": "What does it actually take to put a shoe on an NBA star's foot? In this first episode, I sit down with Li Pengfei — LEEA — core designer at Li-Ning and one of the key minds behind the Way of Wade signature line. ",
       "date": "",
-      "venue": "",
+      "venue": "Lining Basketball",
+      "modes": [
+        "Podcast"
+      ],
+      "literature": [
+        {
+          "link": "https://www.bilibili.com/video/BV1eRknBsE3V/?spm_id_from=333.1387.homepage.video_card.click&vd_source=65dd5504c50e09cabfcead2ad305884a",
+          "publication": "Bilibili"
+        }
+      ],
       "desc": "ABQ is a bilingual conversation series about the inner life of creative work. I talk with designers, researchers, coaches, and makers — people who build things with their hands, their bodies, and their ideas — to trace the decisions, doubts, and pivots that never make it into the final product. Not a showcase. A dissection.\n\nWhat does it actually take to put a shoe on an NBA star's foot? In this first episode, I sit down with Li Pengfei — LEEA — core designer at Li-Ning and one of the key minds behind the Way of Wade signature line. We pull apart the black box of sneaker design: how AI is quietly reshaping the design process (tool or gimmick?), the commercial and creative tensions inside a flagship athlete collaboration, and how designers working inside one of the world's most overproducing industries are beginning to think about what comes next. A conversation about craft, compromise, and the long distance between a sketch and a sole.",
       "visibility": "shown",
-      "gallery": [],
+      "gallery": [
+        "assets/projects/screenshot-2026-04-01-at-10.46.29.png",
+        "assets/projects/7a9837b7-9b8b-4755-a701-df56bb2532c4.png"
+      ],
       "previewVideo": "",
       "previewImage": "",
       "awards": [],
-      "subtitle": "What does it actually take to put a shoe on an NBA star's foot? In this first episode, I sit down with Li Pengfei — LEEA — core designer at Li-Ning and one of the key minds behind the Way of Wade signature line. ",
-      "title": "ABQ — Episode 1",
+      "subtitle": "",
+      "title": "Albuquerque Podcast X LEEA",
       "tags": [
         "ABQ",
         "Podcast",
