@@ -197,7 +197,7 @@
       "slug": "repairbot-framework",
       "intro": "Existing tools fail to provide holistic support as interactive tutors and lack awareness of the embodied interactions of working with textiles. This paper presents a multi-phase study that investigates these challenges and explores the design space for a Human-Touch-Aware conversational agent (RepairBot). ",
       "date": "",
-      "venue": "UKRI Textile Circularity Center",
+      "venue": "CHI, UKRI Textile Circularity Center",
       "modes": [
         "Research"
       ],
@@ -233,7 +233,7 @@
       "slug": "tools-for-thought",
       "intro": "Current Tools for Thought (TfTs) treat affect as either friction that slows cognitive progress or a signal to optimise it. We identify two core barriers for Affective TfTs. ",
       "date": "",
-      "venue": "Tools for Thought Workshop",
+      "venue": "CHI Tools for Thought Workshop",
       "modes": [
         "Research"
       ],
@@ -292,7 +292,7 @@
       "slug": "provoice",
       "intro": " This paper evaluates the effectiveness of Human-in-the-Loop (HITL) Multi-Objective Bayesian Optimization (MOBO) in design by implementing ProVoice: a Virtual Reality (VR) driving simulator integrating MOBO to investigate the effects of IVCA design variants on perceived mental demand, predictability, and usefulness. ",
       "date": "",
-      "venue": "CHI 2026",
+      "venue": "CHI",
       "modes": [
         "Research"
       ],
