@@ -427,26 +427,36 @@
     {
       "whisper": "",
       "mode": "Education",
-      "coverImage": "",
+      "coverImage": "assets/projects/group-1000006309.png",
       "slug": "underwater-robot",
-      "intro": "",
+      "intro": "The shrimp-shaped soft body robot alongside live shrimp and pneumatic control electronics",
       "date": "",
-      "venue": "",
-      "desc": "",
+      "venue": "ACG",
+      "modes": [
+        "Education",
+        "Research"
+      ],
+      "desc": "The robot borrows its morphology from the shrimp: a bowed body and arched back that deforms through pneumatic inflation. Existing soft robots tend toward octopus or fish forms — the shrimp's curling locomotion had been largely ignored in the literature due to its complexity. The student saw this as an opportunity, not a warning. Silicone bodies were cast in layered moulds using techniques borrowed directly from jewelry: wax masters, controlled pouring, soft-glue seams. Three iterations — one, two, and three air chambers — were tested underwater to understand how chamber count affected inflation symmetry and swimming speed.\n\nThe first prototypes failed in predictable ways: incomplete inflation, unbalanced rollover, floating above water instead of swimming through it. Each failure required a mechanical solution — counterweights to correct buoyancy, three-way solenoid valves to separate inflation from deflation, dual pumps for finer pressure control. The equipment evolved alongside the robot body, each update documented as a numbered iteration. What emerged was not just a swimming robot, but a detailed record of how a maker from an entirely different discipline navigates engineering problems through craft intuition.\n",
       "visibility": "shown",
-      "gallery": [],
+      "gallery": [
+        "assets/projects/group-1000006308.png",
+        "assets/projects/frame-1.png",
+        "assets/projects/frame-2.png",
+        "assets/projects/frame-3.png",
+        "assets/projects/frame-4.png"
+      ],
       "previewVideo": "",
       "previewImage": "",
       "awards": [],
-      "subtitle": "A jewelry designer builds a robot that swims.",
-      "title": "Underwater Robot",
+      "subtitle": "",
+      "title": "Underwater Soft Robotic Companion",
       "tags": [
         "Student Project",
         "Robotics",
         "Cross-discipline"
       ],
       "link": "",
-      "year": "",
+      "year": 2023,
       "wip": false
     },
     {
