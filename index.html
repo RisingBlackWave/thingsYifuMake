@@ -804,8 +804,13 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   /* List view mobile — direct click to project, no expand */
   .list-inner{padding:20px 20px 100px;max-width:100%}
   .list-row{grid-template-columns:1fr 50px;gap:8px;padding:14px 0;font-size:20px}
-  .list-row .list-expand{display:none!important}
   .list-venue,.list-mode{display:none}
+  /* Mobile expand: stack vertically, single image, smaller text */
+  .list-expand-inner{grid-template-columns:1fr;gap:12px}
+  .list-gallery{max-width:100%}
+  .list-gallery img:nth-child(n+2){display:none}
+  .list-desc{font-size:14px;-webkit-line-clamp:4}
+  .list-enter{font-size:13px}
   .list-date{font-size:13px;color:#999}
   .list-title{font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .list-year{font-size:18px}
@@ -2056,11 +2061,6 @@ function buildListView() {
 
     // Toggle expand on row click
     row.addEventListener('click', (e) => {
-      // Mobile: go directly to project page (no expand)
-      if (window.innerWidth <= 768) {
-        openProject(proj);
-        return;
-      }
       if (e.target.classList.contains('list-enter')) {
         openProject(proj);
         return;
