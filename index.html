@@ -1309,6 +1309,22 @@ fetch('projects.json')
 
     setTimeout(() => { rebuildLayout(); animLoop(); }, 200);
     buildListView();
+
+    // Preload all preview + cover images so hover/click is instant
+    PROJECTS.forEach(p => {
+      [p.previewImage, p.coverImage].forEach(src => {
+        if (src) { const i = new Image(); i.src = src; }
+      });
+    });
+    // Lazy-preload gallery images after 2s (lower priority)
+    setTimeout(() => {
+      PROJECTS.forEach(p => {
+        if (p.gallery) p.gallery.forEach(item => {
+          const src = typeof item === 'string' ? item : (item && (item.src || item.gallery));
+          if (src) { const i = new Image(); i.src = src; }
+        });
+      });
+    }, 2000);
   })
   .catch(err => {
     console.error('Failed to load projects.json:', err);
