@@ -1310,18 +1310,18 @@ fetch('projects.json')
     setTimeout(() => { rebuildLayout(); animLoop(); }, 200);
     buildListView();
 
-    // Preload all preview + cover images so hover/click is instant
+    // Preload thumbnails for instant list view (tiny files ~30KB each)
     PROJECTS.forEach(p => {
       [p.previewImage, p.coverImage].forEach(src => {
-        if (src) { const i = new Image(); i.src = src; }
+        if (src) { const i = new Image(); i.src = toThumb(src); }
       });
     });
-    // Lazy-preload gallery images after 2s (lower priority)
+    // Lazy-preload gallery thumbnails after 2s
     setTimeout(() => {
       PROJECTS.forEach(p => {
         if (p.gallery) p.gallery.forEach(item => {
           const src = typeof item === 'string' ? item : (item && (item.src || item.gallery));
-          if (src) { const i = new Image(); i.src = src; }
+          if (src) { const i = new Image(); i.src = toThumb(src); }
         });
       });
     }, 2000);
@@ -1981,6 +1981,15 @@ document.querySelectorAll('.filter').forEach(f => {
 // ═══════════════════════════════════════════════════════════
 let listFilter = 'all';
 
+// Convert image path to thumbnail: assets/projects/foo.png → assets/projects/thumbs/foo.jpg
+function toThumb(src) {
+  if (!src) return src;
+  const parts = src.split('/');
+  const fname = parts.pop();
+  const base = fname.replace(/\.[^.]+$/, '');
+  return parts.join('/') + '/thumbs/' + base + '.jpg';
+}
+
 function buildListView() {
   // Build filter bar
   const filterBar = document.getElementById('list-filters');
@@ -2039,7 +2048,7 @@ function buildListView() {
             <div class="list-enter" data-idx="${proj._id}">Explore</div>
           </div>
           ${projImages.length ? `<div class="list-gallery">${projImages.slice(0,2).map((src, gi) =>
-            `<img src="${src}" loading="lazy" onload="this.classList.add('loaded')" data-gallery-idx="${gi}">`
+            `<img src="${toThumb(src)}" loading="lazy" onload="this.classList.add('loaded')" data-gallery-idx="${gi}">`
           ).join('')}</div>` : '<div></div>'}
         </div></div>
       </div>
