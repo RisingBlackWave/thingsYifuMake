@@ -7,6 +7,40 @@
 <title>thingsYifuMake</title>
 <meta name="description" content="Things Yifu makes — designed, researched, built, taught, talked. PhD researcher, designer, maker, London.">
 <link rel="canonical" href="https://thingsyifumake.uk">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Yifu Liu",
+  "url": "https://thingsyifumake.uk",
+  "jobTitle": "PhD Researcher, Designer, Maker",
+  "affiliation": {
+    "@type": "Organization",
+    "name": "UCL Interaction Centre",
+    "url": "https://uclic.ucl.ac.uk"
+  },
+  "alumniOf": [
+    {
+      "@type": "CollegeOrUniversity",
+      "name": "University College London"
+    },
+    {
+      "@type": "CollegeOrUniversity",
+      "name": "Royal College of Art"
+    },
+    {
+      "@type": "CollegeOrUniversity",
+      "name": "Imperial College London"
+    }
+  ],
+  "knowsAbout": ["Human-Computer Interaction", "Embodied Interaction", "AI for Craft", "Product Design", "Robotics", "Design Research"],
+  "sameAs": [
+    "https://uk.linkedin.com/in/yifu-liu",
+    "https://scholar.google.com/citations?user=YOUR_ID"
+  ],
+  "description": "PhD researcher, designer, and maker investigating how artificial intelligence can support embodied skill, material engagement, and creative learning. Based in London, final-year PhD at UCL Interaction Centre."
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -308,6 +342,27 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 }
 .list-intro-second{margin-top:16px}
 
+/* Rotating research question — typing effect */
+.list-question-row{
+  margin-top:24px;
+  min-height:36px;
+  display:flex;align-items:center
+}
+.list-question{
+  font-family:'Times New Roman',Georgia,serif;
+  font-size:24px;line-height:1.55;
+  color:#999;
+  font-style:italic;
+  white-space:nowrap;
+  overflow:hidden;
+  border-right:2px solid #999;
+  animation:blink-caret .75s step-end infinite
+}
+@keyframes blink-caret{
+  from,to{border-color:#999}
+  50%{border-color:transparent}
+}
+
 /* Filters — Arial, same size as body */
 .list-filters{
   display:flex;gap:32px;margin-bottom:0;
@@ -438,6 +493,24 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   text-decoration:none
 }
 .list-enter:hover{text-decoration:underline}
+
+/* Award tags in list expanded rows */
+.list-awards{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.list-award{
+  position:relative;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 12px;border-radius:20px;
+  color:rgba(0,0,0,.7);
+  background:rgba(0,0,0,.04);
+  border:1px solid rgba(0,0,0,.1);
+  overflow:hidden
+}
+.list-award span{position:relative;z-index:2}
+.list-award canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  z-index:1;pointer-events:none
+}
 
 /* ── PROJECT PAGE ── */
 /* ── PROJECT PAGE (Formafantasma-inspired) ── */
@@ -760,6 +833,7 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
 @media (min-width:1600px) {
   .list-inner{max-width:78%}
   .list-intro-para{font-size:28px}
+  .list-question{font-size:28px}
   .list-row{font-size:24px}
   .list-title,.list-venue,.list-year{font-size:24px}
   .list-filter{font-size:20px}
@@ -817,6 +891,7 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   .list-filters{gap:16px;justify-content:flex-start;flex-wrap:wrap}
   .list-filter{font-size:16px}
   .list-intro-para{font-size:18px;line-height:1.5}
+  .list-question{font-size:18px;line-height:1.5}
   .list-intro-second{display:none}
   .list-intro-wrap{max-width:100%;padding:0;margin:0 0 24px}
 
@@ -860,6 +935,8 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   .list-row.wip-row:hover,.list-row.wip-row:hover .list-title,.list-row.wip-row:hover .list-venue,.list-row.wip-row:hover .list-mode,.list-row.wip-row:hover .list-year{color:#6ea8fe}
   .list-desc{color:#aaa}
   .list-explore{color:#6ea8fe}
+  .list-question{color:#666;border-right-color:#666}
+  .list-award{background:rgba(255,255,255,.08);color:#ccc;border-color:rgba(255,255,255,.15)}
   .award-tag{background:rgba(255,255,255,.1);color:#ede9e2}
   .list-filter-line{border-color:rgba(255,255,255,.15)}
   /* Project page dark mode */
@@ -940,6 +1017,9 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
       </div>
       <div class="list-intro-para list-intro-second">
         The work embraces a broad spectrum of typologies and methods, from product design through embodied interaction research, robotic prototyping, design pedagogy, and cultural commentary. Across all outputs, the portfolio is characterised by a coherent interest in the body's intelligence and meticulously researched outcomes.
+      </div>
+      <div class="list-question-row">
+        <div class="list-question" id="list-question"></div>
       </div>
     </div>
     <div class="list-filters" id="list-filters"></div>
@@ -2050,6 +2130,10 @@ function buildListView() {
         <div class="list-expand-wrap"><div class="list-expand-inner">
           <div class="list-expand-text">
             ${proj.desc ? `<div class="list-desc">${proj.desc}</div>` : ''}
+            ${proj.awards && proj.awards.length ? `<div class="list-awards">${proj.awards.map(a => {
+              const label = typeof a === 'string' ? a : a.name || a.label || '';
+              return `<div class="list-award"><span>${label}</span></div>`;
+            }).join('')}</div>` : ''}
             <div class="list-enter" data-idx="${proj._id}">Explore</div>
           </div>
           ${projImages.length ? `<div class="list-gallery">${projImages.slice(0,2).map((src, gi) =>
@@ -2073,7 +2157,51 @@ function buildListView() {
       }
       const wasExpanded = row.classList.contains('expanded');
       container.querySelectorAll('.list-row.expanded').forEach(r => r.classList.remove('expanded'));
-      if (!wasExpanded) row.classList.add('expanded');
+      if (!wasExpanded) {
+        row.classList.add('expanded');
+        // Init pearlescent canvas on award tags
+        row.querySelectorAll('.list-award').forEach(tag => {
+          if (tag.querySelector('canvas')) return;
+          requestAnimationFrame(() => {
+            const w = tag.offsetWidth, h = tag.offsetHeight;
+            if (!w || !h) return;
+            const cvs = document.createElement('canvas');
+            cvs.width = w * 2; cvs.height = h * 2;
+            cvs.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none';
+            tag.appendChild(cvs);
+            const ctx = cvs.getContext('2d');
+            const particles = [];
+            const count = Math.floor(w * h * 0.15);
+            for (let j = 0; j < count; j++) {
+              particles.push({
+                x: Math.random() * w * 2, y: Math.random() * h * 2,
+                r: 0.3 + Math.random() * 1.6 + (Math.random() < 0.1 ? Math.random() * 1.5 : 0),
+                baseAlpha: 0.06 + Math.random() * 0.16,
+                sparkle: Math.random() < 0.06,
+                phase: Math.random() * Math.PI * 2,
+                speed: 0.3 + Math.random() * 0.8
+              });
+            }
+            function drawP(t) {
+              ctx.clearRect(0, 0, w * 2, h * 2);
+              for (const p of particles) {
+                let alpha = p.baseAlpha;
+                if (p.sparkle) {
+                  const flash = Math.sin(t * 0.001 * p.speed + p.phase);
+                  alpha = flash > 0.85 ? 0.6 + flash * 0.4 : p.baseAlpha;
+                }
+                const drawR = p.sparkle && alpha > 0.3 ? p.r * (1 + alpha * 0.6) : p.r;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, drawR, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(180,180,180,${alpha})`;
+                ctx.fill();
+              }
+              requestAnimationFrame(drawP);
+            }
+            requestAnimationFrame(drawP);
+          });
+        });
+      }
     });
 
     container.appendChild(row);
@@ -2190,6 +2318,46 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') lbNext();
 });
 
+// ═══════════════════════════════════════════════════════════
+// ROTATING RESEARCH QUESTIONS — typing effect
+// ═══════════════════════════════════════════════════════════
+(function() {
+  const questions = [
+    'How can AI support embodied skill and material engagement?',
+    'What happens when a machine learns to be present, not just intelligent?',
+    'Can conversation repair what instruction cannot?',
+    'What does it mean to design with the body\'s intelligence?'
+  ];
+  const el = document.getElementById('list-question');
+  if (!el) return;
+  let qIdx = 0, charIdx = 0, deleting = false;
+  const typeSpeed = 45, deleteSpeed = 25, pauseAfterType = 2200, pauseAfterDelete = 400;
+
+  function tick() {
+    const q = questions[qIdx];
+    if (!deleting) {
+      charIdx++;
+      el.textContent = q.slice(0, charIdx);
+      if (charIdx >= q.length) {
+        deleting = true;
+        setTimeout(tick, pauseAfterType);
+      } else {
+        setTimeout(tick, typeSpeed + Math.random() * 30);
+      }
+    } else {
+      charIdx--;
+      el.textContent = q.slice(0, charIdx);
+      if (charIdx <= 0) {
+        deleting = false;
+        qIdx = (qIdx + 1) % questions.length;
+        setTimeout(tick, pauseAfterDelete);
+      } else {
+        setTimeout(tick, deleteSpeed);
+      }
+    }
+  }
+  setTimeout(tick, 800);
+})();
 
 </script>
 </body>
