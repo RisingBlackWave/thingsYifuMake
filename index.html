@@ -663,6 +663,75 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 /* Legacy compat — hidden */
 .pp-mode,.pp-year,.pp-visual,.pp-rule{display:none}
 
+/* ── BLOCK-BASED LAYOUT ── */
+.pp-block{margin-bottom:40px}
+.pp-block-text{
+  font-family:Times,'Times New Roman',serif;
+  font-size:clamp(20px,2.4vw,28px);line-height:1.5;
+  font-weight:400;color:#000;
+  max-width:800px;margin-left:auto;margin-right:auto
+}
+.pp-block-text.style-intro{
+  font-size:clamp(22px,2.8vw,32px);
+  font-weight:400
+}
+.pp-block-text.style-quote{
+  font-style:italic;
+  border-left:2px solid #999;
+  padding-left:24px;
+  color:#444
+}
+.pp-block-text.style-body{
+  font-size:clamp(16px,1.6vw,18px);
+  line-height:1.7
+}
+.pp-block-text p{margin-bottom:1em}
+.pp-block-text p:last-child{margin-bottom:0}
+
+.pp-block-image{margin:0}
+.pp-block-image img{
+  width:100%;display:block;opacity:0;
+  transition:opacity .5s ease;cursor:pointer
+}
+.pp-block-image img.loaded{opacity:1}
+.pp-block-image figcaption{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:11px;color:#888;letter-spacing:.03em;
+  margin-top:8px;line-height:1.4
+}
+.pp-block-image.size-full{max-width:100%}
+.pp-block-image.size-wide{max-width:1100px;margin-left:auto;margin-right:auto}
+.pp-block-image.size-half{max-width:50%;margin-left:auto;margin-right:auto}
+.pp-block-image.size-third{max-width:33%;margin-left:auto;margin-right:auto}
+
+.pp-block-pair{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px
+}
+.pp-block-gallery{
+  display:grid;gap:12px
+}
+.pp-block-gallery.cols-2{grid-template-columns:repeat(2,1fr)}
+.pp-block-gallery.cols-3{grid-template-columns:repeat(3,1fr)}
+.pp-block-gallery.cols-4{grid-template-columns:repeat(4,1fr)}
+
+.pp-block-video video{width:100%;display:block}
+.pp-block-video.size-wide{max-width:1100px;margin-left:auto;margin-right:auto}
+
+.pp-block-spacer.size-small{height:24px}
+.pp-block-spacer.size-medium{height:60px}
+.pp-block-spacer.size-large{height:120px}
+
+@media (max-width:768px){
+  .pp-block-pair,.pp-block-gallery.cols-2,.pp-block-gallery.cols-3,.pp-block-gallery.cols-4{
+    grid-template-columns:1fr
+  }
+  .pp-block-image.size-half,.pp-block-image.size-third{max-width:100%}
+}
+@media (prefers-color-scheme:dark){
+  .pp-block-text{color:#e0e0e0}
+  .pp-block-text.style-quote{color:#aaa;border-left-color:#555}
+}
+
 /* Gallery fallback */
 .pp-gallery{
   display:flex;flex-direction:column;gap:16px;margin-bottom:48px
@@ -1831,6 +1900,122 @@ function animLoop() {
 // ═══════════════════════════════════════════════════════════
 const projectPage = document.getElementById('project-page');
 
+// ═══════════════════════════════════════════════════════════
+// BLOCK-BASED LAYOUT RENDERER
+// ═══════════════════════════════════════════════════════════
+function renderBlocks(proj, container, allImages) {
+  container.innerHTML = '';
+  if (!proj.blocks || !proj.blocks.length) return false;
+
+  proj.blocks.forEach(block => {
+    const wrap = document.createElement('div');
+    wrap.className = 'pp-block';
+
+    if (block.type === 'text') {
+      const div = document.createElement('div');
+      div.className = 'pp-block-text style-' + (block.style || 'body');
+      // Convert line breaks to paragraphs
+      const paras = (block.content || '').split(/\n\n+/).filter(Boolean);
+      div.innerHTML = paras.map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+      wrap.appendChild(div);
+    }
+    else if (block.type === 'image') {
+      const fig = document.createElement('figure');
+      fig.className = 'pp-block-image size-' + (block.size || 'full');
+      const img = document.createElement('img');
+      img.src = block.src;
+      img.alt = block.caption || proj.title;
+      img.loading = 'lazy';
+      img.onload = () => img.classList.add('loaded');
+      const idx = allImages.length;
+      allImages.push(block.src);
+      img.addEventListener('click', () => openLightbox(allImages, idx));
+      fig.appendChild(img);
+      if (block.caption) {
+        const cap = document.createElement('figcaption');
+        cap.textContent = block.caption;
+        fig.appendChild(cap);
+      }
+      wrap.appendChild(fig);
+    }
+    else if (block.type === 'image-pair') {
+      const grid = document.createElement('div');
+      grid.className = 'pp-block-pair';
+      ['left', 'right'].forEach(side => {
+        const item = block[side];
+        if (!item || !item.src) return;
+        const fig = document.createElement('figure');
+        fig.className = 'pp-block-image';
+        const img = document.createElement('img');
+        img.src = item.src;
+        img.alt = item.caption || proj.title;
+        img.loading = 'lazy';
+        img.onload = () => img.classList.add('loaded');
+        const idx = allImages.length;
+        allImages.push(item.src);
+        img.addEventListener('click', () => openLightbox(allImages, idx));
+        fig.appendChild(img);
+        if (item.caption) {
+          const cap = document.createElement('figcaption');
+          cap.textContent = item.caption;
+          fig.appendChild(cap);
+        }
+        grid.appendChild(fig);
+      });
+      wrap.appendChild(grid);
+    }
+    else if (block.type === 'gallery') {
+      const grid = document.createElement('div');
+      grid.className = 'pp-block-gallery cols-' + (block.columns || 3);
+      (block.items || []).forEach(item => {
+        const src = typeof item === 'string' ? item : item.src;
+        const caption = typeof item === 'object' ? (item.caption || '') : '';
+        if (!src) return;
+        const fig = document.createElement('figure');
+        fig.className = 'pp-block-image';
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = caption || proj.title;
+        img.loading = 'lazy';
+        img.onload = () => img.classList.add('loaded');
+        const idx = allImages.length;
+        allImages.push(src);
+        img.addEventListener('click', () => openLightbox(allImages, idx));
+        fig.appendChild(img);
+        if (caption) {
+          const cap = document.createElement('figcaption');
+          cap.textContent = caption;
+          fig.appendChild(cap);
+        }
+        grid.appendChild(fig);
+      });
+      wrap.appendChild(grid);
+    }
+    else if (block.type === 'video') {
+      wrap.className += ' pp-block-video size-' + (block.size || 'full');
+      const vid = document.createElement('video');
+      vid.src = block.src;
+      vid.muted = true; vid.loop = true; vid.playsInline = true; vid.autoplay = true;
+      vid.setAttribute('preload', 'metadata');
+      vid.onloadeddata = () => vid.play();
+      wrap.appendChild(vid);
+    }
+    else if (block.type === 'tags') {
+      const color = COLORS[proj.mode];
+      wrap.innerHTML = (block.tags || proj.tags || [])
+        .map(t => `<div class="pp-tag" style="border-color:${color}25;color:${color}80">${t}</div>`)
+        .join('');
+      wrap.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
+    }
+    else if (block.type === 'spacer') {
+      wrap.className += ' pp-block-spacer size-' + (block.size || 'medium');
+    }
+
+    container.appendChild(wrap);
+  });
+  return true;
+}
+
 function openProject(proj) {
   const color = COLORS[proj.mode];
 
@@ -1919,6 +2104,22 @@ function openProject(proj) {
   const imagesEl = document.getElementById('pp-images');
   imagesEl.innerHTML = '';
   const allImages = [];
+
+  // BLOCK-BASED LAYOUT: if proj.blocks exists, use it and skip auto-build
+  if (proj.blocks && proj.blocks.length) {
+    // Hide auto-built sections that blocks replace
+    document.getElementById('pp-desc').style.display = 'none';
+    document.getElementById('pp-tags').style.display = 'none';
+    renderBlocks(proj, imagesEl, allImages);
+  } else {
+    // Show default sections (in case they were hidden)
+    document.getElementById('pp-desc').style.display = '';
+    document.getElementById('pp-tags').style.display = '';
+  }
+
+  if (proj.blocks && proj.blocks.length) {
+    // Skip the rest of the auto-image build
+  } else {
   if (proj.coverImage || proj.previewImage) allImages.push(proj.coverImage || proj.previewImage);
 
   // Add gallery images
@@ -1988,6 +2189,7 @@ function openProject(proj) {
     }
     imagesEl.appendChild(row);
   }
+  } // end else (auto-image build)
 
   // Contributors section
   const contribWrap = document.getElementById('pp-contributors');

@@ -74,6 +74,135 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .modal{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:28px;width:420px;max-width:90vw}
 .modal h2{font-size:16px;margin-bottom:20px}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+
+/* ── BLOCK EDITOR ── */
+.blocks-wrap{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.block-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:14px;
+  position:relative;
+  transition:border-color .15s, transform .15s
+}
+.block-card.drag-over{border-color:var(--accent);transform:scale(1.01)}
+.block-card.dragging{opacity:.4}
+.block-head{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:10px;
+  cursor:grab;
+  user-select:none
+}
+.block-head:active{cursor:grabbing}
+.block-icon{
+  width:28px;height:28px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+  background:rgba(122,184,232,.1);
+  color:var(--accent);
+  flex-shrink:0
+}
+.block-icon.t-text{background:rgba(232,193,122,.12);color:#E8C17A}
+.block-icon.t-image{background:rgba(122,184,232,.12);color:#7AB8E8}
+.block-icon.t-image-pair{background:rgba(122,232,193,.12);color:#7AE8C1}
+.block-icon.t-gallery{background:rgba(193,122,232,.12);color:#C17AE8}
+.block-icon.t-video{background:rgba(232,122,122,.12);color:#E87A7A}
+.block-icon.t-tags{background:rgba(255,255,255,.08);color:var(--text)}
+.block-icon.t-spacer{background:rgba(255,255,255,.04);color:var(--dim)}
+.block-label{
+  font-size:11px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--dim);flex:1
+}
+.block-controls{display:flex;gap:4px}
+.block-btn{
+  width:24px;height:24px;border-radius:3px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--dim);cursor:pointer;font-size:12px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s, color .15s
+}
+.block-btn:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.block-btn.del:hover{background:rgba(232,122,122,.15);color:#E87A7A;border-color:rgba(232,122,122,.3)}
+.block-body{display:flex;flex-direction:column;gap:8px}
+.block-body textarea{
+  width:100%;padding:8px 10px;
+  background:rgba(0,0,0,.25);
+  border:1px solid var(--border);
+  color:var(--text);font-family:inherit;font-size:13px;
+  border-radius:4px;resize:vertical;min-height:60px;line-height:1.6
+}
+.block-body input[type=text]{
+  width:100%;padding:7px 10px;
+  background:rgba(0,0,0,.25);
+  border:1px solid var(--border);
+  color:var(--text);font-family:inherit;font-size:12px;
+  border-radius:4px
+}
+.block-body select{
+  padding:6px 10px;
+  background:rgba(0,0,0,.25);
+  border:1px solid var(--border);
+  color:var(--text);font-family:inherit;font-size:11px;
+  border-radius:4px
+}
+.block-fields-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.block-fields-row label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.block-img-pick{display:flex;gap:8px;align-items:center}
+.block-img-pick img{
+  width:60px;height:40px;object-fit:cover;
+  border-radius:3px;background:#000;
+  border:1px solid var(--border)
+}
+.block-img-pick input{flex:1}
+.block-pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.block-pair-grid .pair-side{
+  background:rgba(0,0,0,.15);
+  padding:8px;border-radius:4px;
+  display:flex;flex-direction:column;gap:6px
+}
+.block-pair-grid .pair-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.block-gallery-list{display:flex;flex-direction:column;gap:6px}
+.block-gallery-row{
+  display:flex;gap:6px;align-items:center;
+  background:rgba(0,0,0,.15);
+  padding:6px;border-radius:3px
+}
+.block-gallery-row img{width:40px;height:28px;object-fit:cover;border-radius:2px;background:#000}
+.block-gallery-row input{flex:1;font-size:11px}
+.block-gallery-row .gal-rm{width:22px;height:22px;cursor:pointer;color:#E87A7A;background:transparent;border:1px solid rgba(232,122,122,.2);border-radius:3px}
+
+.add-block-bar{
+  display:flex;gap:6px;flex-wrap:wrap;
+  padding:12px;
+  background:rgba(255,255,255,.02);
+  border:1px dashed var(--border);
+  border-radius:6px;
+  margin-bottom:16px
+}
+.add-block-btn{
+  padding:8px 12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  color:var(--text);cursor:pointer;
+  font-size:11px;border-radius:4px;
+  display:flex;align-items:center;gap:6px;
+  transition:background .15s, border-color .15s
+}
+.add-block-btn:hover{background:rgba(122,184,232,.1);border-color:var(--accent)}
+.convert-btn{
+  padding:10px 16px;
+  background:rgba(122,232,193,.1);
+  border:1px solid rgba(122,232,193,.3);
+  color:#7AE8C1;cursor:pointer;
+  font-size:12px;border-radius:4px;
+  margin-bottom:12px
+}
+.convert-btn:hover{background:rgba(122,232,193,.18)}
+.blocks-empty{
+  padding:24px;text-align:center;
+  color:var(--dim);font-size:12px;line-height:1.7;
+  border:1px dashed var(--border);border-radius:6px;margin-bottom:12px
+}
 </style>
 </head>
 <body>
@@ -195,6 +324,8 @@ async function selectProject(idx){
     +'<div class="section-title">Intro & Description</div>'
     +'<div class="field"><label>Intro (short — shown in list view)</label><input id="f-intro" value="'+esc(p.intro||'')+'" placeholder="One-line summary, e.g. A robot that helps you learn clothes repair" oninput="markDirty()"></div>'
     +'<div class="field"><label>Description (full — shown on project page)</label><textarea id="f-desc" rows="8" placeholder="Full project description..." oninput="markDirty()">'+esc(p.desc||'')+'</textarea></div>'
+    +'<div class="section-title">Page Layout (Blocks)</div>'
+    +'<div id="blocks-section"></div>'
     +'<div class="section-title">Link</div>'
     +'<div class="field"><label>External Link</label><input id="f-link" value="'+esc(p.link||'')+'" placeholder="https://..." oninput="markDirty()"></div>'
     +'<div class="section-title">Awards</div>'
@@ -229,6 +360,8 @@ async function selectProject(idx){
     +'<div class="field"><label>Cover Image</label><input id="f-coverImage" value="'+esc(p.coverImage||'')+'" placeholder="auto from cover.jpg or set manually" oninput="markDirty()"></div>'
     +'<div class="field"><label>Preview Video</label><input id="f-previewVideo" value="'+esc(p.previewVideo||'')+'" placeholder="path to loop.mp4 or video URL" oninput="markDirty()"></div>'
     +'<div style="height:80px"></div>';
+  // Render the blocks editor section
+  setTimeout(function(){renderBlocksEditor(p)},0);
   if(images.length){
     var ci=images.find(function(i){return i.name.startsWith('cover')});
     var pi=images.find(function(i){return i.name.startsWith('preview')});
@@ -304,6 +437,240 @@ function deleteProject(){if(selectedIdx<0)return;var p=projects[selectedIdx];
   document.getElementById('editor-form').style.display='none';document.getElementById('empty-state').style.display='flex';document.getElementById('btn-bar').style.display='none'}
 
 window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue=''}});
+
+// ═══════════════════════════════════════════════════════════
+// BLOCK EDITOR
+// ═══════════════════════════════════════════════════════════
+const BLOCK_TYPES={
+  text:{icon:'¶',label:'Text',default:function(){return{type:'text',content:'',style:'body'}}},
+  image:{icon:'▢',label:'Image',default:function(){return{type:'image',src:'',caption:'',size:'full'}}},
+  'image-pair':{icon:'▢▢',label:'Image Pair',default:function(){return{type:'image-pair',left:{src:'',caption:''},right:{src:'',caption:''}}}},
+  gallery:{icon:'⊞',label:'Gallery',default:function(){return{type:'gallery',items:[],columns:3}}},
+  video:{icon:'▶',label:'Video',default:function(){return{type:'video',src:'',size:'full'}}},
+  tags:{icon:'#',label:'Tags',default:function(){return{type:'tags'}}},
+  spacer:{icon:'━',label:'Spacer',default:function(){return{type:'spacer',size:'medium'}}}
+};
+
+function renderBlocksEditor(p){
+  var section=document.getElementById('blocks-section');if(!section)return;
+  if(!p.blocks)p.blocks=[];
+  var html='';
+  // Convert button if no blocks yet
+  if(!p.blocks.length){
+    html+='<div class="blocks-empty">No layout blocks yet. The project page will use default rendering (description → cover → gallery → tags).<br>Click below to convert the existing content into editable blocks, or add blocks one at a time.</div>';
+    html+='<button class="convert-btn" onclick="convertToBlocks()">↻ Convert current content to blocks</button>';
+  }
+  // Block list
+  html+='<div class="blocks-wrap" id="blocks-wrap">';
+  p.blocks.forEach(function(b,i){html+=renderBlockCard(b,i)});
+  html+='</div>';
+  // Add block bar
+  html+='<div class="add-block-bar">';
+  html+='<span style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;align-self:center;margin-right:4px">+ Add</span>';
+  Object.keys(BLOCK_TYPES).forEach(function(t){
+    var bt=BLOCK_TYPES[t];
+    html+='<button class="add-block-btn" onclick="addBlock(\''+t+'\')"><span class="block-icon t-'+t+'" style="width:18px;height:18px;font-size:11px">'+bt.icon+'</span>'+bt.label+'</button>';
+  });
+  html+='</div>';
+  section.innerHTML=html;
+  attachDragHandlers();
+}
+
+function renderBlockCard(b,i){
+  var bt=BLOCK_TYPES[b.type]||{icon:'?',label:b.type};
+  var html='<div class="block-card" draggable="true" data-idx="'+i+'">';
+  html+='<div class="block-head">';
+  html+='<div class="block-icon t-'+b.type+'">'+bt.icon+'</div>';
+  html+='<div class="block-label">'+bt.label+'</div>';
+  html+='<div class="block-controls">';
+  html+='<button class="block-btn" onclick="moveBlock('+i+',-1)" title="Move up">↑</button>';
+  html+='<button class="block-btn" onclick="moveBlock('+i+',1)" title="Move down">↓</button>';
+  html+='<button class="block-btn del" onclick="deleteBlock('+i+')" title="Delete">✕</button>';
+  html+='</div></div>';
+  html+='<div class="block-body">';
+  // Body editor based on type
+  if(b.type==='text'){
+    html+='<textarea oninput="updateBlock('+i+',\'content\',this.value)" placeholder="Text content (use blank line for new paragraph)">'+esc(b.content||'')+'</textarea>';
+    html+='<div class="block-fields-row"><label>Style:</label>';
+    html+='<select onchange="updateBlock('+i+',\'style\',this.value)">';
+    ['body','intro','quote'].forEach(function(s){html+='<option value="'+s+'"'+(b.style===s?' selected':'')+'>'+s+'</option>'});
+    html+='</select></div>';
+  }
+  else if(b.type==='image'){
+    html+='<div class="block-img-pick">';
+    html+='<img src="'+esc(b.src||'')+'" onerror="this.style.opacity=.2">';
+    html+='<input type="text" value="'+esc(b.src||'')+'" placeholder="image path (e.g. assets/projects/slug/01.jpg)" oninput="updateBlock('+i+',\'src\',this.value);this.previousElementSibling.src=this.value">';
+    html+='</div>';
+    html+='<input type="text" value="'+esc(b.caption||'')+'" placeholder="caption (optional)" oninput="updateBlock('+i+',\'caption\',this.value)">';
+    html+='<div class="block-fields-row"><label>Size:</label>';
+    html+='<select onchange="updateBlock('+i+',\'size\',this.value)">';
+    ['full','wide','half','third'].forEach(function(s){html+='<option value="'+s+'"'+(b.size===s?' selected':'')+'>'+s+'</option>'});
+    html+='</select></div>';
+  }
+  else if(b.type==='image-pair'){
+    html+='<div class="block-pair-grid">';
+    ['left','right'].forEach(function(side){
+      var item=b[side]||{};
+      html+='<div class="pair-side"><div class="pair-label">'+side+'</div>';
+      html+='<input type="text" value="'+esc(item.src||'')+'" placeholder="path" oninput="updatePairSide('+i+',\''+side+'\',\'src\',this.value)">';
+      html+='<input type="text" value="'+esc(item.caption||'')+'" placeholder="caption" oninput="updatePairSide('+i+',\''+side+'\',\'caption\',this.value)">';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+  else if(b.type==='gallery'){
+    html+='<div class="block-gallery-list" id="gallery-list-'+i+'">';
+    (b.items||[]).forEach(function(it,gi){
+      var src=typeof it==='string'?it:(it.src||'');
+      html+='<div class="block-gallery-row"><img src="'+esc(src)+'" onerror="this.style.opacity=.2">';
+      html+='<input type="text" value="'+esc(src)+'" placeholder="image path" oninput="updateGalleryItem('+i+','+gi+',this.value);this.previousElementSibling.src=this.value">';
+      html+='<button class="gal-rm" onclick="removeGalleryItem('+i+','+gi+')">✕</button></div>';
+    });
+    html+='</div>';
+    html+='<button class="add-block-btn" onclick="addGalleryItem('+i+')" style="font-size:10px;padding:5px 10px">+ Add image</button>';
+    html+='<div class="block-fields-row"><label>Columns:</label>';
+    html+='<select onchange="updateBlock('+i+',\'columns\',parseInt(this.value))">';
+    [2,3,4].forEach(function(c){html+='<option value="'+c+'"'+(b.columns===c?' selected':'')+'>'+c+'</option>'});
+    html+='</select></div>';
+  }
+  else if(b.type==='video'){
+    html+='<input type="text" value="'+esc(b.src||'')+'" placeholder="video path (e.g. assets/projects/slug/loop.mp4)" oninput="updateBlock('+i+',\'src\',this.value)">';
+    html+='<div class="block-fields-row"><label>Size:</label>';
+    html+='<select onchange="updateBlock('+i+',\'size\',this.value)">';
+    ['full','wide'].forEach(function(s){html+='<option value="'+s+'"'+(b.size===s?' selected':'')+'>'+s+'</option>'});
+    html+='</select></div>';
+  }
+  else if(b.type==='tags'){
+    html+='<div style="font-size:11px;color:var(--dim);padding:6px 0">Renders the project tags from the Tags section above.</div>';
+  }
+  else if(b.type==='spacer'){
+    html+='<div class="block-fields-row"><label>Size:</label>';
+    html+='<select onchange="updateBlock('+i+',\'size\',this.value)">';
+    ['small','medium','large'].forEach(function(s){html+='<option value="'+s+'"'+(b.size===s?' selected':'')+'>'+s+'</option>'});
+    html+='</select></div>';
+  }
+  html+='</div></div>';
+  return html;
+}
+
+function addBlock(type){
+  if(selectedIdx<0)return;
+  var p=projects[selectedIdx];
+  if(!p.blocks)p.blocks=[];
+  p.blocks.push(BLOCK_TYPES[type].default());
+  markDirty();renderBlocksEditor(p);
+}
+
+function deleteBlock(i){
+  var p=projects[selectedIdx];
+  if(!confirm('Delete this '+p.blocks[i].type+' block?'))return;
+  p.blocks.splice(i,1);
+  markDirty();renderBlocksEditor(p);
+}
+
+function moveBlock(i,delta){
+  var p=projects[selectedIdx];
+  var ni=i+delta;
+  if(ni<0||ni>=p.blocks.length)return;
+  var tmp=p.blocks[i];p.blocks[i]=p.blocks[ni];p.blocks[ni]=tmp;
+  markDirty();renderBlocksEditor(p);
+}
+
+function updateBlock(i,key,val){
+  var p=projects[selectedIdx];
+  p.blocks[i][key]=val;markDirty();
+}
+
+function updatePairSide(i,side,key,val){
+  var p=projects[selectedIdx];
+  if(!p.blocks[i][side])p.blocks[i][side]={};
+  p.blocks[i][side][key]=val;markDirty();
+}
+
+function updateGalleryItem(i,gi,val){
+  var p=projects[selectedIdx];
+  if(!p.blocks[i].items)p.blocks[i].items=[];
+  // Store as string for simplicity
+  p.blocks[i].items[gi]=val;markDirty();
+}
+
+function addGalleryItem(i){
+  var p=projects[selectedIdx];
+  if(!p.blocks[i].items)p.blocks[i].items=[];
+  p.blocks[i].items.push('');
+  markDirty();renderBlocksEditor(p);
+}
+
+function removeGalleryItem(i,gi){
+  var p=projects[selectedIdx];
+  p.blocks[i].items.splice(gi,1);
+  markDirty();renderBlocksEditor(p);
+}
+
+function convertToBlocks(){
+  var p=projects[selectedIdx];
+  if(p.blocks&&p.blocks.length){if(!confirm('Replace existing blocks?'))return}
+  var blocks=[];
+  // 1. Cover/preview image first
+  if(p.coverImage||p.previewImage){
+    blocks.push({type:'image',src:p.coverImage||p.previewImage,caption:'',size:'full'});
+  }
+  // 2. Description as text
+  if(p.desc){
+    blocks.push({type:'text',content:p.desc,style:'body'});
+  }
+  // 3. Gallery items in pairs
+  if(p.gallery&&p.gallery.length){
+    var items=p.gallery.map(function(g){return typeof g==='string'?g:(g.src||g.gallery||'')}).filter(Boolean);
+    // Pair them up
+    for(var i=0;i<items.length;i+=2){
+      if(i+1<items.length){
+        blocks.push({type:'image-pair',left:{src:items[i],caption:''},right:{src:items[i+1],caption:''}});
+      }else{
+        blocks.push({type:'image',src:items[i],caption:'',size:'full'});
+      }
+    }
+  }
+  // 4. Tags last
+  if(p.tags&&p.tags.length){
+    blocks.push({type:'tags'});
+  }
+  p.blocks=blocks;
+  markDirty();renderBlocksEditor(p);
+}
+
+// Drag-and-drop reorder
+var dragSrcIdx=null;
+function attachDragHandlers(){
+  var cards=document.querySelectorAll('#blocks-wrap .block-card');
+  cards.forEach(function(card){
+    card.addEventListener('dragstart',function(e){
+      dragSrcIdx=parseInt(card.dataset.idx);
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+    });
+    card.addEventListener('dragend',function(){
+      card.classList.remove('dragging');
+      cards.forEach(function(c){c.classList.remove('drag-over')});
+    });
+    card.addEventListener('dragover',function(e){
+      e.preventDefault();
+      e.dataTransfer.dropEffect='move';
+      card.classList.add('drag-over');
+    });
+    card.addEventListener('dragleave',function(){card.classList.remove('drag-over')});
+    card.addEventListener('drop',function(e){
+      e.preventDefault();
+      var dst=parseInt(card.dataset.idx);
+      if(dragSrcIdx===null||dragSrcIdx===dst)return;
+      var p=projects[selectedIdx];
+      var moved=p.blocks.splice(dragSrcIdx,1)[0];
+      p.blocks.splice(dst,0,moved);
+      dragSrcIdx=null;
+      markDirty();renderBlocksEditor(p);
+    });
+  });
+}
 </script>
 </body>
 </html>
