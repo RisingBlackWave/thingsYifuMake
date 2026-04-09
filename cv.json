@@ -1,0 +1,176 @@
+{
+  "name": "Yifu Liu FRSA",
+  "location": "London | Right to work in UK",
+  "phone": "+44 7724 801586",
+  "email": "yifu.liu@network.rca.ac.uk",
+  "bio": "Started off with product design training, Yifu Liu FRSA developed a broader interest in developing the real-world applications of artificial intelligence and robotics. Currently, he is pursuing a Ph.D. Degree in Computer Science & Psychology at UCLIC, where he explores the role of chatbot and XR for sustainable behaviour adoption at UKRI Textile Circularity Centre. Meanwhile, his MSc Design Engineering graduation project was funded by InnovationRCA to develop the world-first basketball robot trainer. In his own time, he has been an acclaimed creative technologist whose practice challenges the boundaries of art, robotics, and expanded reality. His works have been exhibited at MOMA Shanghai and won widely-recognised awards such as the John L Paterson Scholarship, Innovate UK, and the Distributed Design Award.",
+  "languages": [
+    { "name": "English", "level": "Fluent" },
+    { "name": "Mandarin", "level": "Native speaker" }
+  ],
+  "education": [
+    {
+      "institution": "University College London Interaction Centre (UCLIC)",
+      "location": "London, United Kingdom",
+      "period": "Sept 2022 – Present",
+      "degree": "Ph.D. candidate in Human Computer Interaction",
+      "notes": ["In collaboration with UKRI Textile Circularity Centre, funded by UKRI"]
+    },
+    {
+      "institution": "Imperial College London",
+      "location": "London, United Kingdom",
+      "period": "Sept 2019 – Jun 2021",
+      "degree": "MSc Innovation Design Engineering",
+      "notes": ["Thesis: Contact-robotic sports training — Distinction"]
+    },
+    {
+      "institution": "Royal College of Art",
+      "location": "London, United Kingdom",
+      "period": "Sept 2019 – Jun 2021",
+      "degree": "MA Innovation Design Engineering",
+      "notes": ["Dissertation: Expanded reality and ecological well-being — Distinction"]
+    },
+    {
+      "institution": "University of Edinburgh",
+      "location": "Edinburgh, United Kingdom",
+      "period": "Sept 2015 – Jun 2019",
+      "degree": "BA Product Design — GPA 3.9/4, Distinction",
+      "notes": ["Recipient of John L Paterson Scholarship by University of Edinburgh (Best of class 2019)"]
+    },
+    {
+      "institution": "High School Affiliated to Renmin University of China",
+      "location": "Beijing, China",
+      "period": "Sept 2012 – Jun 2015",
+      "degree": "A-Levels (Design & Art, Physics, Economics, Math) — Distinction",
+      "notes": ["Ranked the best high school in China (Reports from University of Maryland)"]
+    }
+  ],
+  "experience": [
+    {
+      "organisation": "UCL",
+      "location": "London, United Kingdom",
+      "period": "Jul 2021 – Present",
+      "role": "PGTA & Part-time Lecturer",
+      "notes": [
+        "Affective Interaction module (MSc HCI)",
+        "Future Interface module (MSc HCI — Lecture on Unity-based game development)",
+        "Design Disability Innovation module (MSc DDI — Lecture on Research methods and Making)"
+      ]
+    },
+    {
+      "organisation": "Tact Monster Ltd",
+      "location": "London, United Kingdom",
+      "period": "Jul 2021 – Present",
+      "role": "Co-Founder & CEO",
+      "notes": [
+        "Delivers the first contact-driven robot trainer to sports players (patent-pending)",
+        "Currently incubated at the Dyson building, InnovationRCA"
+      ]
+    },
+    {
+      "organisation": "Meal Engine",
+      "location": "London, United Kingdom",
+      "period": "Jun 2021 – Present",
+      "role": "Co-Founder & Designer",
+      "notes": [
+        "A Graphical Language Model for Human–Computer Recipe Co-Creation",
+        "Publication under review by ACM C&C Conference"
+      ]
+    },
+    {
+      "organisation": "New Oriental Education",
+      "location": "Shanghai, China",
+      "period": "Oct 2021 – Present",
+      "role": "Senior Lecturer (Remote)",
+      "notes": ["Mentoring design students (n>25) at Bachelor and Master level"]
+    },
+    {
+      "organisation": "20.21 Fashion",
+      "location": "New York, United States",
+      "period": "Jul 2020 – Jun 2021",
+      "role": "Freelancer – Design Engineer",
+      "notes": ["Eyewear design in production and presented by Vogue"]
+    },
+    {
+      "organisation": "Benwu Studio",
+      "location": "Shanghai, China",
+      "period": "Jul 2016 – Jun 2018",
+      "role": "Design Engineer (part-time)",
+      "notes": ["Luxury goods design for Vacheron Constantin, Hermès & BMW Mini"]
+    },
+    {
+      "organisation": "NHS",
+      "location": "Edinburgh, United Kingdom",
+      "period": "Jan 2018 – May 2018",
+      "role": "Design Researcher (University of Edinburgh collaboration)",
+      "notes": ["Research on the relationship between work routine and high obesity rate of NHS staff"]
+    },
+    {
+      "organisation": "CCII 798 Design Museum",
+      "location": "Beijing, China",
+      "period": "May 2015 – Jun 2015",
+      "role": "Curator Intern",
+      "notes": ["Graphic design and project management"]
+    }
+  ],
+  "awards": [
+    { "name": "Royal Society of Arts", "date": "Oct 2021 – Present", "role": "Fellow" },
+    { "name": "InnovationRCA Start-up Programme", "date": "Jul 2021", "role": "Winner, Tact Monster Ltd", "notes": ["Incubation and funding support"] },
+    { "name": "InnovationRCA Patent Support Programme", "date": "May 2021", "role": "Winner, Tact Monster Ltd", "notes": ["Patent application support"] },
+    { "name": "Distributed Design Award", "date": "May 2021", "role": "Finalists (12/2609), Meal Engine", "notes": ["The most innovative, supportive, and sustainable design projects across Europe"] },
+    { "name": "John L Paterson Scholarship, University of Edinburgh", "date": "Jun 2019", "role": "Recipient", "notes": ["The best graduate student from BA Product Design 2019"] },
+    { "name": "The Index Project", "date": "May 2021", "role": "Nominees, Meal Engine" },
+    { "name": "Imperial College Robotics Society", "date": "May 2020 – Jun 2021", "role": "Fellow" },
+    { "name": "Grand Challenge CERN X Logitech X Royal College of Art", "date": "Jan 2020", "role": "Finalist" },
+    { "name": "Belmond Design Award", "date": "Jul 2019", "role": "Finalists", "notes": ["Best graduate projects at New Designers 2019"] },
+    { "name": "Innovate UK X British Embassy in China", "date": "Feb 2015", "role": "Finalists (5/1500)", "notes": ["Innovative electrical & mechanical engineering projects at high school level", "Auto-lacing basketball shoes that respond to various game scenarios"] }
+  ],
+  "exhibitions": [
+    { "name": "British Council — Hybrid Growth", "location": "Wuhan, China", "date": "Jan 2022 – Mar 2022", "note": "Exhibitor, Wuhan Red Brick Wall Campus" },
+    { "name": "RCA 2021 Online Graduate Show", "location": "Remote", "date": "Jun 2021 – Present", "note": "Graduate show" },
+    { "name": "Work in Progress", "location": "Remote", "date": "Dec 2020 – Jun 2021" },
+    { "name": "Oppo X RCA", "location": "London, United Kingdom", "date": "Sep 2021", "note": "Exhibitor, Brompton Design District, London" },
+    { "name": "Arthill Design Show", "location": "London, United Kingdom", "date": "Sep 2020", "note": "Exhibitor, Arthill Gallery, London" },
+    { "name": "MOMA Design Show", "location": "Shanghai, China", "date": "Dec 2020", "note": "Selected exhibitor at MOMA Shanghai; works sold to private collectors" },
+    { "name": "New Designers", "location": "London, United Kingdom", "date": "Jul 2019", "note": "Annual design graduate showcase" },
+    { "name": "ECA Degree Show 2019", "location": "Edinburgh, United Kingdom", "date": "Jun 2019", "note": "Selected exhibitor, interviewed by ECA" }
+  ],
+  "publications": [
+    {
+      "title": "Developing Clothing Repair Skills: a Conversational Agent Framework.",
+      "venue": "Manuscript in preparation for CHI 2026",
+      "authors": "Liu, Y.*, Tao, B., Petreca, B., Baurley, S., & Berthouze, N. (2025).",
+      "date": "Jun 2025"
+    },
+    {
+      "title": "Reflecting on a repair toolkit and chatbot to guide touch exploration of materials.",
+      "venue": "Accepted at the Touch Well Workshop at the ACM Designing Interactive Systems Conference (DIS 2025)",
+      "authors": "Hernandez, L., Liu, Y.*, Petreca, B., Baurley, S., & Berthouze, N. (2025).",
+      "date": "Oct 2024"
+    },
+    {
+      "title": "The Repair Toolkit: Investigating the design of a toolkit to reveal the characteristics and features of a clothes repair practice.",
+      "venue": "Submitted to International Journal of Design.",
+      "authors": "Hernandez, L., Petreca, B., Liu, Y., Baurley, S., & Berthouze, N. (2024).",
+      "date": "Oct 2024"
+    },
+    {
+      "title": "T2GR2: Textile Touch Gesture Recognition with Graph Representation of EMG.",
+      "venue": "2023 11th International Conference on Affective Computing and Intelligent Interaction Workshops and Demos (ACIIW).",
+      "authors": "Yu, C., Liu, Y.*, Petreca, B., Baurley, S., & Berthouze, N. (2023).",
+      "date": "Nov 2023"
+    }
+  ],
+  "commercialProjects": [
+    "Tact Monster — The world-first basketball robot trainer",
+    "Meal Engine — The world-first visual programming language for human-robot cooking",
+    "Dancing Pig — Computed chair that generates pig noise while rocking (MOMA, Shanghai)",
+    "Contact-free communication system for Ebbsfleet Development Cooperation",
+    "Interstellar remote dining sets for RCA Grand Challenge X Logitech X CERN (Finalist)",
+    "20.21 Case — Eyewear design showcased on Vogue",
+    "Cones — Smart home-office coffee table with motorised stands",
+    "Hermès FW2019 Set design for Beijing Store",
+    "BMW Mini accessories design",
+    "Soundscape — A conceptual meditation tool using soundscape technology"
+  ]
+}

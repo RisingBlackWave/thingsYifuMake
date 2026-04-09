@@ -1030,6 +1030,89 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
   .pp-lit-row a{color:#6ea8fe}
   .award-tag{background:rgba(255,255,255,.1);color:#e0e0e0}
 }
+
+/* ── CV VIEW (Formafantasma studio style — prose) ── */
+#cv-view{
+  position:fixed;inset:0;z-index:100;
+  background:#fff;
+  overflow-y:auto;
+  opacity:0;pointer-events:none;
+  transition:opacity .4s ease;
+  cursor:default
+}
+#cv-view.open{opacity:1;pointer-events:auto}
+#cv-view *{cursor:default}
+
+.cv-inner{
+  max-width:1400px;
+  margin:0 auto;
+  padding:80px 7% 160px
+}
+.cv-contact-row{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:12px;color:#888;letter-spacing:.02em;
+  margin-bottom:64px
+}
+.cv-contact-row a{color:#0645ad;text-decoration:none}
+.cv-contact-row a:hover{text-decoration:underline}
+.cv-contact-row .sep{margin:0 10px;color:#ccc}
+
+.cv-intro{
+  font-family:Times,'Times New Roman',Georgia,serif;
+  font-size:clamp(28px,3.2vw,44px);
+  line-height:1.25;
+  font-weight:400;
+  color:#1a1a1a;
+  margin-bottom:120px;
+  max-width:1100px
+}
+
+.cv-section{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:48px;
+  padding:40px 0;
+  border-top:1px solid #000
+}
+.cv-section-title{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:13px;font-weight:400;color:#000;
+  padding-top:8px
+}
+.cv-section-body{
+  font-family:Times,'Times New Roman',Georgia,serif;
+  font-size:clamp(22px,2.4vw,32px);
+  line-height:1.35;
+  color:#1a1a1a;
+  max-width:900px
+}
+.cv-section-body .cv-lnk{color:#0645ad;text-decoration:none}
+.cv-section-body .cv-lnk:hover{text-decoration:underline}
+.cv-section-body .cv-dim{color:#999}
+.cv-section-body p{margin-bottom:0.8em}
+.cv-section-body p:last-child{margin-bottom:0}
+
+@media (max-width:900px){
+  .cv-inner{padding:48px 6% 100px}
+  .cv-contact-row{margin-bottom:40px}
+  .cv-intro{margin-bottom:60px;font-size:24px;line-height:1.3}
+  .cv-section{grid-template-columns:1fr;gap:14px;padding:28px 0}
+  .cv-section-title{padding-top:0}
+  .cv-section-body{font-size:19px;line-height:1.4}
+}
+
+@media (prefers-color-scheme:dark){
+  #cv-view{background:#0a0a0a}
+  .cv-contact-row{color:#888}
+  .cv-contact-row a{color:#6ea8fe}
+  .cv-contact-row .sep{color:#444}
+  .cv-intro{color:#ede9e2}
+  .cv-section{border-top-color:#ede9e2}
+  .cv-section-title{color:#ede9e2}
+  .cv-section-body{color:#ede9e2}
+  .cv-section-body .cv-lnk{color:#6ea8fe}
+  .cv-section-body .cv-dim{color:#666}
+}
 </style>
 </head>
 <body>
@@ -1078,7 +1161,9 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
     <nav class="list-nav">
       <span id="list-to-constellation" class="list-nav-link">Constellation</span>
       <span class="list-nav-sep">/</span>
-      <span class="list-nav-link list-nav-active">List</span>
+      <span class="list-nav-link list-nav-active" id="nav-to-list">List</span>
+      <span class="list-nav-sep">/</span>
+      <span class="list-nav-link" id="nav-to-cv">CV</span>
       <span class="list-nav-sep">·</span>
       <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" class="list-nav-link" style="color:#0A66C2">LinkedIn ↗</a>
     </nav>
@@ -1123,6 +1208,24 @@ body.list-active #center-stone{opacity:0;pointer-events:none;transition:opacity 
     <div class="pp-tags" id="pp-tags"></div>
   </div>
 </div>
+<!-- CV VIEW (Formafantasma studio style) -->
+<div id="cv-view">
+  <!-- Shared topbar reused; nav lives inside list-view topbar via CV mode toggle -->
+  <div class="list-topbar">
+    <div class="list-logo">things<em>Yifu</em>Make</div>
+    <nav class="list-nav">
+      <span id="cv-to-constellation" class="list-nav-link">Constellation</span>
+      <span class="list-nav-sep">/</span>
+      <span class="list-nav-link" id="cv-nav-to-list">List</span>
+      <span class="list-nav-sep">/</span>
+      <span class="list-nav-link list-nav-active">CV</span>
+      <span class="list-nav-sep">·</span>
+      <a href="https://uk.linkedin.com/in/yifu-liu" target="_blank" rel="noopener" class="list-nav-link" style="color:#0A66C2">LinkedIn ↗</a>
+    </nav>
+  </div>
+  <div class="cv-inner" id="cv-inner"></div>
+</div>
+
 <!-- legacy hidden elements for compat -->
 <div id="pp-mode" style="display:none"></div>
 <div id="pp-year" style="display:none"></div>
@@ -2420,9 +2523,11 @@ function buildListView() {
 function switchView(view) {
   currentView = view;
   const listEl = document.getElementById('list-view');
+  const cvEl = document.getElementById('cv-view');
   const toggleSpans = document.querySelectorAll('.view-toggle span[data-view]');
 
   toggleSpans.forEach(s => s.classList.toggle('active', s.dataset.view === view));
+  if(cvEl) cvEl.classList.remove('open');
 
   if (view === 'list') {
     document.body.classList.add('list-active');
@@ -2523,6 +2628,155 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') lbPrev();
   if (e.key === 'ArrowRight') lbNext();
 });
+
+// ═══════════════════════════════════════════════════════════
+// CV VIEW — Formafantasma studio-style prose rendering
+// ═══════════════════════════════════════════════════════════
+let CV_DATA = null;
+async function loadCV(){
+  if(CV_DATA) return CV_DATA;
+  try{
+    const r = await fetch('cv.json?t='+Date.now());
+    CV_DATA = await r.json();
+  }catch(e){
+    console.error('Failed to load cv.json', e);
+    CV_DATA = {};
+  }
+  return CV_DATA;
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function renderCV(cv){
+  const inner = document.getElementById('cv-inner');
+  if(!inner || !cv) return;
+  const parts = [];
+
+  // Contact row (small Arial line at top)
+  const contact = [];
+  if(cv.location) contact.push(esc(cv.location));
+  if(cv.phone) contact.push(esc(cv.phone));
+  if(cv.email) contact.push('<a href="mailto:'+esc(cv.email)+'">'+esc(cv.email)+'</a>');
+  parts.push('<div class="cv-contact-row">'+contact.join('<span class="sep">·</span>')+'</div>');
+
+  // Large intro paragraph (replaces traditional name header; bio is the hero)
+  if(cv.bio){
+    parts.push('<div class="cv-intro">'+esc(cv.bio)+'</div>');
+  }
+
+  // Helper: section wrapper
+  const sec = (title, bodyHtml) => '<div class="cv-section"><div class="cv-section-title">'+esc(title)+'</div><div class="cv-section-body">'+bodyHtml+'</div></div>';
+
+  // Languages — inline list
+  if(cv.languages && cv.languages.length){
+    const langs = cv.languages.map(l => esc(l.name)+' <span class="cv-dim">('+esc(l.level)+')</span>').join(', ');
+    parts.push(sec('Languages', langs+'.'));
+  }
+
+  // Education — prose format
+  if(cv.education && cv.education.length){
+    const items = cv.education.map(e => {
+      let s = esc(e.degree);
+      if(e.institution) s += ' at <span class="cv-lnk">'+esc(e.institution)+'</span>';
+      if(e.location) s += ', '+esc(e.location);
+      if(e.period) s += ' <span class="cv-dim">('+esc(e.period)+')</span>';
+      if(e.notes && e.notes.length) s += '. '+e.notes.map(esc).join('. ');
+      return s;
+    });
+    parts.push(sec('Education', '<p>'+items.join('.</p><p>')+'.</p>'));
+  }
+
+  // Experience — prose format
+  if(cv.experience && cv.experience.length){
+    const items = cv.experience.map(e => {
+      let s = esc(e.role);
+      if(e.organisation) s += ' at <span class="cv-lnk">'+esc(e.organisation)+'</span>';
+      if(e.location) s += ', '+esc(e.location);
+      if(e.period) s += ' <span class="cv-dim">('+esc(e.period)+')</span>';
+      if(e.notes && e.notes.length) s += '. '+e.notes.map(esc).join('. ');
+      return s;
+    });
+    parts.push(sec('Experience', '<p>'+items.join('.</p><p>')+'.</p>'));
+  }
+
+  // Honors & Awards — prose, blended into a single running paragraph like Formafantasma
+  if(cv.awards && cv.awards.length){
+    const items = cv.awards.map(a => {
+      let s = esc(a.name);
+      if(a.role) s += ', '+esc(a.role);
+      if(a.date) s += ' <span class="cv-dim">('+esc(a.date)+')</span>';
+      return s;
+    });
+    parts.push(sec('Honours & Awards', items.join(', ')+'.'));
+  }
+
+  // Exhibitions
+  if(cv.exhibitions && cv.exhibitions.length){
+    const items = cv.exhibitions.map(e => {
+      let s = '<span class="cv-lnk">'+esc(e.name)+'</span>';
+      if(e.location) s += ', '+esc(e.location);
+      if(e.note) s += ' — '+esc(e.note);
+      if(e.date) s += ' <span class="cv-dim">('+esc(e.date)+')</span>';
+      return s;
+    });
+    parts.push(sec('Exhibitions', items.join(', ')+'.'));
+  }
+
+  // Publications — each on its own paragraph since they're denser
+  if(cv.publications && cv.publications.length){
+    const items = cv.publications.map(p => {
+      let s = esc(p.title);
+      if(p.venue) s += ' <span class="cv-dim">'+esc(p.venue)+'</span>';
+      if(p.authors) s += ' <span class="cv-dim">— '+esc(p.authors)+'</span>';
+      if(p.date) s += ' <span class="cv-dim">('+esc(p.date)+')</span>';
+      return '<p>'+s+'</p>';
+    });
+    parts.push(sec('Publications', items.join('')));
+  }
+
+  // Commercial projects
+  if(cv.commercialProjects && cv.commercialProjects.length){
+    parts.push(sec('Commercial Projects', cv.commercialProjects.map(esc).join(', ')+'.'));
+  }
+
+  inner.innerHTML = parts.join('');
+}
+
+async function openCV(){
+  const cv = await loadCV();
+  renderCV(cv);
+  document.getElementById('cv-view').classList.add('open');
+  document.getElementById('list-view').classList.remove('open');
+  document.body.classList.add('list-active');
+  isAutoPlaying = false;
+  clearAutoTimer(); closeAutoCard();
+  history.replaceState(null, '', '#cv');
+  document.getElementById('cv-view').scrollTop = 0;
+}
+function closeCV(){
+  document.getElementById('cv-view').classList.remove('open');
+}
+
+// CV nav wiring
+document.getElementById('nav-to-cv')?.addEventListener('click', openCV);
+document.getElementById('nav-to-list')?.addEventListener('click', () => {
+  closeCV();
+  switchView('list');
+});
+document.getElementById('cv-nav-to-list')?.addEventListener('click', () => {
+  closeCV();
+  switchView('list');
+});
+document.getElementById('cv-to-constellation')?.addEventListener('click', () => {
+  closeCV();
+  switchView('constellation');
+});
+
+// Hash routing for CV
+window.addEventListener('hashchange', () => {
+  if(window.location.hash === '#cv') openCV();
+});
+if(window.location.hash === '#cv') openCV();
 
 // ═══════════════════════════════════════════════════════════
 // ROTATING RESEARCH QUESTIONS — typing effect

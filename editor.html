@@ -210,13 +210,31 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="sidebar">
     <div class="sidebar-header">
       <h1>thingsYifuMake Editor</h1>
-      <p>Edit projects, manage images, save to projects.json</p>
-      <div style="margin-top:10px;display:flex;gap:8px">
+      <p>Edit projects & CV, publish directly to the live site</p>
+      <div style="display:flex;gap:4px;margin-top:14px;background:rgba(255,255,255,.04);padding:3px;border-radius:5px">
+        <button class="mode-tab active" data-mode="projects" onclick="switchEditorMode('projects')" style="flex:1;padding:7px;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:11px;border-radius:3px">Projects</button>
+        <button class="mode-tab" data-mode="cv" onclick="switchEditorMode('cv')" style="flex:1;padding:7px;background:transparent;border:1px solid transparent;color:var(--dim);cursor:pointer;font-size:11px;border-radius:3px">CV</button>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:8px" id="projects-header-actions">
         <button class="btn btn-primary" style="font-size:11px;padding:6px 12px" onclick="addNewProject()">+ New Project</button>
         <a href="index.html" target="_blank" class="preview-link" style="font-size:11px;padding:6px 12px">Preview Site</a>
       </div>
+      <div style="margin-top:10px;display:none;gap:8px" id="cv-header-actions">
+        <a href="index.html#cv" target="_blank" class="preview-link" style="font-size:11px;padding:6px 12px">Preview CV</a>
+      </div>
     </div>
     <div class="sidebar-list" id="sidebar-list"></div>
+    <div class="sidebar-list" id="cv-sidebar-list" style="display:none">
+      <div style="padding:8px 20px;font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-top:8px">CV Sections</div>
+      <div class="sidebar-item" onclick="scrollToCvSection('cv-basics')"><div class="item-title">Basics & Bio</div></div>
+      <div class="sidebar-item" onclick="scrollToCvSection('cv-languages')"><div class="item-title">Languages</div></div>
+      <div class="sidebar-item" onclick="scrollToCvSection('cv-education')"><div class="item-title">Education</div></div>
+      <div class="sidebar-item" onclick="scrollToCvSection('cv-experience')"><div class="item-title">Experience</div></div>
+      <div class="sidebar-item" onclick="scrollToCvSection('cv-awards')"><div class="item-title">Honours & Awards</div></div>
+      <div class="sidebar-item" onclick="scrollToCvSection('cv-exhibitions')"><div class="item-title">Exhibitions</div></div>
+      <div class="sidebar-item" onclick="scrollToCvSection('cv-publications')"><div class="item-title">Publications</div></div>
+      <div class="sidebar-item" onclick="scrollToCvSection('cv-commercial')"><div class="item-title">Commercial Projects</div></div>
+    </div>
   </div>
   <div class="main-panel" id="main-panel">
     <div class="empty-state" id="empty-state">
@@ -224,6 +242,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <span style="font-size:12px;color:var(--dim)">or click + New Project to create one</span>
     </div>
     <div id="editor-form" style="display:none"></div>
+    <div id="cv-form" style="display:none"></div>
   </div>
 </div>
 <div class="btn-bar" id="btn-bar" style="display:none">
@@ -231,6 +250,11 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <button class="btn btn-danger" onclick="deleteProject()">Delete Project</button>
   <button class="btn btn-secondary" onclick="clearGhToken()" title="Clear saved GitHub token">⚙ Token</button>
   <span class="save-status" id="save-status"></span>
+</div>
+<div class="btn-bar" id="cv-btn-bar" style="display:none">
+  <button class="btn btn-primary" onclick="saveCV()">Publish CV to Live Site</button>
+  <button class="btn btn-secondary" onclick="clearGhToken()" title="Clear saved GitHub token">⚙ Token</button>
+  <span class="save-status" id="cv-save-status"></span>
 </div>
 <div class="modal-overlay" id="new-modal">
   <div class="modal">
@@ -447,55 +471,56 @@ function b64Encode(str){
   return btoa(unescape(encodeURIComponent(str)));
 }
 
-async function saveAll(){
-  collectFormData();
-  const json=JSON.stringify({items:projects},null,2);
+async function ghPublish(filePath, jsonString, statusSetter){
   const token=getGhToken();
-  if(!token){showStatus('Cancelled — no token');return;}
-
-  showStatus('Publishing...');
-  const url='https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_FILE+'?ref='+GH_BRANCH;
+  if(!token){statusSetter('Cancelled — no token');return false;}
+  statusSetter('Publishing...');
+  const baseUrl='https://api.github.com/repos/'+GH_REPO+'/contents/'+filePath;
   const headers={'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};
-
   try{
-    // 1. Get current sha
-    const getR=await fetch(url,{headers});
+    const getR=await fetch(baseUrl+'?ref='+GH_BRANCH,{headers});
     if(getR.status===401||getR.status===403){
       localStorage.removeItem('gh_token');
-      showStatus('Token rejected — cleared. Click Save again.');
-      return;
+      statusSetter('Token rejected — cleared. Click Save again.');
+      return false;
     }
-    if(!getR.ok){
-      showStatus('GET failed: '+getR.status);
-      return;
+    let sha=null;
+    if(getR.ok){const meta=await getR.json();sha=meta.sha;}
+    else if(getR.status!==404){
+      statusSetter('GET failed: '+getR.status);
+      return false;
     }
-    const meta=await getR.json();
-    const sha=meta.sha;
-
-    // 2. PUT new content
-    const putR=await fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_FILE,{
+    const body={
+      message:'Update '+filePath+' via editor',
+      content:b64Encode(jsonString),
+      branch:GH_BRANCH
+    };
+    if(sha) body.sha=sha;
+    const putR=await fetch(baseUrl,{
       method:'PUT',
       headers:Object.assign({},headers,{'Content-Type':'application/json'}),
-      body:JSON.stringify({
-        message:'Update projects.json via editor',
-        content:b64Encode(json),
-        sha:sha,
-        branch:GH_BRANCH
-      })
+      body:JSON.stringify(body)
     });
     if(!putR.ok){
       const err=await putR.text();
-      showStatus('PUT failed: '+putR.status);
+      statusSetter('PUT failed: '+putR.status);
       console.error(err);
-      return;
+      return false;
     }
-    dirty=false;
-    showStatus('Published! Site updates in ~60s');
-    renderSidebar();
+    statusSetter('Published! Live site updates in ~60s');
+    return true;
   }catch(e){
-    showStatus('Error: '+e.message);
+    statusSetter('Error: '+e.message);
     console.error(e);
+    return false;
   }
+}
+
+async function saveAll(){
+  collectFormData();
+  const json=JSON.stringify({items:projects},null,2);
+  const ok=await ghPublish('projects.json', json, showStatus);
+  if(ok){dirty=false;renderSidebar();}
 }
 
 function showStatus(msg){var el=document.getElementById('save-status');el.textContent=msg;el.style.color='#7AE8C1';
@@ -515,7 +540,211 @@ function deleteProject(){if(selectedIdx<0)return;var p=projects[selectedIdx];
   if(!confirm('Delete "'+p.title+'"?'))return;projects.splice(selectedIdx,1);selectedIdx=-1;markDirty();renderSidebar();
   document.getElementById('editor-form').style.display='none';document.getElementById('empty-state').style.display='flex';document.getElementById('btn-bar').style.display='none'}
 
-window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue=''}});
+window.addEventListener('beforeunload',function(e){if(dirty||cvDirty){e.preventDefault();e.returnValue=''}});
+
+// ═══════════════════════════════════════════════════════════
+// EDITOR MODE SWITCHER (Projects / CV)
+// ═══════════════════════════════════════════════════════════
+let editorMode='projects';
+function switchEditorMode(mode){
+  editorMode=mode;
+  document.querySelectorAll('.mode-tab').forEach(b=>{
+    const active=b.dataset.mode===mode;
+    b.classList.toggle('active',active);
+    b.style.background=active?'var(--card)':'transparent';
+    b.style.borderColor=active?'var(--border)':'transparent';
+    b.style.color=active?'var(--text)':'var(--dim)';
+  });
+  const isProj=mode==='projects';
+  document.getElementById('sidebar-list').style.display=isProj?'':'none';
+  document.getElementById('cv-sidebar-list').style.display=isProj?'none':'';
+  document.getElementById('projects-header-actions').style.display=isProj?'flex':'none';
+  document.getElementById('cv-header-actions').style.display=isProj?'none':'flex';
+  document.getElementById('editor-form').style.display=isProj&&selectedIdx>=0?'block':'none';
+  document.getElementById('cv-form').style.display=isProj?'none':'block';
+  document.getElementById('empty-state').style.display=(isProj&&selectedIdx<0)?'flex':'none';
+  document.getElementById('btn-bar').style.display=isProj&&selectedIdx>=0?'flex':'none';
+  document.getElementById('cv-btn-bar').style.display=isProj?'none':'flex';
+  document.getElementById('main-panel').scrollTop=0;
+  if(!isProj){
+    if(!cvData) loadCvData().then(()=>renderCvForm());
+    else renderCvForm();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// CV EDITOR
+// ═══════════════════════════════════════════════════════════
+let cvData=null;let cvDirty=false;
+
+async function loadCvData(){
+  try{
+    const r=await fetch('cv.json?t='+Date.now());
+    cvData=await r.json();
+  }catch(e){
+    cvData={name:'',location:'',phone:'',email:'',bio:'',languages:[],education:[],experience:[],awards:[],exhibitions:[],publications:[],commercialProjects:[]};
+  }
+  return cvData;
+}
+
+function markCvDirty(){cvDirty=true;document.getElementById('cv-save-status').textContent='Unsaved changes';document.getElementById('cv-save-status').style.color='#E8C17A'}
+
+function cvShowStatus(msg){var el=document.getElementById('cv-save-status');el.textContent=msg;el.style.color='#7AE8C1';setTimeout(function(){if(el.textContent===msg){el.textContent=cvDirty?'Unsaved changes':'';el.style.color='var(--dim)'}},3000)}
+
+function scrollToCvSection(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+
+function renderCvForm(){
+  const root=document.getElementById('cv-form');
+  if(!cvData){root.innerHTML='Loading...';return;}
+  const h=[];
+
+  // Basics
+  h.push('<div class="section-title" id="cv-basics">Basics & Bio</div>');
+  h.push('<div class="field"><label>Name (with titles)</label><input id="cv-name" value="'+esc(cvData.name||'')+'" oninput="markCvDirty()"></div>');
+  h.push('<div class="field-row">');
+  h.push('<div class="field"><label>Location</label><input id="cv-location" value="'+esc(cvData.location||'')+'" oninput="markCvDirty()"></div>');
+  h.push('<div class="field"><label>Phone</label><input id="cv-phone" value="'+esc(cvData.phone||'')+'" oninput="markCvDirty()"></div>');
+  h.push('<div class="field"><label>Email</label><input id="cv-email" value="'+esc(cvData.email||'')+'" oninput="markCvDirty()"></div>');
+  h.push('</div>');
+  h.push('<div class="field"><label>Bio (hero paragraph on the CV page)</label><textarea id="cv-bio" rows="8" oninput="markCvDirty()">'+esc(cvData.bio||'')+'</textarea></div>');
+
+  // Languages
+  h.push('<div class="section-title" id="cv-languages">Languages</div>');
+  h.push('<div id="cv-languages-list" class="blocks-wrap"></div>');
+  h.push('<div class="add-block-bar"><button class="add-block-btn" onclick="cvAddItem(\'languages\',{name:\'\',level:\'\'})">+ Add Language</button></div>');
+
+  // Education
+  h.push('<div class="section-title" id="cv-education">Education</div>');
+  h.push('<div id="cv-education-list" class="blocks-wrap"></div>');
+  h.push('<div class="add-block-bar"><button class="add-block-btn" onclick="cvAddItem(\'education\',{institution:\'\',location:\'\',period:\'\',degree:\'\',notes:[]})">+ Add Education</button></div>');
+
+  // Experience
+  h.push('<div class="section-title" id="cv-experience">Experience</div>');
+  h.push('<div id="cv-experience-list" class="blocks-wrap"></div>');
+  h.push('<div class="add-block-bar"><button class="add-block-btn" onclick="cvAddItem(\'experience\',{organisation:\'\',location:\'\',period:\'\',role:\'\',notes:[]})">+ Add Experience</button></div>');
+
+  // Awards
+  h.push('<div class="section-title" id="cv-awards">Honours & Awards</div>');
+  h.push('<div id="cv-awards-list" class="blocks-wrap"></div>');
+  h.push('<div class="add-block-bar"><button class="add-block-btn" onclick="cvAddItem(\'awards\',{name:\'\',date:\'\',role:\'\',notes:[]})">+ Add Award</button></div>');
+
+  // Exhibitions
+  h.push('<div class="section-title" id="cv-exhibitions">Exhibitions</div>');
+  h.push('<div id="cv-exhibitions-list" class="blocks-wrap"></div>');
+  h.push('<div class="add-block-bar"><button class="add-block-btn" onclick="cvAddItem(\'exhibitions\',{name:\'\',location:\'\',date:\'\',note:\'\'})">+ Add Exhibition</button></div>');
+
+  // Publications
+  h.push('<div class="section-title" id="cv-publications">Publications</div>');
+  h.push('<div id="cv-publications-list" class="blocks-wrap"></div>');
+  h.push('<div class="add-block-bar"><button class="add-block-btn" onclick="cvAddItem(\'publications\',{title:\'\',venue:\'\',authors:\'\',date:\'\'})">+ Add Publication</button></div>');
+
+  // Commercial projects
+  h.push('<div class="section-title" id="cv-commercial">Commercial Projects</div>');
+  h.push('<div class="field"><label>One per line</label><textarea id="cv-commercial-text" rows="10" oninput="markCvDirty()">'+esc((cvData.commercialProjects||[]).join('\n'))+'</textarea></div>');
+
+  h.push('<div style="height:80px"></div>');
+  root.innerHTML=h.join('');
+
+  // Render list sections
+  cvRenderList('languages',['name','level']);
+  cvRenderList('education',['degree','institution','location','period','notes']);
+  cvRenderList('experience',['role','organisation','location','period','notes']);
+  cvRenderList('awards',['name','date','role','notes']);
+  cvRenderList('exhibitions',['name','location','date','note']);
+  cvRenderList('publications',['title','venue','authors','date']);
+}
+
+function cvRenderList(key, fields){
+  const list=document.getElementById('cv-'+key+'-list');
+  if(!list)return;
+  const items=cvData[key]||[];
+  list.innerHTML='';
+  items.forEach((item,i)=>{
+    const card=document.createElement('div');
+    card.className='block-card';
+    let inner='<div class="block-head"><div class="block-label">'+esc(item[fields[0]]||'(new '+key.slice(0,-1)+')')+'</div>'
+      +'<div class="block-controls">'
+      +'<button class="block-btn" onclick="cvMoveItem(\''+key+'\','+i+',-1)" title="Move up">↑</button>'
+      +'<button class="block-btn" onclick="cvMoveItem(\''+key+'\','+i+',1)" title="Move down">↓</button>'
+      +'<button class="block-btn del" onclick="cvDelItem(\''+key+'\','+i+')" title="Delete">✕</button>'
+      +'</div></div>';
+    inner+='<div class="block-body">';
+    fields.forEach(f=>{
+      if(f==='notes'){
+        inner+='<textarea placeholder="Notes (one per line)" oninput="cvSetField(\''+key+'\','+i+',\'notes\',this.value.split(\'\\n\').filter(Boolean))">'+esc((item.notes||[]).join('\n'))+'</textarea>';
+      }else{
+        inner+='<input type="text" placeholder="'+f+'" value="'+esc(item[f]||'')+'" oninput="cvSetField(\''+key+'\','+i+',\''+f+'\',this.value)">';
+      }
+    });
+    inner+='</div>';
+    card.innerHTML=inner;
+    list.appendChild(card);
+  });
+}
+
+function cvSetField(key,i,field,value){
+  if(!cvData[key])cvData[key]=[];
+  if(!cvData[key][i])return;
+  cvData[key][i][field]=value;
+  markCvDirty();
+  // Re-render label only
+  const list=document.getElementById('cv-'+key+'-list');
+  if(list){
+    const card=list.children[i];
+    if(card){
+      const label=card.querySelector('.block-label');
+      if(label){
+        const labelField=(key==='languages'?'name':key==='education'?'degree':key==='experience'?'role':key==='awards'?'name':key==='exhibitions'?'name':'title');
+        label.textContent=cvData[key][i][labelField]||'(new '+key.slice(0,-1)+')';
+      }
+    }
+  }
+}
+
+function cvAddItem(key,template){
+  if(!cvData[key])cvData[key]=[];
+  cvData[key].push(template);
+  markCvDirty();
+  cvRenderList(key,key==='languages'?['name','level']:key==='education'?['degree','institution','location','period','notes']:key==='experience'?['role','organisation','location','period','notes']:key==='awards'?['name','date','role','notes']:key==='exhibitions'?['name','location','date','note']:['title','venue','authors','date']);
+}
+
+function cvDelItem(key,i){
+  if(!cvData[key])return;
+  if(!confirm('Delete this item?'))return;
+  cvData[key].splice(i,1);
+  markCvDirty();
+  cvRenderList(key,key==='languages'?['name','level']:key==='education'?['degree','institution','location','period','notes']:key==='experience'?['role','organisation','location','period','notes']:key==='awards'?['name','date','role','notes']:key==='exhibitions'?['name','location','date','note']:['title','venue','authors','date']);
+}
+
+function cvMoveItem(key,i,dir){
+  if(!cvData[key])return;
+  const j=i+dir;
+  if(j<0||j>=cvData[key].length)return;
+  const tmp=cvData[key][i];
+  cvData[key][i]=cvData[key][j];
+  cvData[key][j]=tmp;
+  markCvDirty();
+  cvRenderList(key,key==='languages'?['name','level']:key==='education'?['degree','institution','location','period','notes']:key==='experience'?['role','organisation','location','period','notes']:key==='awards'?['name','date','role','notes']:key==='exhibitions'?['name','location','date','note']:['title','venue','authors','date']);
+}
+
+function collectCvForm(){
+  if(!cvData)return;
+  const g=id=>{var el=document.getElementById(id);return el?el.value:''};
+  cvData.name=g('cv-name');
+  cvData.location=g('cv-location');
+  cvData.phone=g('cv-phone');
+  cvData.email=g('cv-email');
+  cvData.bio=g('cv-bio');
+  const ctext=g('cv-commercial-text');
+  cvData.commercialProjects=ctext.split('\n').map(s=>s.trim()).filter(Boolean);
+}
+
+async function saveCV(){
+  collectCvForm();
+  const json=JSON.stringify(cvData,null,2);
+  const ok=await ghPublish('cv.json',json,cvShowStatus);
+  if(ok){cvDirty=false;}
+}
 
 // ═══════════════════════════════════════════════════════════
 // BLOCK EDITOR
