@@ -300,6 +300,7 @@ async function selectProject(idx){
   document.getElementById('empty-state').style.display='none';
   document.getElementById('editor-form').style.display='block';
   document.getElementById('btn-bar').style.display='flex';
+  document.getElementById('main-panel').scrollTop=0;
   const p=projects[idx];const color=COLORS[p.mode];
   const images=await scanImages(p.slug);projectImages[p.slug]=images;
   const form=document.getElementById('editor-form');
