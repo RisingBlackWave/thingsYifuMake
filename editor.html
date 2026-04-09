@@ -256,7 +256,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
 </div>
 <script>
-let projects=[];let selectedIdx=-1;let projectImages={};let dirty=false;
+let projects=[];let selectedIdx=-1;let projectImages={};let dirty=false;let selectSeq=0;
 const COLORS={Product:'#E8C17A',Research:'#7AB8E8',Education:'#E87A7A',Podcast:'#C17AE8'};
 
 async function loadProjects(){
@@ -296,6 +296,7 @@ function renderSidebar(){
 
 async function selectProject(idx){
   if(selectedIdx>=0)collectFormData();
+  const mySeq=++selectSeq;
   selectedIdx=idx;renderSidebar();
   document.getElementById('empty-state').style.display='none';
   document.getElementById('editor-form').style.display='block';
@@ -303,6 +304,8 @@ async function selectProject(idx){
   document.getElementById('main-panel').scrollTop=0;
   const p=projects[idx];const color=COLORS[p.mode];
   const images=await scanImages(p.slug);projectImages[p.slug]=images;
+  // Abort if a newer selectProject call has started while we were awaiting
+  if(mySeq!==selectSeq)return;
   const form=document.getElementById('editor-form');
   form.innerHTML='<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'
     +'<div style="width:12px;height:12px;border-radius:50%;background:'+color+'"></div>'
@@ -375,6 +378,9 @@ function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/"
 
 function collectFormData(){
   if(selectedIdx<0)return;var p=projects[selectedIdx];
+  // Guard: if the form hasn't rendered yet (e.g. rapid project switching during
+  // async scanImages), do NOT overwrite project data with empty strings.
+  if(!document.getElementById('f-title'))return;
   var get=function(id){var el=document.getElementById(id);return el?el.value:''};
   p.title=get('f-title');p.subtitle=get('f-subtitle')||null;p.slug=get('f-slug');p.mode=get('f-mode');
   p.year=get('f-year')?parseInt(get('f-year')):null;p.date=get('f-date')||null;p.venue=get('f-venue')||null;p.intro=get('f-intro')||null;p.desc=get('f-desc');p.link=get('f-link')||null;
