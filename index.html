@@ -2728,7 +2728,9 @@ function renderCV(cv){
   // Publications — each on its own paragraph since they're denser
   if(cv.publications && cv.publications.length){
     const items = cv.publications.map(p => {
-      let s = esc(p.title);
+      let s = p.link
+        ? '<a class="cv-lnk" href="'+esc(p.link)+'" target="_blank" rel="noopener">'+esc(p.title)+'</a>'
+        : esc(p.title);
       if(p.venue) s += ' <span class="cv-dim">'+esc(p.venue)+'</span>';
       if(p.authors) s += ' <span class="cv-dim">— '+esc(p.authors)+'</span>';
       if(p.date) s += ' <span class="cv-dim">('+esc(p.date)+')</span>';

@@ -131,14 +131,35 @@
   ],
   "publications": [
     {
+      "title": "Affective Tools for Thought in AI-Supported Thinking.",
+      "venue": "CHI 2026 Tools for Thought Workshop.",
+      "authors": "Liu, Y.*, Buono, R., & Bianchi-Berthouze, N. (2026).",
+      "date": "2026"
+    },
+    {
       "title": "Developing Clothing Repair Skills: a Conversational Agent Framework.",
-      "venue": "Manuscript in preparation for CHI 2026",
+      "venue": "ACM CHI Conference on Human Factors in Computing Systems (CHI 2026).",
       "authors": "Liu, Y.*, Tao, B., Petreca, B., Baurley, S., & Berthouze, N. (2025).",
-      "date": "Jun 2025"
+      "date": "Jun 2025",
+      "link": "https://discovery.ucl.ac.uk/id/eprint/10222053/"
+    },
+    {
+      "title": "ProVoice: Human-in-the-Loop Optimisation of In-Vehicle Conversational Assistant Design.",
+      "venue": "ACM CHI Conference on Human Factors in Computing Systems (CHI 2025).",
+      "authors": "Liu, Y.*, et al.",
+      "date": "2025",
+      "link": "https://arxiv.org/abs/2601.19421"
+    },
+    {
+      "title": "mmWaveTryOn: The First mmWave-RGB Dataset for Clothes Try-On Multimodal Gesture Recognition.",
+      "venue": "ACM International Conference Proceeding Series.",
+      "authors": "Liu, Y.*, et al. (2025).",
+      "date": "2025",
+      "link": "https://dl.acm.org/doi/10.1145/3737904.3768535"
     },
     {
       "title": "Reflecting on a repair toolkit and chatbot to guide touch exploration of materials.",
-      "venue": "Accepted at the Touch Well Workshop at the ACM Designing Interactive Systems Conference (DIS 2025)",
+      "venue": "Accepted at the Touch Well Workshop at the ACM Designing Interactive Systems Conference (DIS 2025).",
       "authors": "Hernandez, L., Liu, Y.*, Petreca, B., Baurley, S., & Berthouze, N. (2025).",
       "date": "Oct 2024"
     },
@@ -149,28 +170,18 @@
       "date": "Oct 2024"
     },
     {
-      "title": "T2GR2: Textile Touch Gesture Recognition with Graph Representation of EMG.",
-      "venue": "2023 11th International Conference on Affective Computing and Intelligent Interaction Workshops and Demos (ACIIW).",
-      "authors": "Yu, C., Liu, Y.*, Petreca, B., Baurley, S., & Berthouze, N. (2023).",
-      "date": "Nov 2023"
-    },
-    {
       "title": "FabricTouch II: A Multimodal Textile-Touch Gesture Recognition Dataset.",
       "venue": "12th International Conference on Affective Computing and Intelligent Interaction (ACII 2024).",
       "authors": "Liu, Y.*, et al. (2024).",
-      "date": "2024"
+      "date": "2024",
+      "link": "https://ieeexplore.ieee.org/document/10388087"
     },
     {
-      "title": "ProVoice: Human-in-the-Loop Optimisation of In-Vehicle Conversational Assistant Design.",
-      "venue": "ACM CHI Conference on Human Factors in Computing Systems.",
-      "authors": "Liu, Y.*, et al.",
-      "date": "2025"
-    },
-    {
-      "title": "Affective Tools for Thought in AI-Supported Thinking.",
-      "venue": "CHI 2026 Tools for Thought Workshop.",
-      "authors": "Liu, Y.*, Buono, R., & Bianchi-Berthouze, N. (2026).",
-      "date": "2026"
+      "title": "T2GR2: Textile Touch Gesture Recognition with Graph Representation of EMG.",
+      "venue": "2023 11th International Conference on Affective Computing and Intelligent Interaction Workshops and Demos (ACIIW).",
+      "authors": "Yu, C., Liu, Y.*, Petreca, B., Baurley, S., & Berthouze, N. (2023).",
+      "date": "Nov 2023",
+      "link": "https://ieeexplore.ieee.org/document/10388087"
     }
   ],
   "commercialProjects": [

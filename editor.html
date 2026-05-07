@@ -636,7 +636,7 @@ function renderCvForm(){
   // Publications
   h.push('<div class="section-title" id="cv-publications">Publications</div>');
   h.push('<div id="cv-publications-list" class="blocks-wrap"></div>');
-  h.push('<div class="add-block-bar"><button class="add-block-btn" onclick="cvAddItem(\'publications\',{title:\'\',venue:\'\',authors:\'\',date:\'\'})">+ Add Publication</button></div>');
+  h.push('<div class="add-block-bar"><button class="add-block-btn" onclick="cvAddItem(\'publications\',{title:\'\',venue:\'\',authors:\'\',date:\'\',link:\'\'})">+ Add Publication</button></div>');
 
   // Commercial projects
   h.push('<div class="section-title" id="cv-commercial">Commercial Projects</div>');
@@ -651,7 +651,7 @@ function renderCvForm(){
   cvRenderList('experience',['role','organisation','location','period','notes']);
   cvRenderList('awards',['name','date','role','notes']);
   cvRenderList('exhibitions',['name','location','date','note']);
-  cvRenderList('publications',['title','venue','authors','date']);
+  cvRenderList('publications',['title','venue','authors','date','link']);
 }
 
 function cvRenderList(key, fields){
